@@ -14,3 +14,20 @@ export async function copyText(text: string): Promise<void> {
     if (!ok) throw new Error('clipboard unavailable');
   }
 }
+
+/** Copies a PNG (optionally with text in the same item). Downloads it instead when the clipboard refuses images. */
+export async function copyImage(png: Blob, text?: string): Promise<'copied' | 'downloaded'> {
+  try {
+    const parts: Record<string, Blob> = { 'image/png': png };
+    if (text) parts['text/plain'] = new Blob([text], { type: 'text/plain' });
+    await navigator.clipboard.write([new ClipboardItem(parts)]);
+    return 'copied';
+  } catch {
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(png);
+    a.download = 'lidar-element.png';
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+    return 'downloaded';
+  }
+}

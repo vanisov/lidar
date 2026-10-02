@@ -1,11 +1,12 @@
 import { Fragment, type ComponentChildren } from 'preact';
 import { useLayoutEffect, useMemo, useState } from 'preact/hooks';
-import { copyText } from '../core/clipboard';
+import { copyImage, copyText } from '../core/clipboard';
 import { contrast, grade, toHex } from '../core/color';
-import { cssRule, label } from '../core/describe';
+import { aiBrief, cssRule, label } from '../core/describe';
 import { compactSides, formatLength, panelSide } from '../core/geometry';
 import type { Host } from '../core/host';
 import { ancestors, describe, hasImageBackdrop } from '../core/inspect';
+import { captureElement } from '../core/screenshot';
 import { settings } from '../core/settings';
 import { pinned, toast } from '../core/store';
 import { icons } from './icons';
@@ -43,6 +44,23 @@ export function Panel({ host }: { host: Host }) {
     if (el && !pos) setSide(panelSide(el.getBoundingClientRect(), PANEL_WIDTH, innerWidth));
   }, [el, pos]);
   const fmt = (n: number) => formatLength(n, s.units, s.remBase);
+
+  async function shot(forAI: boolean) {
+    if (!el || !info) return;
+    const brief = forAI ? aiBrief(info, location.href) : undefined;
+    let png: Blob;
+    try {
+      png = await captureElement(el, host.el);
+    } catch (err) {
+      const why = (err as Error).message;
+      if (brief) return copy(brief, `brief for AI (no screenshot: ${why})`);
+      return toast(`Screenshot failed: ${why}`);
+    }
+    const how = await copyImage(png, brief);
+    if (how === 'copied') return toast(brief ? 'Copied brief + screenshot for AI' : 'Screenshot copied');
+    if (brief) await copyText(brief).catch(() => undefined);
+    toast(brief ? 'Brief copied · screenshot downloaded' : 'Screenshot downloaded');
+  }
 
   const drag = (e: PointerEvent) => {
     if ((e.target as Element).closest('button')) return;
@@ -119,6 +137,8 @@ export function Panel({ host }: { host: Host }) {
         </details>
         <div class="btns">
           <button class="pri" onClick={() => copy(cssRule(info), 'CSS')}>Copy CSS</button>
+          <button onClick={() => shot(true)}>Copy for AI</button>
+          <button onClick={() => shot(false)}>Screenshot</button>
         </div>
       </>
     );
