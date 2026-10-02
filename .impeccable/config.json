@@ -1,0 +1,17 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "skipped-heading",
+        "value": "*",
+        "files": [
+          ".superpowers/brainstorm/36789-1790932249/content/prototype.html"
+        ],
+        "createdAt": "2026-10-02T09:52:25.555Z",
+        "reason": "Claude: h1→h3 is in the fake 'Northwind' demo site the prototype inspects (a test fixture), not Lidar's own UI"
+      }
+    ]
+  }
+}

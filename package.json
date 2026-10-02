@@ -1,0 +1,27 @@
+{
+  "name": "lidar",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs",
+    "build:test": "node build.mjs --test",
+    "watch": "node build.mjs --watch",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "e2e": "npm run build:test && playwright test",
+    "icons": "node scripts/make-icons.mjs",
+    "package": "npm run build && rm -f lidar.zip && cd dist && zip -qr ../lidar.zip ."
+  },
+  "dependencies": {
+    "@preact/signals": "^2.11.3",
+    "preact": "^11.0.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.63",
+    "@types/chrome": "^0.3.4",
+    "esbuild": "^0.28.2",
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.3"
+  }
+}
