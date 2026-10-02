@@ -25,7 +25,7 @@ svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width:
 .hl { box-sizing: border-box; outline: 1.5px solid var(--acc); border-style: solid; border-color: #5ac46a40; }
 .hl::after { content: ""; position: absolute; inset: 0; background: #4aa3ff1a; }
 .pin { box-sizing: border-box; outline: 1.5px dashed var(--acc); }
-.pill { font: 600 11px/1 var(--mono); padding: 4px 6px; border-radius: 6px; background: var(--acc); color: #fff; white-space: nowrap; }
+.pill { font: 600 11px/1 var(--mono); padding: 4px 6px; border-radius: 6px; background: var(--acc); color: #1a1a1a; white-space: nowrap; }
 .dl { background: var(--acc); }
 .ov.shield { pointer-events: auto; }
 .rul { background-color: var(--ruler); color: var(--tick); background-repeat: no-repeat; }
@@ -56,9 +56,9 @@ svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width:
 @keyframes dock-in { from { opacity: 0; transform: translateX(-50%) scale(.96); } }
 .dock button { position: relative; width: 34px; height: 34px; border-radius: 10px; display: grid; place-items: center; color: var(--muted); transition: background .12s, color .12s; }
 .dock button:hover { background: var(--hover); color: var(--text); }
-.dock button[aria-pressed="true"] { background: var(--acc); color: #fff; }
+.dock button[aria-pressed="true"] { background: var(--acc); color: #1a1a1a; }
 .dock button.toggle[aria-pressed="true"] { background: var(--hover); color: var(--text); }
-.dock button[data-tip]:hover::after {
+.dock button[data-tip]:hover::after, .dock button[data-tip]:focus-visible::after {
   content: attr(data-tip); position: absolute; bottom: 44px; left: 50%; transform: translateX(-50%);
   white-space: pre; background: var(--bg); color: var(--text); font-size: 11px; font-weight: 500;
   padding: 5px 8px; border-radius: 7px; box-shadow: var(--shadow), inset 0 0 0 1px var(--line);
@@ -104,7 +104,7 @@ svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width:
 .btns { display: flex; gap: 6px; margin-top: 12px; }
 .btns button { flex: 1; text-align: center; padding: 8px 0; border-radius: 9px; font-weight: 600; font-size: 12px; background: var(--bg3); color: var(--text); }
 .btns button:hover { filter: brightness(1.12); }
-.btns button.pri { background: var(--acc); color: #fff; }
+.btns button.pri { background: var(--acc); color: #1a1a1a; }
 .empty { color: var(--muted); line-height: 1.7; padding: 2px 0 4px; }
 .empty b { color: var(--text); }
 kbd { font: 600 11px var(--mono); background: var(--bg3); color: var(--text); border-radius: 5px; padding: 1px 5px; box-shadow: inset 0 -1px 0 #0004; }
