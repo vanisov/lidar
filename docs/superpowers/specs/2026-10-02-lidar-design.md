@@ -83,7 +83,8 @@ The approved mockup is at `.superpowers/brainstorm/*/content/visual-direction.ht
 - The accent is the orange-red from Sonar's icon (`#ff5a36`). It is used for highlights, size pills, distance lines
   and the active tool.
 - Box model colors: padding green `#5ac46a` at about 18% alpha, margin orange hatch `#f7a64a`, content blue `#4aa3ff`.
-- Type: system UI font for labels and SF Mono / `ui-monospace` for values.
+- Type: system UI font for labels and SF Mono / `ui-monospace` for values. No functional text is smaller than 11 px,
+  including the size pills, breadcrumb and box-model labels. The mockup uses 10 px in places; the build does not.
 - Motion: about 150 ms fade and scale for the dock and panel, and quick transitions on the overlays. Everything respects
   `prefers-reduced-motion`. Nothing animates continuously.
 - A light theme is available in settings. It uses the same tokens with different values.
