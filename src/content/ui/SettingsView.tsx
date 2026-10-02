@@ -38,6 +38,7 @@ export function SettingsView() {
                 const v = Number(e.currentTarget.value);
                 if (Number.isFinite(v) && v >= 1 && v <= 64) saveSettings({ remBase: v });
               }}
+              onBlur={e => (e.currentTarget.value = String(settings.value.remBase))}
             />{' '}
             px
           </span>

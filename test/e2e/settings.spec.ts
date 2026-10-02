@@ -24,10 +24,16 @@ test('the rem base is validated', async ({ page, activate }) => {
   await panel.getByRole('button', { name: 'Settings' }).click();
   await panel.getByRole('radio', { name: 'rem' }).click();
   const input = panel.getByLabel('Pixels per rem');
-  await input.fill('0');
-  await input.fill('10');
   const b = (await page.locator('#c1').boundingBox())!;
+  const size = page.locator('lidar-root [data-ov="size"]');
+  await input.fill('0');
   await page.mouse.move(b.x + 5, b.y + 5);
+  await frame(page);
+  await expect(size).toHaveText('12.5rem × 6.25rem');
+  await input.blur();
+  await expect(input).toHaveValue('16');
+  await input.fill('10');
+  await page.mouse.move(b.x + 6, b.y + 6);
   await frame(page);
   await expect(page.locator('lidar-root [data-ov="size"]')).toHaveText('20rem × 10rem');
 });
