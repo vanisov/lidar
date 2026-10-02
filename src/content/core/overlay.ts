@@ -35,35 +35,61 @@ export function startOverlay(host: Host, layer: HTMLElement): () => void {
   const labels = [0, 1, 2, 3].map(i => node('pill', `dist-${i}`));
   const coord = node('coord', 'coord');
 
+  const rulerPair = [rulerH, rulerV];
+  const cursorNodes = [markX, markY, crossX, crossY, coord];
+  const hoverNodes = [margin, hover, size];
+
   let mx = -1;
   let my = -1;
   let hovered: Element | null = null;
   let dirty = true;
   let raf = 0;
+  let cfg = settings.peek();
+  let fmt = (n: number) => formatLength(n, cfg.units, cfg.remBase);
 
+  // Last value written per node and property, so unchanged frames cost no style writes.
+  const written = new WeakMap<HTMLElement, Record<string, string>>();
+  const set = (el: HTMLElement, prop: string, val: string) => {
+    const w = written.get(el) ?? {};
+    written.set(el, w);
+    if (w[prop] === val) return false;
+    w[prop] = val;
+    el.style.setProperty(prop, val);
+    return true;
+  };
   const place = (el: HTMLElement, x: number, y: number, w?: number, h?: number) => {
-    el.style.display = 'block';
-    el.style.transform = `translate(${x}px, ${y}px)`;
+    set(el, 'display', 'block');
+    set(el, 'transform', `translate(${x}px, ${y}px)`);
     if (w !== undefined && h !== undefined) {
-      el.style.width = `${Math.max(0, w)}px`;
-      el.style.height = `${Math.max(0, h)}px`;
+      set(el, 'width', `${Math.max(0, w)}px`);
+      set(el, 'height', `${Math.max(0, h)}px`);
     }
   };
   const hide = (el: HTMLElement) => {
-    el.style.display = 'none';
+    set(el, 'display', 'none');
+  };
+  // Sets text and returns the pill's size. Layout is read only when the text changed.
+  const sizes = new WeakMap<HTMLElement, { w: number; h: number }>();
+  const label = (el: HTMLElement, text: string) => {
+    let sz = sizes.get(el);
+    if (!sz || el.textContent !== text) {
+      el.textContent = text;
+      set(el, 'display', 'block'); // display:none has no size to measure
+      sz = { w: el.offsetWidth, h: el.offsetHeight };
+      sizes.set(el, sz);
+    }
+    return sz;
   };
   const own = (e: Event) => e.composedPath().includes(host.el);
+  const pick = (x: number, y: number) => {
+    const t = document.elementFromPoint(x, y);
+    return !t || t === host.el || t === document.documentElement ? null : t;
+  };
 
   const onMove = (e: PointerEvent) => {
     mx = Math.round(e.clientX);
     my = Math.round(e.clientY);
     altHeld.value = e.altKey;
-    const t = document.elementFromPoint(mx, my);
-    hovered = !t || t === host.el || t === document.documentElement ? null : t;
-    if (pinNext.value && hovered) {
-      pinned.value = hovered;
-      pinNext.value = false;
-    }
     dirty = true;
   };
   const block = (e: Event) => {
@@ -74,7 +100,9 @@ export function startOverlay(host: Host, layer: HTMLElement): () => void {
   const onClick = (e: MouseEvent) => {
     if (own(e)) return;
     block(e);
-    if (e.button === 0 && hovered && tool.value !== 'color') pinned.value = hovered;
+    // The click can land before the next frame has refreshed `hovered`.
+    const t = pick(e.clientX, e.clientY);
+    if (e.button === 0 && t && tool.value !== 'color') pinned.value = t;
   };
   const markDirty = () => {
     dirty = true;
@@ -90,62 +118,69 @@ export function startOverlay(host: Host, layer: HTMLElement): () => void {
     void pinned.value;
     void tool.value;
     void altHeld.value;
-    void settings.value;
+    cfg = settings.value;
+    fmt = (n: number) => formatLength(n, cfg.units, cfg.remBase);
     dirty = true;
   });
 
   function draw() {
-    const { units, remBase, rulers } = settings.peek();
-    const fmt = (n: number) => formatLength(n, units, remBase);
     const vw = innerWidth;
     const vh = innerHeight;
 
-    for (const r of [rulerH, rulerV]) rulers ? place(r, 0, 0) : hide(r);
-    if (rulers && mx >= 0) {
+    // Read phase: every layout/style read happens here, before any write.
+    hovered = mx >= 0 ? pick(mx, my) : null;
+    if (pinNext.peek() && hovered) {
+      pinned.value = hovered;
+      pinNext.value = false;
+    }
+    const p = pinned.peek();
+    const h = tool.peek() === 'color' ? null : hovered;
+    const measuring = !!(p && h && h !== p && (altHeld.peek() || tool.peek() === 'distance'));
+    const hr = h?.getBoundingClientRect();
+    const hcs = h ? getComputedStyle(h) : null;
+    const hm = hcs && sidesOf(hcs, 'margin');
+    const hp = hcs && sidesOf(hcs, 'padding');
+    const hRadius = hcs?.borderRadius;
+    const pr = p?.getBoundingClientRect();
+    const pRadius = p && getComputedStyle(p).borderRadius;
+    const segs = measuring ? distances(pr!, hr!) : null;
+
+    // Write phase.
+    for (const r of rulerPair) cfg.rulers ? place(r, 0, 0) : hide(r);
+    if (cfg.rulers && mx >= 0) {
       place(markX, mx, 0);
       place(crossX, mx, 18);
       place(markY, 0, my);
       place(crossY, 18, my);
-      coord.textContent = `${fmt(mx)}, ${fmt(my)}`;
-      place(coord, Math.min(mx + 14, vw - coord.offsetWidth - 4), Math.min(my + 14, vh - 24));
-    } else [markX, markY, crossX, crossY, coord].forEach(hide);
+      const c = label(coord, `${fmt(mx)}, ${fmt(my)}`);
+      place(coord, Math.min(mx + 14, vw - c.w - 4), Math.min(my + 14, vh - 24));
+    } else cursorNodes.forEach(hide);
 
-    const p = pinned.peek();
-    const h = tool.peek() === 'color' ? null : hovered;
-    const measuring = !!(p && h && h !== p && (altHeld.peek() || tool.peek() === 'distance'));
-
-    if (h) {
-      const r = h.getBoundingClientRect();
-      const cs = getComputedStyle(h);
-      const m = sidesOf(cs, 'margin');
+    if (hr && hm && hp) {
       if (measuring) hide(margin);
-      else place(margin, r.left - m[3], r.top - m[0], r.width + m[1] + m[3], r.height + m[0] + m[2]);
-      place(hover, r.left, r.top, r.width, r.height);
-      hover.style.borderWidth = sidesOf(cs, 'padding').map(v => `${v}px`).join(' ');
-      hover.style.borderRadius = cs.borderRadius;
-      size.textContent = `${fmt(r.width)} × ${fmt(r.height)}`;
-      size.style.display = 'block';
-      const at = pillPosition(r, size.offsetWidth, size.offsetHeight, vw, vh);
+      else place(margin, hr.left - hm[3], hr.top - hm[0], hr.width + hm[1] + hm[3], hr.height + hm[0] + hm[2]);
+      place(hover, hr.left, hr.top, hr.width, hr.height);
+      set(hover, 'border-width', hp.map(v => `${v}px`).join(' '));
+      set(hover, 'border-radius', hRadius!);
+      const sz = label(size, `${fmt(hr.width)} × ${fmt(hr.height)}`);
+      const at = pillPosition(hr, sz.w, sz.h, vw, vh);
       place(size, at.x, at.y);
-    } else [margin, hover, size].forEach(hide);
+    } else hoverNodes.forEach(hide);
 
-    if (p) {
-      const r = p.getBoundingClientRect();
-      place(pin, r.left, r.top, r.width, r.height);
-      pin.style.borderRadius = getComputedStyle(p).borderRadius;
+    if (pr) {
+      place(pin, pr.left, pr.top, pr.width, pr.height);
+      set(pin, 'border-radius', pRadius!);
     } else hide(pin);
 
     lines.forEach(hide);
     labels.forEach(hide);
-    if (measuring) {
-      distances(p!.getBoundingClientRect(), h!.getBoundingClientRect()).forEach((s, i) => {
-        const vertical = s.x1 === s.x2;
-        place(lines[i], Math.min(s.x1, s.x2) - (vertical ? 0.75 : 0), Math.min(s.y1, s.y2) - (vertical ? 0 : 0.75),
-          vertical ? 1.5 : s.length, vertical ? s.length : 1.5);
-        labels[i].textContent = fmt(s.length);
-        place(labels[i], vertical ? s.x1 + 6 : (s.x1 + s.x2) / 2 - 12, vertical ? (s.y1 + s.y2) / 2 - 9 : s.y1 + 6);
-      });
-    }
+    segs?.forEach((s, i) => {
+      const vertical = s.x1 === s.x2;
+      place(lines[i], Math.min(s.x1, s.x2) - (vertical ? 0.75 : 0), Math.min(s.y1, s.y2) - (vertical ? 0 : 0.75),
+        vertical ? 1.5 : s.length, vertical ? s.length : 1.5);
+      label(labels[i], fmt(s.length));
+      place(labels[i], vertical ? s.x1 + 6 : (s.x1 + s.x2) / 2 - 12, vertical ? (s.y1 + s.y2) / 2 - 9 : s.y1 + 6);
+    });
   }
 
   const frame = () => {
