@@ -58,7 +58,7 @@ test('the panel moves left when the pinned element is under it, and collapses', 
   await page.evaluate(() => {
     const d = document.createElement('div');
     d.id = 'right';
-    d.style.cssText = 'position:absolute;right:20px;top:60px;width:150px;height:80px;background:#fff';
+    d.style.cssText = 'position:absolute;right:20px;top:300px;width:150px;height:80px;background:#fff';
     document.body.append(d);
   });
   await activate();
