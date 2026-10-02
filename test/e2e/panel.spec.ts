@@ -68,3 +68,16 @@ test('the panel moves left when the pinned element is under it, and collapses', 
   await panel.getByRole('button', { name: 'Collapse' }).click();
   await expect(panel.locator('.pb')).toBeHidden();
 });
+
+test('contrast over a background image is marked approximate', async ({ page, activate }) => {
+  await page.evaluate(() => {
+    const d = document.createElement('div');
+    d.id = 'grad';
+    d.textContent = 'Over a gradient';
+    d.style.cssText = 'position:absolute;left:20px;top:400px;width:200px;height:80px;background-image:linear-gradient(#000,#fff)';
+    document.body.append(d);
+  });
+  await activate();
+  await pin(page, '#grad');
+  await expect(page.locator('lidar-root .panel [data-row="Contrast"] .val')).toHaveText(/^≈/);
+});

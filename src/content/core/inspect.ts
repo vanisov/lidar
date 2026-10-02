@@ -26,6 +26,16 @@ export function effectiveBackground(el: Element): RGBA {
   return layers.reverse().reduce<RGBA>((under, over) => blend(over, under), [255, 255, 255, 1]);
 }
 
+/** True if a background image or gradient sits above the first opaque background color, so the contrast is only an estimate. */
+export function hasImageBackdrop(el: Element): boolean {
+  for (let e: Element | null = el; e; e = e.parentElement) {
+    const cs = getComputedStyle(e);
+    if (cs.backgroundImage !== 'none') return true;
+    if (toRgba(cs.backgroundColor)[3] >= 1) return false;
+  }
+  return false;
+}
+
 export function ancestors(el: Element): Element[] {
   const chain: Element[] = [];
   for (let e: Element | null = el; e && e !== document.documentElement; e = e.parentElement) chain.unshift(e);
