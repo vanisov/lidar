@@ -9,6 +9,9 @@ const NAV: Record<string, (e: Element) => Element | null> = {
   ArrowRight: e => e.nextElementSibling,
 };
 
+const editable = (t: EventTarget | null) =>
+  t instanceof HTMLElement && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName));
+
 /** Lidar's keyboard map. Handled keys are swallowed so the page never sees them. */
 export function bindKeys(host: Host, close: () => void): () => void {
   const swallow = (e: KeyboardEvent) => {
@@ -26,6 +29,7 @@ export function bindKeys(host: Host, close: () => void): () => void {
       return;
     }
     if (document.activeElement === host.el) return; // typing in Lidar's own inputs
+    if (editable(e.target)) return; // the page field keeps its keystrokes
     if (e.metaKey || e.ctrlKey || e.altKey) return;
     const go = NAV[e.key];
     const p = pinned.value;

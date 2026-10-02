@@ -4,7 +4,7 @@ import css from './ui/styles.css';
 import { createHost } from './core/host';
 import { bindKeys } from './core/keys';
 import { loadSettings, settings } from './core/settings';
-import { altHeld, pinNext, pinned, tool } from './core/store';
+import { altHeld, pinNext, pinned, toastMsg, tool } from './core/store';
 import { App } from './ui/App';
 
 export function mount(onClosed: () => void): { close(): void } {
@@ -44,6 +44,7 @@ export function mount(onClosed: () => void): { close(): void } {
     pinned.value = null;
     tool.value = 'measure';
     pinNext.value = false;
+    toastMsg.value = null;
     altHeld.value = false;
     host.destroy();
     onClosed();
