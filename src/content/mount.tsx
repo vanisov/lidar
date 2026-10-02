@@ -3,6 +3,7 @@ import { render } from 'preact';
 import css from './ui/styles.css';
 import { createHost } from './core/host';
 import { bindKeys } from './core/keys';
+import { startOverlay } from './core/overlay';
 import { loadSettings, settings } from './core/settings';
 import { altHeld, pinNext, pinned, toastMsg, tool } from './core/store';
 import { App } from './ui/App';
@@ -26,6 +27,7 @@ export function mount(onClosed: () => void): { close(): void } {
     wrap.dataset.theme = settings.value.theme;
   }));
   cleanups.push(bindKeys(host, close));
+  cleanups.push(startOverlay(host, layer));
   const onMessage = (msg: unknown) => {
     if ((msg as { type?: string } | null)?.type === 'pin-next') pinNext.value = true;
   };
