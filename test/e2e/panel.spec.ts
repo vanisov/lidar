@@ -81,3 +81,43 @@ test('contrast over a background image is marked approximate', async ({ page, ac
   await pin(page, '#grad');
   await expect(page.locator('lidar-root .panel [data-row="Contrast"] .val')).toHaveText(/^≈/);
 });
+
+test('arrow keys still walk the tree after clicking a dock button', async ({ page, activate }) => {
+  await activate();
+  await page.locator('lidar-root [data-tool="distance"]').click();
+  await pin(page, '#c2');
+  await page.keyboard.press('ArrowUp');
+  await expect(page.locator('lidar-root .panel .tag')).toHaveText('div.row');
+});
+
+test('arrow keys skip elements that are not rendered', async ({ page, activate }) => {
+  await page.evaluate(() => {
+    const c2 = document.getElementById('c2')!;
+    const hidden = document.createElement('div');
+    hidden.style.cssText = 'display:none';
+    c2.before(hidden, document.createElement('template'), document.createElement('script'));
+    c2.after(document.createElement('style'));
+  });
+  await activate();
+  await pin(page, '#c2');
+  const tag = page.locator('lidar-root .panel .tag');
+  await page.keyboard.press('ArrowLeft');
+  await expect(tag).toHaveText('div#c1.card');
+  await page.keyboard.press('ArrowRight');
+  await expect(tag).toHaveText('div#c2.card');
+  await page.keyboard.press('ArrowRight');
+  await expect(tag).toHaveText('div#c3.card');
+  await page.keyboard.press('ArrowRight'); // only a <style> after it: stay put
+  await expect(tag).toHaveText('div#c3.card');
+});
+
+test('the Size row copies the value as displayed', async ({ page, activate }) => {
+  await activate();
+  const panel = page.locator('lidar-root .panel');
+  await panel.getByRole('button', { name: 'Settings' }).click();
+  await panel.getByRole('radio', { name: 'rem' }).click();
+  await panel.getByRole('button', { name: 'Settings' }).click();
+  await pin(page, '#c1');
+  await panel.locator('[data-row="Size"] .val').click();
+  expect(await clipboardText(page)).toBe('12.5rem × 6.25rem');
+});

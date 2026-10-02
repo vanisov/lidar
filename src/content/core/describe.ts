@@ -33,7 +33,7 @@ const STYLE_PROPS: [string, RegExp | null, When?][] = [
   ['z-index', /^auto$/],
   ['width', null], ['height', null],
   ['min-width', /^(auto|0px)$/], ['max-width', /^none$/], ['min-height', /^(auto|0px)$/], ['max-height', /^none$/],
-  ['box-sizing', /^content-box$/], ['padding', /^0px$/], ['margin', /^0px$/], ['border', /^0px/], ['border-radius', /^0px$/],
+  ['box-sizing', /^content-box$/], ['padding', /^0px$/], ['margin', /^0px$/], ['border-top', /^0px/], ['border-right', /^0px/], ['border-bottom', /^0px/], ['border-left', /^0px/], ['border-radius', /^0px$/],
   ['outline', /none/],
   ['background-color', /^rgba\(0, 0, 0, 0\)$/], ['background-image', /^none$/], ['color', null], ['opacity', /^1$/],
   ['font-family', null], ['font-size', null], ['font-weight', null], ['font-style', /^normal$/], ['line-height', null],

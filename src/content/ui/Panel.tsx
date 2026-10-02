@@ -65,6 +65,7 @@ export function Panel({ host }: { host: Host }) {
       png = await captureElement(el, host.el);
     } catch (err) {
       const why = (err as Error).message;
+      if (why.includes('MAX_CAPTURE_VISIBLE_TAB_CALLS_PER_SECOND')) return toast('Try again in a moment');
       if (!brief) return toast(`Screenshot failed: ${why}`);
       try {
         await copyText(brief);
@@ -145,7 +146,7 @@ export function Panel({ host }: { host: Host }) {
             <div class="c">{fmt(info.width - pl - pr - bl - br)} × {fmt(info.height - pt - pb - bt - bb)}</div>
           </div>
         </div>
-        <Row name="Size" raw={`${Math.round(info.width)} × ${Math.round(info.height)}`}>{fmt(info.width)} × {fmt(info.height)}</Row>
+        <Row name="Size" raw={`${fmt(info.width)} × ${fmt(info.height)}`}>{fmt(info.width)} × {fmt(info.height)}</Row>
         <Row name="Font" raw={info.font}>{info.font}</Row>
         <Row name="Line height" raw={info.lineHeight}>{info.lineHeight}</Row>
         <Row name="Color" raw={toHex(info.color)}><i class="sw" style={{ background: toHex(info.color) }} />{toHex(info.color)}</Row>

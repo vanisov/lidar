@@ -34,5 +34,5 @@ export async function loadSettings(): Promise<void> {
 
 export function saveSettings(patch: Partial<Settings>): void {
   settings.value = { ...settings.value, ...patch };
-  void area()?.set({ settings: settings.value });
+  area()?.set({ settings: settings.value }).catch(() => {}); // e.g. the sync quota is full
 }

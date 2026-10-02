@@ -43,3 +43,15 @@ test('Lidar reappears after a screenshot', async ({ page, activate }) => {
   await page.locator('lidar-root .panel').getByRole('button', { name: 'Screenshot' }).click();
   await expect(page.locator('lidar-root')).toBeVisible(); // restored after capture
 });
+
+test("Chrome's capture rate limit shows a plain retry message", async ({ page, sw, activate }) => {
+  await activate();
+  await pinCta(page);
+  // Chrome's own error when more than two captures land in one second (seen by calling it four times at once).
+  await sw.evaluate(() => {
+    chrome.tabs.captureVisibleTab = (() =>
+      Promise.reject(new Error('This request exceeds the MAX_CAPTURE_VISIBLE_TAB_CALLS_PER_SECOND quota.'))) as typeof chrome.tabs.captureVisibleTab;
+  });
+  await page.locator('lidar-root .panel').getByRole('button', { name: 'Screenshot' }).click();
+  await expect(page.locator('lidar-root .toast')).toHaveText('Try again in a moment');
+});

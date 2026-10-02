@@ -26,6 +26,10 @@ describe('interestingStyles', () => {
   it('hides flex and grid properties on other layouts', () => {
     expect(interestingStyles(from({ display: 'block', gap: '8px' }))).toEqual([['display', 'block']]);
   });
+  it('keeps a border on one side only', () => {
+    expect(interestingStyles(from({ 'border-top': '0px none rgb(0, 0, 0)', 'border-bottom': '1px solid rgb(204, 204, 204)' })))
+      .toEqual([['border-bottom', '1px solid rgb(204, 204, 204)']]);
+  });
 });
 
 const info: ElementInfo = {
