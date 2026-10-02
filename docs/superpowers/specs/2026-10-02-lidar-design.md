@@ -18,8 +18,9 @@ Success means:
 - Lidar costs nothing on a page until the user activates it, and hover tracking stays smooth (60 fps) on heavy pages.
 - No analytics, no network requests, and no host permissions.
 
-Before launch, the owner checks USPTO class 9 for a "LIDAR" trademark conflict. An unrelated 5-user scraper
-extension named "Lidar" already exists on the store, which is acceptable.
+Naming: "lidar" is a generic technology term, like "sonar" or "radar". The trademarks found contain it only as part of
+a longer name (for example Velodyne's HIGH DEFINITION LIDAR), so the name carries low trademark risk. An unrelated
+5-user scraper extension named "Lidar" already exists on the store, which is acceptable.
 
 ## Releases
 
