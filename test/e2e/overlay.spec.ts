@@ -78,3 +78,50 @@ test('"Inspect with Lidar" pins the element under the cursor', async ({ page, sw
   await frame(page);
   near((await page.locator('lidar-root [data-ov="pinned"]').boundingBox())!.x, b.x);
 });
+
+test('an iframe is measured and pinned as one box', async ({ page, activate }) => {
+  await page.evaluate(() => {
+    const f = document.createElement('iframe');
+    f.id = 'frame';
+    f.srcdoc = '<p>hi</p>';
+    f.style.cssText = 'position:absolute;left:400px;top:300px;width:300px;height:150px;border:0';
+    document.body.append(f);
+  });
+  await activate();
+  const b = (await page.locator('#frame').boundingBox())!;
+  await page.mouse.move(b.x - 20, b.y - 20);
+  await page.mouse.move(b.x + 50, b.y + 50);
+  await page.mouse.move(b.x + 60, b.y + 60);
+  await frame(page);
+  const hl = (await page.locator('lidar-root [data-ov="hover"]').boundingBox())!;
+  near(hl.x, b.x); near(hl.y, b.y); near(hl.width, b.width); near(hl.height, b.height);
+  await page.mouse.click(b.x + 60, b.y + 60);
+  await frame(page);
+  await expect(page.locator('lidar-root .panel .tag')).toHaveText('iframe#frame');
+});
+
+test('elements inside an open shadow root can be hovered and pinned', async ({ page, activate }) => {
+  await page.evaluate(() => {
+    const host = document.createElement('x-widget');
+    host.style.cssText = 'position:absolute;left:400px;top:500px;display:block';
+    const root = host.attachShadow({ mode: 'open' });
+    const btn = document.createElement('button');
+    btn.className = 'inner';
+    btn.textContent = 'Shadow';
+    btn.style.cssText = 'padding:10px 30px';
+    root.append(btn);
+    document.body.append(host);
+  });
+  await activate();
+  const b = (await page.locator('x-widget button.inner').boundingBox())!;
+  await page.mouse.move(b.x + 5, b.y + 5);
+  await frame(page);
+  const hl = (await page.locator('lidar-root [data-ov="hover"]').boundingBox())!;
+  near(hl.x, b.x); near(hl.y, b.y); near(hl.width, b.width); near(hl.height, b.height);
+  await page.mouse.click(b.x + 5, b.y + 5);
+  await frame(page);
+  const tag = page.locator('lidar-root .panel .tag');
+  await expect(tag).toHaveText('button.inner');
+  await page.keyboard.press('ArrowUp');
+  await expect(tag).toHaveText('x-widget');
+});

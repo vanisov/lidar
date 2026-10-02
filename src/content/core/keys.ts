@@ -1,22 +1,36 @@
 import type { Host } from './host';
+import { parentOf } from './inspect';
 import { altHeld, pinned } from './store';
 import { TOOLS } from '../tools/registry';
 
-const NAV: Record<string, (e: Element) => Element | null> = {
-  ArrowUp: e => (e.parentElement && e.parentElement !== document.documentElement ? e.parentElement : null),
-  ArrowDown: e => e.firstElementChild,
-  ArrowLeft: e => e.previousElementSibling,
-  ArrowRight: e => e.nextElementSibling,
+const SKIP = /^(HEAD|SCRIPT|STYLE|TEMPLATE|META|LINK)$/;
+const shown = (e: Element) => !SKIP.test(e.tagName) && e.getClientRects().length > 0;
+/** Steps with `next` until it reaches a rendered element, or null. */
+const walk = (e: Element | null, next: (e: Element) => Element | null) => {
+  while (e && !shown(e)) e = next(e);
+  return e;
 };
 
-const editable = (t: EventTarget | null) =>
+const NAV: Record<string, (e: Element) => Element | null> = {
+  ArrowUp: e => {
+    const p = parentOf(e);
+    return p && p !== document.documentElement ? p : null;
+  },
+  ArrowDown: e => walk(e.firstElementChild, c => c.nextElementSibling),
+  ArrowLeft: e => walk(e.previousElementSibling, c => c.previousElementSibling),
+  ArrowRight: e => walk(e.nextElementSibling, c => c.nextElementSibling),
+};
+
+export const editable = (t: EventTarget | null) =>
   t instanceof HTMLElement && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName));
 
-/** Lidar's keyboard map. Handled keys are swallowed so the page never sees them. */
+/** Lidar's keyboard map. Handled keys are swallowed, keydown and keyup, so the page never sees them. */
 export function bindKeys(host: Host, close: () => void): () => void {
+  const handled = new Set<string>();
   const swallow = (e: KeyboardEvent) => {
     e.preventDefault();
     e.stopImmediatePropagation();
+    handled.add(e.code);
   };
   const down = (e: KeyboardEvent) => {
     if (e.key === 'Alt') {
@@ -28,7 +42,7 @@ export function bindKeys(host: Host, close: () => void): () => void {
       close();
       return;
     }
-    if (document.activeElement === host.el) return; // typing in Lidar's own inputs
+    if (editable(host.root.activeElement)) return; // typing in Lidar's own inputs
     if (editable(e.target)) return; // the page field keeps its keystrokes
     if (e.metaKey || e.ctrlKey || e.altKey) return;
     const go = NAV[e.key];
@@ -47,6 +61,10 @@ export function bindKeys(host: Host, close: () => void): () => void {
   };
   const up = (e: KeyboardEvent) => {
     if (e.key === 'Alt') altHeld.value = false;
+    if (handled.delete(e.code)) {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+    }
   };
   const blur = () => {
     altHeld.value = false;

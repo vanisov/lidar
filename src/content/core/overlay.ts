@@ -1,6 +1,7 @@
 import { effect } from '@preact/signals';
 import { distances, formatLength, pillPosition, type Sides } from './geometry';
 import type { Host } from './host';
+import { editable } from './keys';
 import { settings } from './settings';
 import { altHeld, pinNext, pinned, tool } from './store';
 
@@ -12,8 +13,9 @@ const sidesOf = (cs: CSSStyleDeclaration, prop: 'margin' | 'padding'): Sides =>
 /**
  * Draws hover, pin, distance and ruler overlays into `layer` and owns page pointer input while Lidar is open.
  * The hot path never touches Preact: one rAF loop updates a fixed pool of nodes. Returns a stop function.
+ * Calls `close` if the page removes Lidar's host.
  */
-export function startOverlay(host: Host, layer: HTMLElement): () => void {
+export function startOverlay(host: Host, layer: HTMLElement, close: () => void): () => void {
   const node = (cls: string, name: string) => {
     const d = document.createElement('div');
     d.className = `ov ${cls}`;
@@ -34,6 +36,8 @@ export function startOverlay(host: Host, layer: HTMLElement): () => void {
   const lines = [0, 1, 2, 3].map(i => node('dl', `dist-line-${i}`));
   const labels = [0, 1, 2, 3].map(i => node('pill', `dist-${i}`));
   const coord = node('coord', 'coord');
+  // Events inside a frame never reach this window, so a hovered frame gets a shield that keeps the pointer here.
+  const shield = node('shield', 'shield');
 
   const rulerPair = [rulerH, rulerV];
   const cursorNodes = [markX, markY, crossX, crossY, coord];
@@ -80,10 +84,20 @@ export function startOverlay(host: Host, layer: HTMLElement): () => void {
     }
     return sz;
   };
-  const own = (e: Event) => e.composedPath().includes(host.el);
+  // The shield stands in for the page element under it, so input on it counts as page input.
+  const own = (e: Event) => {
+    const path = e.composedPath();
+    return path.includes(host.el) && !path.includes(shield);
+  };
   const pick = (x: number, y: number) => {
-    const t = document.elementFromPoint(x, y);
-    return !t || t === host.el || t === document.documentElement ? null : t;
+    let t: Element | null | undefined = document.elementsFromPoint(x, y).find(e => e !== host.el);
+    // Descend into open shadow roots (closed ones stay one box).
+    while (t?.shadowRoot) {
+      const i = t.shadowRoot.elementFromPoint(x, y);
+      if (!i || i === t) break;
+      t = i;
+    }
+    return !t || t === document.documentElement ? null : t;
   };
 
   const onMove = (e: PointerEvent) => {
@@ -102,13 +116,19 @@ export function startOverlay(host: Host, layer: HTMLElement): () => void {
     block(e);
     // The click can land before the next frame has refreshed `hovered`.
     const t = pick(e.clientX, e.clientY);
-    if (e.button === 0 && t && tool.value !== 'color') pinned.value = t;
+    if (e.button === 0 && t && tool.value !== 'color') {
+      pinned.value = t;
+      // Focus left in a page field or on a Lidar button would keep tool and arrow keys from Lidar.
+      if (editable(document.activeElement)) (document.activeElement as HTMLElement).blur();
+      (host.root.activeElement as HTMLElement | null)?.blur();
+    }
   };
   const markDirty = () => {
     dirty = true;
   };
 
   addEventListener('pointermove', onMove, true);
+  addEventListener('pointerover', onMove, true); // entering a frame sends only this to the parent
   BLOCKED.forEach(t => addEventListener(t, block, true));
   addEventListener('click', onClick, true);
   addEventListener('scroll', markDirty, true);
@@ -172,6 +192,9 @@ export function startOverlay(host: Host, layer: HTMLElement): () => void {
       set(pin, 'border-radius', pRadius!);
     } else hide(pin);
 
+    if (hr && h && /^(IFRAME|EMBED|OBJECT)$/.test(h.tagName)) place(shield, hr.left, hr.top, hr.width, hr.height);
+    else hide(shield);
+
     lines.forEach(hide);
     labels.forEach(hide);
     segs?.forEach((s, i) => {
@@ -184,6 +207,7 @@ export function startOverlay(host: Host, layer: HTMLElement): () => void {
   }
 
   const frame = () => {
+    if (!host.el.isConnected) return close(); // the page removed Lidar
     raf = requestAnimationFrame(frame);
     const p = pinned.peek();
     if (p && !p.isConnected) pinned.value = null; // the page removed it (SPA navigation, re-render)
@@ -200,6 +224,7 @@ export function startOverlay(host: Host, layer: HTMLElement): () => void {
     cancelAnimationFrame(raf);
     unwatch();
     removeEventListener('pointermove', onMove, true);
+    removeEventListener('pointerover', onMove, true);
     BLOCKED.forEach(t => removeEventListener(t, block, true));
     removeEventListener('click', onClick, true);
     removeEventListener('scroll', markDirty, true);

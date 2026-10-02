@@ -11,3 +11,6 @@
 - Graphite and Light themes, px or rem units.
 - Contrast is marked approximate (≈) when a background image sits behind the text.
 - Lidar's shortcut keys never steal typing from page fields.
+- iframes are measured and pinned as one box.
+- Elements inside web components (open shadow DOM) can be inspected.
+- Lidar stays on top of, and usable over, page dialogs and popovers.

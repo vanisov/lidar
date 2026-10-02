@@ -18,7 +18,7 @@ export function toRgba(css: string): RGBA {
 /** What's actually behind the element's text: its background layers composited down to an opaque one, or white. */
 export function effectiveBackground(el: Element): RGBA {
   const layers: RGBA[] = [];
-  for (let e: Element | null = el; e; e = e.parentElement) {
+  for (let e: Element | null = el; e; e = parentOf(e)) {
     const c = toRgba(getComputedStyle(e).backgroundColor);
     if (c[3] > 0) layers.push(c);
     if (c[3] >= 1) break;
@@ -28,7 +28,7 @@ export function effectiveBackground(el: Element): RGBA {
 
 /** True if a background image or gradient sits above the first opaque background color, so the contrast is only an estimate. */
 export function hasImageBackdrop(el: Element): boolean {
-  for (let e: Element | null = el; e; e = e.parentElement) {
+  for (let e: Element | null = el; e; e = parentOf(e)) {
     const cs = getComputedStyle(e);
     if (cs.backgroundImage !== 'none') return true;
     if (toRgba(cs.backgroundColor)[3] >= 1) return false;
@@ -36,17 +36,22 @@ export function hasImageBackdrop(el: Element): boolean {
   return false;
 }
 
+/** The parent element, crossing out of a shadow root to its host. */
+export const parentOf = (e: Element): Element | null =>
+  e.parentElement ?? (e.parentNode instanceof ShadowRoot ? e.parentNode.host : null);
+
 export function ancestors(el: Element): Element[] {
   const chain: Element[] = [];
-  for (let e: Element | null = el; e && e !== document.documentElement; e = e.parentElement) chain.unshift(e);
+  for (let e: Element | null = el; e && e !== document.documentElement; e = parentOf(e)) chain.unshift(e);
   return chain;
 }
 
-/** A selector that matches exactly this element, anchored at the nearest unique id. */
+/** A selector that matches exactly this element within its own root (document or shadow root), anchored at the nearest unique id. */
 export function cssPath(el: Element): string {
+  const root = el.getRootNode() as Document | ShadowRoot;
   const parts: string[] = [];
   for (let e: Element | null = el; e && e !== document.documentElement; e = e.parentElement) {
-    if (e.id && document.querySelectorAll(`#${CSS.escape(e.id)}`).length === 1) {
+    if (e.id && root.querySelectorAll(`#${CSS.escape(e.id)}`).length === 1) {
       parts.unshift(`#${CSS.escape(e.id)}`);
       break;
     }
@@ -75,7 +80,7 @@ export function describe(el: Element): ElementInfo {
     label: nameOf(el),
     path: ancestors(el).map(nameOf),
     selector: cssPath(el),
-    text: (el.textContent ?? '').replace(/\s+/g, ' ').trim().slice(0, 120),
+    text: (el.textContent ?? '').slice(0, 2000).replace(/\s+/g, ' ').trim().slice(0, 120),
     width: r.width,
     height: r.height,
     padding: sides('padding'),

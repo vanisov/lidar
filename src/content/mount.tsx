@@ -27,7 +27,7 @@ export function mount(onClosed: () => void): { close(): void } {
     wrap.dataset.theme = settings.value.theme;
   }));
   cleanups.push(bindKeys(host, close));
-  cleanups.push(startOverlay(host, layer));
+  cleanups.push(startOverlay(host, layer, close));
   const onMessage = (msg: unknown) => {
     if ((msg as { type?: string } | null)?.type === 'pin-next') pinNext.value = true;
   };

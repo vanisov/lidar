@@ -27,6 +27,7 @@ svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width:
 .pin { box-sizing: border-box; outline: 1.5px dashed var(--acc); }
 .pill { font: 600 11px/1 var(--mono); padding: 4px 6px; border-radius: 6px; background: var(--acc); color: #fff; white-space: nowrap; }
 .dl { background: var(--acc); }
+.ov.shield { pointer-events: auto; }
 .rul { background-color: var(--ruler); color: var(--tick); background-repeat: no-repeat; }
 .rul.h {
   width: 100vw; height: 18px;
