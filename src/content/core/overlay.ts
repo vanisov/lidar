@@ -90,10 +90,13 @@ export function startOverlay(host: Host, layer: HTMLElement, close: () => void):
     return path.includes(host.el) && !path.includes(shield);
   };
   const pick = (x: number, y: number) => {
+    // Pointing at Lidar's own dock or panel measures nothing; the shield stands in for the frame under it.
+    const mine = host.root.elementFromPoint(x, y);
+    if (mine && mine !== shield && host.root.contains(mine)) return null;
     let t: Element | null | undefined = document.elementsFromPoint(x, y).find(e => e !== host.el);
-    // Descend into open shadow roots (closed ones stay one box).
+    // Descend into open shadow roots (closed ones stay one box), skipping Lidar's host at every level.
     while (t?.shadowRoot) {
-      const i = t.shadowRoot.elementFromPoint(x, y);
+      const i: Element | undefined = t.shadowRoot.elementsFromPoint(x, y).find(e => e !== host.el);
       if (!i || i === t) break;
       t = i;
     }

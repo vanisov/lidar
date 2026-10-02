@@ -125,3 +125,46 @@ test('elements inside an open shadow root can be hovered and pinned', async ({ p
   await page.keyboard.press('ArrowUp');
   await expect(tag).toHaveText('x-widget');
 });
+
+test('an iframe inside a web component pins the frame, not Lidar', async ({ page, activate }) => {
+  await page.evaluate(() => {
+    const host = document.createElement('x-embed');
+    host.style.cssText = 'position:absolute;left:400px;top:300px;display:block';
+    const root = host.attachShadow({ mode: 'open' });
+    const f = document.createElement('iframe');
+    f.className = 'inner';
+    f.srcdoc = '<p>hi</p>';
+    f.style.cssText = 'width:300px;height:150px;border:0;display:block';
+    root.append(f);
+    document.body.append(host);
+  });
+  await activate();
+  const b = (await page.locator('x-embed iframe.inner').boundingBox())!;
+  await page.mouse.move(b.x - 20, b.y - 20);
+  await page.mouse.move(b.x + 50, b.y + 50);
+  await page.mouse.move(b.x + 60, b.y + 60);
+  await frame(page);
+  near((await page.locator('lidar-root [data-ov="hover"]').boundingBox())!.width, b.width);
+  await page.mouse.click(b.x + 60, b.y + 60);
+  await frame(page);
+  await expect(page.locator('lidar-root .panel .tag')).toHaveText('iframe.inner');
+});
+
+test("pointing at Lidar's own dock measures nothing underneath it", async ({ page, activate }) => {
+  await page.evaluate(() => {
+    const host = document.createElement('x-footer');
+    host.style.cssText = 'position:fixed;left:0;right:0;bottom:0;height:120px;display:block';
+    host.attachShadow({ mode: 'open' }).innerHTML = '<div style="height:120px"></div>';
+    document.body.append(host);
+  });
+  await activate();
+  const c1 = (await page.locator('#c1').boundingBox())!;
+  await page.mouse.click(c1.x + 5, c1.y + 5);
+  const dock = (await page.locator('lidar-root .dock').boundingBox())!;
+  await page.keyboard.down('Alt');
+  await page.mouse.move(dock.x + 4, dock.y + dock.height / 2);
+  await frame(page);
+  await expect(page.locator('lidar-root [data-ov="hover"]')).toBeHidden();
+  await expect(page.locator('lidar-root [data-ov="dist-0"]')).toBeHidden();
+  await page.keyboard.up('Alt');
+});
