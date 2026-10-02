@@ -1,5 +1,5 @@
 import { Fragment, type ComponentChildren } from 'preact';
-import { useLayoutEffect, useMemo, useState } from 'preact/hooks';
+import { useLayoutEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { copyImage, copyText } from '../core/clipboard';
 import { contrast, grade, toHex } from '../core/color';
 import { aiBrief, cssRule, label } from '../core/describe';
@@ -45,7 +45,17 @@ export function Panel({ host }: { host: Host }) {
   }, [el, pos]);
   const fmt = (n: number) => formatLength(n, s.units, s.remBase);
 
+  const busy = useRef(false);
   async function shot(forAI: boolean) {
+    if (!el || !info || busy.current) return;
+    busy.current = true;
+    try {
+      await shoot(forAI);
+    } finally {
+      busy.current = false;
+    }
+  }
+  async function shoot(forAI: boolean) {
     if (!el || !info) return;
     const brief = forAI ? aiBrief(info, location.href) : undefined;
     let png: Blob;
@@ -53,13 +63,23 @@ export function Panel({ host }: { host: Host }) {
       png = await captureElement(el, host.el);
     } catch (err) {
       const why = (err as Error).message;
-      if (brief) return copy(brief, `brief for AI (no screenshot: ${why})`);
-      return toast(`Screenshot failed: ${why}`);
+      if (!brief) return toast(`Screenshot failed: ${why}`);
+      try {
+        await copyText(brief);
+        return toast(`Copied brief for AI · no screenshot: ${why}`);
+      } catch {
+        return toast(`Screenshot failed: ${why}`);
+      }
     }
     const how = await copyImage(png, brief);
     if (how === 'copied') return toast(brief ? 'Copied brief + screenshot for AI' : 'Screenshot copied');
-    if (brief) await copyText(brief).catch(() => undefined);
-    toast(brief ? 'Brief copied · screenshot downloaded' : 'Screenshot downloaded');
+    if (!brief) return toast('Screenshot downloaded');
+    try {
+      await copyText(brief);
+      toast('Brief copied · screenshot downloaded');
+    } catch {
+      toast("Screenshot downloaded · couldn't copy the brief");
+    }
   }
 
   const drag = (e: PointerEvent) => {

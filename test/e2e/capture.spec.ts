@@ -16,8 +16,15 @@ const clipboardItem = (page: import('@playwright/test').Page) =>
 test('Screenshot copies a PNG of the element', async ({ page, activate }) => {
   await activate();
   await pinCta(page);
+  const cta = (await page.locator('.cta').boundingBox())!;
   await page.locator('lidar-root .panel').getByRole('button', { name: 'Screenshot' }).click();
   await expect.poll(async () => (await clipboardItem(page)).types).toContain('image/png');
+  const { width, dpr } = await page.evaluate(async () => {
+    const [item] = await navigator.clipboard.read();
+    const bmp = await createImageBitmap(await item.getType('image/png'));
+    return { width: bmp.width, dpr: devicePixelRatio };
+  });
+  expect(Math.abs(width - Math.round(cta.width * dpr))).toBeLessThanOrEqual(2);
 });
 
 test('Copy for AI copies a markdown brief and the screenshot together', async ({ page, activate }) => {

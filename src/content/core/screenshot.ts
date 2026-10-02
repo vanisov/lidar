@@ -16,9 +16,9 @@ export async function captureElement(el: Element, hostEl: HTMLElement): Promise<
   if (w <= 0 || h <= 0) throw new Error('element is off-screen');
 
   hostEl.style.setProperty('visibility', 'hidden', 'important');
-  await nextPaint();
   let res: { url?: string; error?: string };
   try {
+    await nextPaint();
     res = await chrome.runtime.sendMessage({ type: 'capture' });
   } finally {
     hostEl.style.removeProperty('visibility');
