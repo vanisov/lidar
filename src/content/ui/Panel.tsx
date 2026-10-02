@@ -10,6 +10,7 @@ import { captureElement } from '../core/screenshot';
 import { settings } from '../core/settings';
 import { pinned, toast } from '../core/store';
 import { icons } from './icons';
+import { SettingsView } from './SettingsView';
 
 const PANEL_WIDTH = 280;
 
@@ -38,6 +39,7 @@ export function Panel({ host }: { host: Host }) {
   const s = settings.value;
   const info = useMemo(() => (el ? describe(el) : null), [el]);
   const [collapsed, setCollapsed] = useState(false);
+  const [view, setView] = useState<'inspect' | 'settings'>('inspect');
   const [pos, setPos] = useState<{ x: number; y: number } | null>(null);
   const [side, setSide] = useState<'left' | 'right'>('right');
   useLayoutEffect(() => {
@@ -167,14 +169,17 @@ export function Panel({ host }: { host: Host }) {
   return (
     <div class={`panel ui${collapsed ? ' collapsed' : ''}`} style={style} role="dialog" aria-label="Lidar inspector">
       <div class="ph" onPointerDown={drag}>
-        <span class="tag">{info ? info.label : 'Inspector'}</span>
+        <span class="tag">{view === 'settings' ? 'Settings' : info ? info.label : 'Inspector'}</span>
         <div class="acts">
+          <button aria-label="Settings" aria-pressed={view === 'settings'} onClick={() => setView(view === 'settings' ? 'inspect' : 'settings')}>
+            {icons.gear()}
+          </button>
           <button aria-label={collapsed ? 'Expand' : 'Collapse'} aria-expanded={!collapsed} onClick={() => setCollapsed(!collapsed)}>
             {collapsed ? icons.chevronRight() : icons.chevronDown()}
           </button>
         </div>
       </div>
-      <div class="pb">{body}</div>
+      <div class="pb">{view === 'settings' ? <SettingsView /> : body}</div>
     </div>
   );
 }
