@@ -27,6 +27,7 @@ svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width:
 .hl::after { content: ""; position: absolute; inset: 0; background: #4aa3ff1a; }
 .pin { box-sizing: border-box; outline: 1.5px dashed var(--acc); }
 .pill { font: 600 11px/1 var(--mono); padding: 4px 6px; border-radius: 6px; background: var(--acc); color: #1a1a1a; white-space: nowrap; }
+.lnum { font: 600 11px/1 var(--mono); padding: 2px 4px; border-radius: 4px; background: #a970ff; color: #1a1a1a; white-space: nowrap; }
 .dl { background: var(--acc); }
 .ov.shield { pointer-events: auto; }
 .rul {

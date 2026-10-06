@@ -1,6 +1,6 @@
 import { effect } from '@preact/signals';
 import { createBoxCache } from './boxes';
-import { columnRects } from './layout';
+import { columnRects, readLayout, type LayoutDrawing } from './layout';
 import { createPainter, emptyScene } from './paint';
 import { distances, formatLength, pillPosition, type Sides } from './geometry';
 import type { Host } from './host';
@@ -11,6 +11,7 @@ import { createSnapshotter } from './snapshot';
 import { scanBoxes, scanPixels, type Stops } from './spread';
 import { altHeld, pinNext, pinned, shiftHeld, tool } from './store';
 
+const MARKS = 48;
 const DIRS = ['left', 'right', 'top', 'bottom'] as const;
 
 const BLOCKED = ['pointerdown', 'mousedown', 'pointerup', 'mouseup', 'dblclick', 'auxclick'] as const;
@@ -54,6 +55,7 @@ export function startOverlay(host: Host, layer: HTMLElement, close: () => void):
   const spreadLines = DIRS.map(d => node('dl', `spread-line-${d}`));
   const spreadLabels = DIRS.map(d => node('pill', `spread-${d}`));
   const spreadGap = node('pill', 'spread-gap');
+  const markNodes = Array.from({ length: MARKS }, (_, i) => node('lnum', `lnum-${i}`));
   // Events inside a frame never reach this window, so a hovered frame gets a shield that keeps the pointer here.
   const shield = node('shield', 'shield');
 
@@ -236,11 +238,24 @@ export function startOverlay(host: Host, layer: HTMLElement, close: () => void):
     const hp = hcs && sidesOf(hcs, 'padding');
     const hRadius = hcs?.borderRadius;
     const pr = p?.getBoundingClientRect();
-    const pRadius = p && getComputedStyle(p).borderRadius;
+    const pcs = p && getComputedStyle(p);
+    const pRadius = pcs?.borderRadius;
     const segs = measuring ? distances(pr!, hr!) : null;
     const scene = emptyScene();
     if (cfg.grid) scene.fills = columnRects(vw, vh, cfg.columns);
     if (cfg.xray) scene.outlines = boxCache.get();
+    // The pinned container always shows its layout; a hovered one only in Measure.
+    const drawn: LayoutDrawing[] = [];
+    const pd = p && pcs ? readLayout(p, pcs) : null;
+    if (pd) drawn.push(pd);
+    const hd = h && hcs && h !== p && t === 'measure' && !measuring ? readLayout(h, hcs) : null;
+    if (hd) drawn.push(hd);
+    for (const d of drawn) {
+      scene.hatches.push(...d.hatches);
+      scene.dashes.push(...d.dashes);
+      scene.boxes.push(...d.boxes);
+    }
+    const marks = drawn.flatMap(d => d.marks).slice(0, MARKS);
 
     // Write phase.
     if (rulersDirty) layoutRulers();
@@ -320,6 +335,14 @@ export function startOverlay(host: Host, layer: HTMLElement, close: () => void):
         vertical ? 1.5 : s.length, vertical ? s.length : 1.5);
       label(labels[i], fmt(s.length));
       place(labels[i], vertical ? s.x1 + 6 : (s.x1 + s.x2) / 2 - 12, vertical ? (s.y1 + s.y2) / 2 - 9 : s.y1 + 6);
+    });
+    markNodes.forEach((n, i) => {
+      const m = marks[i];
+      if (!m) return hide(n);
+      const sz = label(n, m.text);
+      // Column numbers sit above the grid, row numbers to its left, both clear of the rulers.
+      if (m.axis === 'col') place(n, m.x - sz.w / 2, Math.max(m.y - sz.h - 3, 20));
+      else place(n, Math.max(m.x - sz.w - 3, 20), m.y - sz.h / 2);
     });
     painter.paint(scene);
   }

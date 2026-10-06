@@ -35,6 +35,11 @@ function Row({ name, raw, children }: { name: string; raw: string; children: Com
   );
 }
 
+const LAYOUT_ROWS: Record<'grid' | 'flex', [name: string, prop: string][]> = {
+  grid: [['Columns', 'grid-template-columns'], ['Rows', 'grid-template-rows'], ['Gap', 'gap'], ['Flow', 'grid-auto-flow'], ['Justify', 'justify-content'], ['Align', 'align-items']],
+  flex: [['Direction', 'flex-direction'], ['Wrap', 'flex-wrap'], ['Gap', 'gap'], ['Justify', 'justify-content'], ['Align', 'align-items']],
+};
+
 export function Panel({ host }: { host: Host }) {
   const el = pinned.value;
   const s = settings.value;
@@ -128,7 +133,6 @@ export function Panel({ host }: { host: Host }) {
     const styleOf = (prop: string) => info.styles.find(([k]) => k === prop)?.[1];
     const radius = styleOf('border-radius');
     const display = styleOf('display') ?? '';
-    const gap = styleOf('gap');
     const chain = ancestors(el).slice(-4);
     body = (
       <>
@@ -155,7 +159,15 @@ export function Panel({ host }: { host: Host }) {
         <Row name="Color" raw={toHex(info.color)}><i class="sw" style={{ background: toHex(info.color) }} />{toHex(info.color)}</Row>
         <Row name="Background" raw={toHex(info.background)}><i class="sw" style={{ background: toHex(info.background) }} />{toHex(info.background)}</Row>
         {radius && <Row name="Radius" raw={radius}>{radius}</Row>}
-        {/flex|grid/.test(display) && <Row name="Layout" raw={display}>{display}{gap ? ` · gap ${gap}` : ''}</Row>}
+        {/flex|grid/.test(display) && (
+          <>
+            <Row name="Layout" raw={display}>{display}</Row>
+            {LAYOUT_ROWS[display.includes('grid') ? 'grid' : 'flex'].map(([name, prop]) => {
+              const v = getComputedStyle(el).getPropertyValue(prop);
+              return <Row key={name} name={name} raw={`${prop}: ${v};`}>{v}</Row>;
+            })}
+          </>
+        )}
         <Row name="Contrast" raw={ratio.toFixed(2)}><span class={g === 'Fail' ? 'bad' : 'ok'} title={approx ? "Approximate: there's a background image behind this text" : undefined}>{approx ? '≈ ' : ''}{ratio.toFixed(1)} {g}</span></Row>
         <details class="computed">
           <summary>Computed styles · {info.styles.length}</summary>

@@ -98,3 +98,38 @@ export function columnRects(vw: number, vh: number, c: Columns): Rect[] {
   const left = (vw - width) / 2;
   return Array.from({ length: c.count }, (_, i) => rect(left + i * (w + c.gutter), 0, w, vh));
 }
+
+export interface LayoutDrawing {
+  hatches: Rect[];
+  dashes: Seg[];
+  boxes: Rect[];
+  marks: Mark[];
+}
+
+/** The flex or grid drawing for `el`, or null if it isn't a container. Reads layout: call it in the read phase. */
+export function readLayout(el: Element, cs: CSSStyleDeclaration): LayoutDrawing | null {
+  const grid = /grid/.test(cs.display);
+  if (!grid && !/flex/.test(cs.display)) return null;
+  const r = el.getBoundingClientRect();
+  const px = (p: string) => parseFloat(cs.getPropertyValue(p)) || 0;
+  const l = px('border-left-width') + px('padding-left');
+  const t = px('border-top-width') + px('padding-top');
+  const box = rect(r.left + l, r.top + t,
+    r.width - l - px('border-right-width') - px('padding-right'),
+    r.height - t - px('border-bottom-width') - px('padding-bottom'));
+  if (grid) {
+    const c = parseTracks(cs.gridTemplateColumns);
+    const rw = parseTracks(cs.gridTemplateRows);
+    if (!c || !rw) return { hatches: [], dashes: [], boxes: [r], marks: [] }; // e.g. subgrid: outline only
+    const cols = trackSpans(box.left, box.width, c, px('column-gap'), cs.justifyContent);
+    const rows = trackSpans(box.top, box.height, rw, px('row-gap'), cs.alignContent);
+    return { ...gridDrawing(cols, rows), boxes: [r] };
+  }
+  const items: Rect[] = [];
+  for (const k of el.children) {
+    const kcs = getComputedStyle(k);
+    if (kcs.display === 'none' || kcs.display === 'contents' || /absolute|fixed/.test(kcs.position)) continue;
+    items.push(k.getBoundingClientRect());
+  }
+  return { ...flexDrawing(box, items, !/column/.test(cs.flexDirection)), boxes: [r, ...items], marks: [] };
+}
