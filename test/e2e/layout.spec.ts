@@ -99,6 +99,19 @@ test('search reports bad and empty results, and typing never triggers tool keys'
   await expect(n).toHaveText('No matches');
 });
 
+test('keys typed into the search never reach the page', async ({ page, activate }) => {
+  await page.evaluate(() => {
+    (window as any).__pageKeys = [];
+    document.addEventListener('keydown', e => (window as any).__pageKeys.push(e.key));
+  });
+  await activate();
+  await page.keyboard.press('/');
+  await page.keyboard.type('.card');
+  await expect(page.locator('lidar-root .search .n')).toHaveText('1 of 3');
+  const keys: string[] = await page.evaluate(() => (window as any).__pageKeys);
+  for (const k of ['.', 'c', 'a', 'r', 'd']) expect(keys).not.toContain(k);
+});
+
 test('Esc closes the search first, then Lidar, leaving the DOM exactly as it was', async ({ page, activate }) => {
   const before = await page.evaluate(() => document.documentElement.outerHTML);
   await activate();

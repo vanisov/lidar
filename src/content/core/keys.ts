@@ -79,7 +79,13 @@ export function bindKeys(host: Host, close: () => void): () => void {
   addEventListener('keydown', down, true);
   addEventListener('keyup', up, true);
   addEventListener('blur', blur);
+  // Keys typed into Lidar's own inputs must not bubble out of the shadow root: with a closed root the page sees
+  // `<lidar-root>` as the target, so its "ignore keys in inputs" checks fail and its shortcuts would fire.
+  const contain = (e: Event) => e.stopPropagation();
+  const KEY_EVENTS = ['keydown', 'keyup', 'keypress'] as const;
+  KEY_EVENTS.forEach(t => host.root.addEventListener(t, contain));
   return () => {
+    KEY_EVENTS.forEach(t => host.root.removeEventListener(t, contain));
     removeEventListener('keydown', down, true);
     removeEventListener('keyup', up, true);
     removeEventListener('blur', blur);

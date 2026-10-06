@@ -13,6 +13,7 @@ import { scanBoxes, scanPixels, type Stops } from './spread';
 import { altHeld, pinNext, pinned, search, shiftHeld, tool } from './store';
 
 const MARKS = 48;
+const MAX_MATCHES = 500;
 const DIRS = ['left', 'right', 'top', 'bottom'] as const;
 
 const BLOCKED = ['pointerdown', 'mousedown', 'pointerup', 'mouseup', 'dblclick', 'auxclick'] as const;
@@ -274,7 +275,9 @@ export function startOverlay(host: Host, layer: HTMLElement, close: () => void):
     }
     const sr = search.peek();
     if (sr.open) {
+      // ponytail: measures at most MAX_MATCHES per frame (plus the current one); a box cache like X-ray's would lift it.
       sr.matches.forEach((m, i) => {
+        if (i >= MAX_MATCHES && i !== sr.index) return;
         if (!m.isConnected) return;
         const r = m.getBoundingClientRect();
         if (r.bottom < 0 || r.top > vh || r.right < 0 || r.left > vw) return;
@@ -403,7 +406,7 @@ export function startOverlay(host: Host, layer: HTMLElement, close: () => void):
       dirty = true;
     }
     // While something is outlined, redraw every frame so overlays follow animations and layout changes.
-    if (dirty || hovered || pinned.peek() || cfg.xray || search.peek().open) {
+    if (dirty || hovered || pinned.peek() || cfg.xray || search.peek().matches.length > 0) {
       dirty = false;
       draw();
     }
