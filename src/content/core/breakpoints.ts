@@ -42,9 +42,11 @@ export function scanBreakpoints(): { points: Breakpoint[]; unreadable: number } 
     for (const r of rules) {
       if (r instanceof CSSImportRule) {
         if (r.styleSheet) walkSheet(r.styleSheet);
-      } else if (r instanceof CSSGroupingRule) {
+      } else {
         if (r instanceof CSSMediaRule) add(r.media.mediaText);
-        walkRules(r.cssRules);
+        // Style rules can nest @media too (Tailwind v4), and aren't CSSGroupingRules.
+        const nested = (r as CSSGroupingRule).cssRules;
+        if (nested) walkRules(nested);
       }
     }
   };

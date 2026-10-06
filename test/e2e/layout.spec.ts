@@ -22,6 +22,10 @@ test('X outlines every visible element', async ({ page, activate }) => {
   await page.keyboard.press('x');
   await expect.poll(async () => (await scene(page)).outlines).toBeGreaterThan(5);
   await expect(page.locator('lidar-root [data-tool="xray"]')).toHaveAttribute('aria-pressed', 'true');
+  await activate(); // close
+  await activate(); // reopen
+  await expect(page.locator('lidar-root [data-tool="xray"]')).toHaveAttribute('aria-pressed', 'true');
+  await expect.poll(async () => (await scene(page)).outlines).toBeGreaterThan(5);
 });
 
 test('hovering a grid container draws its gaps, track edges and line numbers', async ({ page, activate }) => {
@@ -59,14 +63,15 @@ test('pinning a grid lists its layout in the panel', async ({ page, activate }) 
 test('the top ruler marks the page breakpoints and names them on hover', async ({ page, activate }) => {
   await activate();
   const tick = page.locator('lidar-root [data-ov="bp"]');
-  await expect(tick).toHaveCount(1);
-  const b = (await tick.boundingBox())!;
+  await expect(tick).toHaveCount(2); // 768, and 1100 from a nested rule
+  const b = (await tick.first().boundingBox())!;
   expect(Math.abs(b.x + b.width / 2 - 768)).toBeLessThan(1.5);
-  await expect(page.locator('lidar-root [data-ov="bp-range"]')).toBeVisible(); // 768 → 1280 is the current range
+  await expect(page.locator('lidar-root [data-ov="bp-range"]')).toBeVisible(); // 1100 → 1280 is the current range
   await page.mouse.move(769, 9);
   await expect(page.locator('lidar-root [data-ov="bp-tip"]')).toHaveText('@media (min-width: 768px)');
   await page.keyboard.press('r'); // rulers off hides breakpoints too
-  await expect(tick).toBeHidden();
+  await expect(tick.first()).toBeHidden();
+  await expect(tick.last()).toBeHidden();
 });
 
 test('/ finds elements by selector; arrows step and Enter pins', async ({ page, activate }) => {
@@ -125,4 +130,21 @@ test('Esc closes the search first, then Lidar, leaving the DOM exactly as it was
   await page.keyboard.press('Escape');
   await expect(page.locator('lidar-root')).toHaveCount(0);
   expect(await page.evaluate(() => document.documentElement.outerHTML)).toBe(before);
+});
+
+test('typing a search scrolls the first match into view', async ({ page, activate }) => {
+  await activate();
+  await page.keyboard.press('/');
+  await page.keyboard.type('#wrap');
+  await expect(page.locator('#wrap')).toBeInViewport();
+});
+
+test('line numbers are not drawn for a pinned grid that is off-screen', async ({ page, activate }) => {
+  await page.locator('#grid').scrollIntoViewIfNeeded();
+  await activate();
+  const b = (await page.locator('#grid').boundingBox())!;
+  await page.mouse.click(b.x + 4, b.y + 4); // pin the container
+  await expect(page.locator('lidar-root .lnum:visible').first()).toBeVisible();
+  await page.evaluate(() => scrollTo(0, 0));
+  await expect(page.locator('lidar-root .lnum:visible')).toHaveCount(0);
 });

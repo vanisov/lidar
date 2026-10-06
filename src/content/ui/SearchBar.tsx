@@ -19,6 +19,7 @@ export function SearchBar({ host }: { host: Host }) {
       invalid = true;
     }
     search.value = { open: true, matches, index: 0, invalid };
+    matches[0]?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
   };
   const step = (by: number) => {
     const n = s.matches.length;

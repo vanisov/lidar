@@ -260,7 +260,8 @@ export function startOverlay(host: Host, layer: HTMLElement, close: () => void):
     const pRadius = pcs?.borderRadius;
     const segs = measuring ? distances(pr!, hr!) : null;
     const scene = emptyScene();
-    if (cfg.grid) scene.fills = columnRects(vw, vh, cfg.columns);
+    // clientWidth excludes a classic scrollbar, which innerWidth includes; the grid centres in what the page can use.
+    if (cfg.grid) scene.fills = columnRects(document.documentElement.clientWidth, vh, cfg.columns);
     if (cfg.xray) scene.outlines = boxCache.get();
     // The pinned container always shows its layout; a hovered one only in Measure.
     const drawn: LayoutDrawing[] = [];
@@ -284,7 +285,10 @@ export function startOverlay(host: Host, layer: HTMLElement, close: () => void):
         (i === sr.index ? scene.strong : scene.outlines).push(r);
       });
     }
-    const marks = drawn.flatMap(d => d.marks).slice(0, MARKS);
+    // A container fully outside the viewport has no visible lines; clamped numbers would float in the margin.
+    const marks = drawn
+      .filter(d => { const b = d.boxes[0]; return b.right > 0 && b.left < vw && b.bottom > 0 && b.top < vh; })
+      .flatMap(d => d.marks).slice(0, MARKS);
     // The current range runs from the widest breakpoint at or below the viewport to the viewport's edge.
     const bpLo = cfg.rulers ? bps.points.filter(b => b.px <= vw).at(-1)?.px : undefined;
     let tip = '';

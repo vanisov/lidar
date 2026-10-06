@@ -22,22 +22,27 @@ export function parseTracks(value: string): number[] | null {
 }
 
 /** Where each track sits along one axis, after justify-/align-content shifts the whole set. */
-export function trackSpans(origin: number, available: number, sizes: number[], gap: number, align: string): Span[] {
+export function trackSpans(origin: number, available: number, sizes: number[], gap: number, align: string, rtl = false): Span[] {
   const free = Math.max(0, available - sizes.reduce((a, b) => a + b, 0) - gap * (sizes.length - 1));
   // ponytail: space-between/around/evenly are drawn as start; distribute the free space if grids use them.
-  let at = origin + (/center/.test(align) ? free / 2 : /end|right/.test(align) ? free : 0);
+  const shift = /center/.test(align) ? free / 2 : /end|right/.test(align) ? free : 0;
+  // RTL: the first track sits at the right edge, so tracks run leftwards and the free space is taken from the right.
+  let at = rtl ? origin + available - shift : origin + shift;
   return sizes.map(s => {
-    const span = { start: at, end: at + s };
-    at += s + gap;
+    const span = rtl ? { start: at - s, end: at } : { start: at, end: at + s };
+    at += rtl ? -(s + gap) : s + gap;
     return span;
   });
 }
 
 /** Line i sits at the outer edge for the first and last line, and mid-gap for the ones between tracks. */
-const lineAt = (s: Span[], i: number) =>
-  i === 0 ? s[0].start : i === s.length ? s[s.length - 1].end : (s[i - 1].end + s[i].start) / 2;
+const lineAt = (s: Span[], i: number, rtl = false) =>
+  rtl
+    ? i === 0 ? s[0].end : i === s.length ? s[s.length - 1].start : (s[i - 1].start + s[i].end) / 2
+    : i === 0 ? s[0].start : i === s.length ? s[s.length - 1].end : (s[i - 1].end + s[i].start) / 2;
 
-export function gridDrawing(cols: Span[], rows: Span[]): { hatches: Rect[]; dashes: Seg[]; marks: Mark[] } {
+export function gridDrawing(columns: Span[], rows: Span[], rtl = false): { hatches: Rect[]; dashes: Seg[]; marks: Mark[] } {
+  const cols = rtl ? [...columns].reverse() : columns; // left to right, for edges and gaps
   const top = rows[0].start;
   const bottom = rows[rows.length - 1].end;
   const left = cols[0].start;
@@ -53,7 +58,7 @@ export function gridDrawing(cols: Span[], rows: Span[]): { hatches: Rect[]; dash
     dashes.push({ x1: left, y1: r.start, x2: right, y2: r.start }, { x1: left, y1: r.end, x2: right, y2: r.end });
     if (i && r.start > rows[i - 1].end) hatches.push(rect(left, rows[i - 1].end, right - left, r.start - rows[i - 1].end));
   });
-  for (let i = 0; i <= cols.length; i++) marks.push({ text: String(i + 1), x: lineAt(cols, i), y: top, axis: 'col' });
+  for (let i = 0; i <= cols.length; i++) marks.push({ text: String(i + 1), x: lineAt(columns, i, rtl), y: top, axis: 'col' });
   for (let i = 0; i <= rows.length; i++) marks.push({ text: String(i + 1), x: left, y: lineAt(rows, i), axis: 'row' });
   return { hatches, dashes, marks };
 }
@@ -121,9 +126,10 @@ export function readLayout(el: Element, cs: CSSStyleDeclaration): LayoutDrawing 
     const c = parseTracks(cs.gridTemplateColumns);
     const rw = parseTracks(cs.gridTemplateRows);
     if (!c || !rw) return { hatches: [], dashes: [], boxes: [r], marks: [] }; // e.g. subgrid: outline only
-    const cols = trackSpans(box.left, box.width, c, px('column-gap'), cs.justifyContent);
+    const rtl = cs.direction === 'rtl';
+    const cols = trackSpans(box.left, box.width, c, px('column-gap'), cs.justifyContent, rtl);
     const rows = trackSpans(box.top, box.height, rw, px('row-gap'), cs.alignContent);
-    return { ...gridDrawing(cols, rows), boxes: [r] };
+    return { ...gridDrawing(cols, rows, rtl), boxes: [r] };
   }
   const items: Rect[] = [];
   for (const k of el.children) {

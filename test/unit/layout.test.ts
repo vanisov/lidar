@@ -31,6 +31,21 @@ describe('trackSpans', () => {
   });
 });
 
+describe('RTL', () => {
+  const cols = trackSpans(0, 420, [100, 200, 100], 10, 'normal', true);
+  it('lays the first track at the right edge, running left', () => {
+    expect(cols).toEqual([{ start: 320, end: 420 }, { start: 110, end: 310 }, { start: 0, end: 100 }]);
+  });
+  it('takes free space from the right', () => {
+    expect(trackSpans(0, 440, [100, 100], 0, 'normal', true)[0].end).toBe(440);
+    expect(trackSpans(0, 440, [100, 100], 0, 'end', true)[0].end).toBe(200);
+  });
+  it('numbers column lines from the right', () => {
+    const m = gridDrawing(cols, trackSpans(0, 50, [50], 0, 'normal'), true).marks.filter(k => k.axis === 'col');
+    expect(m.map(k => [k.text, k.x])).toEqual([['1', 420], ['2', 315], ['3', 105], ['4', 0]]);
+  });
+});
+
 describe('gridDrawing', () => {
   const cols = trackSpans(0, 320, [100, 100, 100], 10, 'normal');
   const rows = [{ start: 0, end: 50 }];
