@@ -8,6 +8,10 @@ versions follow [Semantic Versioning](https://semver.org).
 ### Added
 - Column grid (`G`) and X-ray (`X`), which outlines every visible element.
 
+### Fixed
+- Changing a setting right after opening Lidar (pressing R or S straight away) no longer resets your other saved
+  settings, like the theme.
+
 ## [1.0.0] - 2026-10-02
 
 ### Added

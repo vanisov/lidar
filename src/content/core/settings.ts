@@ -62,14 +62,24 @@ export function sanitize(raw: unknown): Settings {
 
 const area = () => globalThis.chrome?.storage?.sync;
 
+// Changes made before the stored settings arrive (pressing R or S right after opening) are held here and applied on
+// top of them. Writing earlier would replace the user's stored settings with the defaults.
+let loaded = false;
+let early: Partial<Settings> = {};
+
+const persist = () => area()?.set({ settings: settings.value }).catch(() => {}); // e.g. the sync quota is full
+
 export async function loadSettings(): Promise<void> {
   const a = area();
-  if (!a) return;
-  const got = await a.get('settings');
-  settings.value = sanitize(got.settings);
+  const got = a ? await a.get('settings') : {};
+  loaded = true;
+  settings.value = { ...sanitize(got.settings), ...early };
+  if (Object.keys(early).length) void persist();
+  early = {};
 }
 
 export function saveSettings(patch: Partial<Settings>): void {
   settings.value = { ...settings.value, ...patch };
-  area()?.set({ settings: settings.value }).catch(() => {}); // e.g. the sync quota is full
+  if (loaded) void persist();
+  else early = { ...early, ...patch };
 }
