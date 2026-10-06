@@ -1,6 +1,14 @@
 import { signal } from '@preact/signals';
 import type { Units } from './geometry';
 
+export interface Columns {
+  count: number;
+  gutter: number;
+  margin: number;
+  /** 0 means the full viewport width. */
+  maxWidth: number;
+}
+
 export interface Settings {
   theme: 'graphite' | 'light';
   units: Units;
@@ -10,17 +18,27 @@ export interface Settings {
   spreadMode: 'visual' | 'layout';
   /** Visual mode: how different a pixel's color must be (per channel, 0–255) to count as an edge. */
   spreadTolerance: number;
+  /** The column grid overlay is on. */
+  grid: boolean;
+  /** X-ray: outline every element. */
+  xray: boolean;
+  columns: Columns;
 }
 
 export const DEFAULTS: Settings = {
   theme: 'graphite', units: 'px', remBase: 16, rulers: true, spreadMode: 'visual', spreadTolerance: 6,
+  grid: false, xray: false, columns: { count: 12, gutter: 24, margin: 24, maxWidth: 0 },
 };
 
 export const settings = signal<Settings>(DEFAULTS);
 
+const int = (v: unknown, min: number, max: number, fallback: number) =>
+  typeof v === 'number' && Number.isInteger(v) && v >= min && v <= max ? v : fallback;
+
 /** Storage is user-writable (sync across devices, older versions), so never trust its shape. */
 export function sanitize(raw: unknown): Settings {
   const r = (raw && typeof raw === 'object' ? raw : {}) as Record<string, unknown>;
+  const c = (r.columns && typeof r.columns === 'object' ? r.columns : {}) as Record<string, unknown>;
   return {
     theme: r.theme === 'light' ? 'light' : 'graphite',
     units: r.units === 'rem' ? 'rem' : 'px',
@@ -31,6 +49,14 @@ export function sanitize(raw: unknown): Settings {
       typeof r.spreadTolerance === 'number' && r.spreadTolerance >= 1 && r.spreadTolerance <= 64
         ? r.spreadTolerance
         : DEFAULTS.spreadTolerance,
+    grid: r.grid === true,
+    xray: r.xray === true,
+    columns: {
+      count: int(c.count, 1, 24, DEFAULTS.columns.count),
+      gutter: int(c.gutter, 0, 200, DEFAULTS.columns.gutter),
+      margin: int(c.margin, 0, 400, DEFAULTS.columns.margin),
+      maxWidth: int(c.maxWidth, 0, 4000, DEFAULTS.columns.maxWidth),
+    },
   };
 }
 
