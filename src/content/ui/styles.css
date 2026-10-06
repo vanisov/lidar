@@ -3,6 +3,7 @@
   --text: #ececec; --muted: #a3a3a3; --acc: #ff5a36; --acc-text: #ff8a6e;
   --core-bg: #4aa3ff30; --core-text: #a8d4ff; --ok: #6ad47a; --bad: #ff7a6a;
   --shadow: 0 14px 44px #0006; --ruler: #1f1f1fee; --tick: #ffffff66;
+  --bp: #ffb347;
   --mono: "SF Mono", ui-monospace, Menlo, Consolas, monospace;
   font: 12px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
   color: var(--text);
@@ -13,6 +14,7 @@
   --text: #1d1d1f; --muted: #5f5f66; --acc-text: #c4361a;
   --core-bg: #4aa3ff26; --core-text: #1f5fa8; --ok: #1f7a35; --bad: #c4321f;
   --shadow: 0 14px 44px #00000026; --ruler: #ffffffee; --tick: #00000059;
+  --bp: #a35f00;
 }
 .ui { pointer-events: auto; }
 button { all: unset; box-sizing: border-box; cursor: pointer; }
@@ -48,6 +50,8 @@ svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width:
   background-size: 4px var(--minor), 8px var(--mid), 18px var(--major);
   background-repeat: repeat-y; background-position: 100% 0, 100% 0, 100% 0;
 }
+.bp { width: 2px; height: 18px; background: var(--bp); }
+.bprange { background: color-mix(in srgb, var(--bp) 22%, transparent); }
 .rlab { font: 11px/1 var(--mono); color: var(--muted); white-space: nowrap; }
 .rpos { font: 600 11px/1 var(--mono); padding: 3px 4px; border-radius: 4px; background: var(--acc); color: #1a1a1a; white-space: nowrap; z-index: 2; }
 .rlab.y, .rpos.y { writing-mode: vertical-rl; }

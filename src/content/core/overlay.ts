@@ -1,5 +1,6 @@
 import { effect } from '@preact/signals';
 import { createBoxCache } from './boxes';
+import { scanBreakpoints } from './breakpoints';
 import { columnRects, readLayout, type LayoutDrawing } from './layout';
 import { createPainter, emptyScene } from './paint';
 import { distances, formatLength, pillPosition, type Sides } from './geometry';
@@ -42,6 +43,10 @@ export function startOverlay(host: Host, layer: HTMLElement, close: () => void):
   // Numbered long ticks; rebuilt only when the viewport or units change.
   const rulerLabels = document.createElement('div');
   layer.append(rulerLabels);
+  // Breakpoint ticks; rebuilt with the ruler labels.
+  const bpRange = node('bprange', 'bp-range');
+  const bpTicks = document.createElement('div');
+  layer.append(bpTicks);
   const posX = node('rpos x', 'ruler-pos-x');
   const posY = node('rpos y', 'ruler-pos-y');
   const crossX = node('cross x', 'cross-x');
@@ -56,6 +61,7 @@ export function startOverlay(host: Host, layer: HTMLElement, close: () => void):
   const spreadLabels = DIRS.map(d => node('pill', `spread-${d}`));
   const spreadGap = node('pill', 'spread-gap');
   const markNodes = Array.from({ length: MARKS }, (_, i) => node('lnum', `lnum-${i}`));
+  const bpTip = node('pill', 'bp-tip');
   // Events inside a frame never reach this window, so a hovered frame gets a shield that keeps the pointer here.
   const shield = node('shield', 'shield');
 
@@ -69,6 +75,8 @@ export function startOverlay(host: Host, layer: HTMLElement, close: () => void):
   let hovered: Element | null = null;
   let dirty = true;
   let rulersDirty = true;
+  let bps = scanBreakpoints();
+  let sheetCount = document.styleSheets.length;
   let raf = 0;
   const snapshot = createSnapshotter(host.el, () => (dirty = true));
   const boxCache = createBoxCache(host.el);
@@ -203,6 +211,14 @@ export function startOverlay(host: Host, layer: HTMLElement, close: () => void):
     for (let n = 1; n * sc.major < innerWidth; n++) ticks.push(tick('x', n));
     for (let n = 1; n * sc.major < innerHeight; n++) ticks.push(tick('y', n));
     rulerLabels.replaceChildren(...ticks);
+    bpTicks.replaceChildren(...bps.points.filter(b => b.px < innerWidth).map(b => {
+      const d = document.createElement('div');
+      d.className = 'ov bp';
+      d.dataset.ov = 'bp';
+      d.style.display = 'block';
+      d.style.transform = `translateX(${b.px - 1}px)`;
+      return d;
+    }));
     rulersDirty = false;
   }
 
@@ -256,11 +272,27 @@ export function startOverlay(host: Host, layer: HTMLElement, close: () => void):
       scene.boxes.push(...d.boxes);
     }
     const marks = drawn.flatMap(d => d.marks).slice(0, MARKS);
+    // The current range runs from the widest breakpoint at or below the viewport to the viewport's edge.
+    const bpLo = cfg.rulers ? bps.points.filter(b => b.px <= vw).at(-1)?.px : undefined;
+    let tip = '';
+    if (cfg.rulers && mx > 18 && my >= 0 && my < 18) {
+      const near = bps.points.find(b => Math.abs(b.px - mx) <= 4);
+      const n = bps.unreadable;
+      tip = [near?.queries.join(' · '), n ? `${n} stylesheet${n > 1 ? 's' : ''} couldn't be read` : '']
+        .filter(Boolean).join(' · ');
+    }
 
     // Write phase.
     if (rulersDirty) layoutRulers();
     for (const r of rulerPair) cfg.rulers ? place(r, 0, 0) : hide(r);
     set(rulerLabels, 'display', cfg.rulers ? 'block' : 'none');
+    set(bpTicks, 'display', cfg.rulers ? 'block' : 'none');
+    if (bpLo !== undefined) place(bpRange, bpLo, 0, vw - bpLo, 18);
+    else hide(bpRange);
+    if (tip) {
+      const sz = label(bpTip, tip);
+      place(bpTip, Math.min(Math.max(mx - sz.w / 2, 22), vw - sz.w - 4), 22);
+    } else hide(bpTip);
     if (cfg.rulers && mx >= 0) {
       const a = label(posX, fmt(mx));
       place(posX, Math.min(Math.max(mx - a.w / 2, 18), vw - a.w), 1);
@@ -353,6 +385,13 @@ export function startOverlay(host: Host, layer: HTMLElement, close: () => void):
     const p = pinned.peek();
     if (p && !p.isConnected) pinned.value = null; // the page removed it (SPA navigation, re-render)
     if (hovered && !hovered.isConnected) hovered = null;
+    if (document.styleSheets.length !== sheetCount) {
+      // ponytail: rules added to an existing sheet (CSS-in-JS insertRule) aren't noticed until the next open.
+      sheetCount = document.styleSheets.length;
+      bps = scanBreakpoints();
+      rulersDirty = true;
+      dirty = true;
+    }
     // While something is outlined, redraw every frame so overlays follow animations and layout changes.
     if (dirty || hovered || pinned.peek() || cfg.xray) {
       dirty = false;

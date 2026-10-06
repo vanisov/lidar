@@ -55,3 +55,16 @@ test('pinning a grid lists its layout in the panel', async ({ page, activate }) 
   await page.mouse.move(5, 300); // hover elsewhere: the pinned grid stays drawn
   await expect.poll(async () => (await scene(page)).hatches).toBe(2);
 });
+
+test('the top ruler marks the page breakpoints and names them on hover', async ({ page, activate }) => {
+  await activate();
+  const tick = page.locator('lidar-root [data-ov="bp"]');
+  await expect(tick).toHaveCount(1);
+  const b = (await tick.boundingBox())!;
+  expect(Math.abs(b.x + b.width / 2 - 768)).toBeLessThan(1.5);
+  await expect(page.locator('lidar-root [data-ov="bp-range"]')).toBeVisible(); // 768 → 1280 is the current range
+  await page.mouse.move(769, 9);
+  await expect(page.locator('lidar-root [data-ov="bp-tip"]')).toHaveText('@media (min-width: 768px)');
+  await page.keyboard.press('r'); // rulers off hides breakpoints too
+  await expect(tick).toBeHidden();
+});
