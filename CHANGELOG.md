@@ -6,7 +6,12 @@ versions follow [Semantic Versioning](https://semver.org).
 ## [Unreleased]
 
 ### Added
-- Column grid (`G`) and X-ray (`X`), which outlines every visible element.
+- Flex and grid overlays: hover a flex or grid container to see its tracks, gaps and line numbers. Pin it to see its
+  layout in the panel.
+- Column grid (G): a design column grid over the page. Set columns, gutter, margin and max width in Settings.
+- Breakpoints: the page's media-query widths are marked on the top ruler, with the current range highlighted.
+- X-ray (X): outlines every element on screen.
+- Find by selector (/): highlights every match. Arrow keys step through them and Enter pins one.
 
 ### Fixed
 - Changing a setting right after opening Lidar (pressing R or S straight away) no longer resets your other saved

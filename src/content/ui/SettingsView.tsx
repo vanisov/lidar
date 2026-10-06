@@ -13,6 +13,33 @@ function Seg<T extends string>(props: { name: string; value: T; options: [T, str
   );
 }
 
+function Int(props: { label: string; value: number; min: number; max: number; unit?: string; onChange(v: number): void }) {
+  return (
+    <span>
+      <input
+        type="number"
+        min={props.min}
+        max={props.max}
+        aria-label={props.label}
+        value={props.value}
+        onInput={e => {
+          const v = Number(e.currentTarget.value);
+          if (Number.isInteger(v) && v >= props.min && v <= props.max) props.onChange(v);
+        }}
+        onBlur={e => (e.currentTarget.value = String(props.value))}
+      />
+      {props.unit && ` ${props.unit}`}
+    </span>
+  );
+}
+
+const COLUMN_FIELDS = [
+  ['Columns', 'count', 1, 24, ''],
+  ['Gutter', 'gutter', 0, 200, 'px'],
+  ['Side margin', 'margin', 0, 400, 'px'],
+  ['Max width', 'maxWidth', 0, 4000, 'px'],
+] as const;
+
 export function SettingsView() {
   const s = settings.value;
   return (
@@ -49,6 +76,17 @@ export function SettingsView() {
         <span>Rulers</span>
         <Seg name="Rulers" value={s.rulers ? 'on' : 'off'} options={[['on', 'On'], ['off', 'Off']]} onChange={v => saveSettings({ rulers: v === 'on' })} />
       </div>
+      <div class="r">
+        <span>Column grid</span>
+        <Seg name="Column grid" value={s.grid ? 'on' : 'off'} options={[['on', 'On'], ['off', 'Off']]} onChange={v => saveSettings({ grid: v === 'on' })} />
+      </div>
+      {s.grid && COLUMN_FIELDS.map(([name, key, min, max, unit]) => (
+        <div class="r" key={key} title={key === 'maxWidth' ? '0 = full width' : undefined}>
+          <span>{name}</span>
+          <Int label={name} value={s.columns[key]} min={min} max={max} unit={unit}
+            onChange={v => saveSettings({ columns: { ...settings.value.columns, [key]: v } })} />
+        </div>
+      ))}
       <div class="r">
         <span>Spread stops at</span>
         <Seg
