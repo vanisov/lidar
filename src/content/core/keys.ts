@@ -1,6 +1,6 @@
 import type { Host } from './host';
 import { parentOf } from './inspect';
-import { altHeld, pinned, shiftHeld } from './store';
+import { altHeld, closeSearch, pinned, search, shiftHeld } from './store';
 import { TOOLS } from '../tools/registry';
 
 const SKIP = /^(HEAD|SCRIPT|STYLE|TEMPLATE|META|LINK)$/;
@@ -43,7 +43,8 @@ export function bindKeys(host: Host, close: () => void): () => void {
     }
     if (e.key === 'Escape') {
       swallow(e);
-      close();
+      if (search.peek().open) closeSearch();
+      else close();
       return;
     }
     if (editable(host.root.activeElement)) return; // typing in Lidar's own inputs

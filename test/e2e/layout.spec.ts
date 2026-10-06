@@ -68,3 +68,48 @@ test('the top ruler marks the page breakpoints and names them on hover', async (
   await page.keyboard.press('r'); // rulers off hides breakpoints too
   await expect(tick).toBeHidden();
 });
+
+test('/ finds elements by selector; arrows step and Enter pins', async ({ page, activate }) => {
+  await activate();
+  await page.keyboard.press('/');
+  const bar = page.locator('lidar-root .search');
+  await page.keyboard.type('.card');
+  await expect(bar.locator('.n')).toHaveText('1 of 3');
+  await expect.poll(async () => (await scene(page)).strong).toBe(1);
+  await page.keyboard.press('ArrowDown');
+  await expect(bar.locator('.n')).toHaveText('2 of 3');
+  await page.keyboard.press('ArrowUp');
+  await page.keyboard.press('ArrowUp'); // wraps to the last
+  await expect(bar.locator('.n')).toHaveText('3 of 3');
+  await page.keyboard.press('Enter');
+  await expect(bar).toHaveCount(0);
+  await expect(page.locator('lidar-root .panel .tag')).toHaveText('div#c3.card');
+});
+
+test('search reports bad and empty results, and typing never triggers tool keys', async ({ page, activate }) => {
+  await activate();
+  await page.keyboard.press('/');
+  const n = page.locator('lidar-root .search .n');
+  await page.keyboard.type('.grid');
+  await expect(n).toHaveText('1 of 1');
+  await expect(page.locator('lidar-root [data-tool="grid"]')).toHaveAttribute('aria-pressed', 'false');
+  await page.locator('lidar-root .search input').fill('[[');
+  await expect(n).toHaveText('Not a valid selector');
+  await page.locator('lidar-root .search input').fill('meta'); // matches, but isn't rendered
+  await expect(n).toHaveText('No matches');
+});
+
+test('Esc closes the search first, then Lidar, leaving the DOM exactly as it was', async ({ page, activate }) => {
+  const before = await page.evaluate(() => document.documentElement.outerHTML);
+  await activate();
+  await page.keyboard.press('g');
+  await page.keyboard.press('x');
+  await page.keyboard.press('/');
+  await page.keyboard.type('.card');
+  await page.keyboard.press('Escape');
+  await expect(page.locator('lidar-root .search')).toHaveCount(0);
+  await expect(page.locator('lidar-root .dock')).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(page.locator('lidar-root')).toHaveCount(0);
+  expect(await page.evaluate(() => document.documentElement.outerHTML)).toBe(before);
+});

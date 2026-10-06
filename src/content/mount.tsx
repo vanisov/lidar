@@ -5,7 +5,7 @@ import { createHost } from './core/host';
 import { bindKeys } from './core/keys';
 import { startOverlay } from './core/overlay';
 import { loadSettings, settings } from './core/settings';
-import { altHeld, pinNext, pinned, toastMsg, tool } from './core/store';
+import { altHeld, closeSearch, pinNext, pinned, toastMsg, tool } from './core/store';
 import { App } from './ui/App';
 
 export function mount(onClosed: () => void): { close(): void } {
@@ -46,6 +46,7 @@ export function mount(onClosed: () => void): { close(): void } {
     pinned.value = null;
     tool.value = 'measure';
     pinNext.value = false;
+    closeSearch();
     toastMsg.value = null;
     altHeld.value = false;
     host.destroy();

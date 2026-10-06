@@ -1,5 +1,5 @@
 import type { ComponentChild } from 'preact';
-import { pinned, toast, tool } from '../core/store';
+import { closeSearch, pinned, search, toast, tool } from '../core/store';
 import { saveSettings, settings, type Settings } from '../core/settings';
 import { KEYS } from '../core/platform';
 import { icons } from '../ui/icons';
@@ -58,4 +58,8 @@ export const TOOLS: Tool[] = [
   },
   { id: 'grid', key: 'g', label: 'Column grid', toggle: true, icon: icons.grid, isOn: () => settings.value.grid, run: toggle('grid', 'Column grid') },
   { id: 'xray', key: 'x', label: 'X-ray: outline every element', toggle: true, icon: icons.xray, isOn: () => settings.value.xray, run: toggle('xray', 'X-ray') },
+  {
+    id: 'search', key: '/', label: 'Find by CSS selector', toggle: true, icon: icons.search, isOn: () => search.value.open,
+    run: () => (search.value.open ? closeSearch() : (search.value = { ...search.value, open: true })),
+  },
 ];

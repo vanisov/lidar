@@ -15,3 +15,16 @@ let n = 0;
 export function toast(text: string): void {
   toastMsg.value = { text, n: ++n };
 }
+
+export interface Search {
+  open: boolean;
+  matches: Element[];
+  /** The current match. */
+  index: number;
+  invalid: boolean;
+}
+const NO_SEARCH: Search = { open: false, matches: [], index: 0, invalid: false };
+export const search = signal<Search>(NO_SEARCH);
+export function closeSearch(): void {
+  search.value = NO_SEARCH;
+}

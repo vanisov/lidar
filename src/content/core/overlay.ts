@@ -10,7 +10,7 @@ import { rulerScale } from './rulers';
 import { settings } from './settings';
 import { createSnapshotter } from './snapshot';
 import { scanBoxes, scanPixels, type Stops } from './spread';
-import { altHeld, pinNext, pinned, shiftHeld, tool } from './store';
+import { altHeld, pinNext, pinned, search, shiftHeld, tool } from './store';
 
 const MARKS = 48;
 const DIRS = ['left', 'right', 'top', 'bottom'] as const;
@@ -184,6 +184,7 @@ export function startOverlay(host: Host, layer: HTMLElement, close: () => void):
     void tool.value;
     void altHeld.value;
     void shiftHeld.value;
+    void search.value;
     const prev = cfg;
     cfg = settings.value;
     if (cfg.units !== prev.units || cfg.remBase !== prev.remBase) rulersDirty = true;
@@ -270,6 +271,15 @@ export function startOverlay(host: Host, layer: HTMLElement, close: () => void):
       scene.hatches.push(...d.hatches);
       scene.dashes.push(...d.dashes);
       scene.boxes.push(...d.boxes);
+    }
+    const sr = search.peek();
+    if (sr.open) {
+      sr.matches.forEach((m, i) => {
+        if (!m.isConnected) return;
+        const r = m.getBoundingClientRect();
+        if (r.bottom < 0 || r.top > vh || r.right < 0 || r.left > vw) return;
+        (i === sr.index ? scene.strong : scene.outlines).push(r);
+      });
     }
     const marks = drawn.flatMap(d => d.marks).slice(0, MARKS);
     // The current range runs from the widest breakpoint at or below the viewport to the viewport's edge.
@@ -393,7 +403,7 @@ export function startOverlay(host: Host, layer: HTMLElement, close: () => void):
       dirty = true;
     }
     // While something is outlined, redraw every frame so overlays follow animations and layout changes.
-    if (dirty || hovered || pinned.peek() || cfg.xray) {
+    if (dirty || hovered || pinned.peek() || cfg.xray || search.peek().open) {
       dirty = false;
       draw();
     }
