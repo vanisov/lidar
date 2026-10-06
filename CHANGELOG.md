@@ -5,6 +5,9 @@ versions follow [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Added
+- Column grid (`G`) and X-ray (`X`), which outlines every visible element.
+
 ## [1.0.0] - 2026-10-02
 
 ### Added

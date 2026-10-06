@@ -1,5 +1,7 @@
 import { effect } from '@preact/signals';
 import { createBoxCache } from './boxes';
+import { columnRects } from './layout';
+import { createPainter, emptyScene } from './paint';
 import { distances, formatLength, pillPosition, type Sides } from './geometry';
 import type { Host } from './host';
 import { editable } from './keys';
@@ -29,6 +31,11 @@ export function startOverlay(host: Host, layer: HTMLElement, close: () => void):
     layer.append(d);
     return d;
   };
+  const canvas = document.createElement('canvas');
+  canvas.className = 'ov paint';
+  canvas.dataset.ov = 'paint';
+  layer.append(canvas);
+  const painter = createPainter(canvas);
   const rulerH = node('rul h', 'ruler-h');
   const rulerV = node('rul v', 'ruler-v');
   // Numbered long ticks; rebuilt only when the viewport or units change.
@@ -231,6 +238,9 @@ export function startOverlay(host: Host, layer: HTMLElement, close: () => void):
     const pr = p?.getBoundingClientRect();
     const pRadius = p && getComputedStyle(p).borderRadius;
     const segs = measuring ? distances(pr!, hr!) : null;
+    const scene = emptyScene();
+    if (cfg.grid) scene.fills = columnRects(vw, vh, cfg.columns);
+    if (cfg.xray) scene.outlines = [...boxCache.get()];
 
     // Write phase.
     if (rulersDirty) layoutRulers();
@@ -311,6 +321,7 @@ export function startOverlay(host: Host, layer: HTMLElement, close: () => void):
       label(labels[i], fmt(s.length));
       place(labels[i], vertical ? s.x1 + 6 : (s.x1 + s.x2) / 2 - 12, vertical ? (s.y1 + s.y2) / 2 - 9 : s.y1 + 6);
     });
+    painter.paint(scene);
   }
 
   const frame = () => {
@@ -320,7 +331,7 @@ export function startOverlay(host: Host, layer: HTMLElement, close: () => void):
     if (p && !p.isConnected) pinned.value = null; // the page removed it (SPA navigation, re-render)
     if (hovered && !hovered.isConnected) hovered = null;
     // While something is outlined, redraw every frame so overlays follow animations and layout changes.
-    if (dirty || hovered || pinned.peek()) {
+    if (dirty || hovered || pinned.peek() || cfg.xray) {
       dirty = false;
       draw();
     }

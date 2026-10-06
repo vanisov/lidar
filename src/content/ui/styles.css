@@ -21,6 +21,7 @@ svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width:
 
 /* ---- overlay ---- */
 .ov { position: fixed; left: 0; top: 0; display: none; pointer-events: none; will-change: transform; }
+.ov.paint { display: block; width: 100vw; height: 100vh; }
 .mar { background: repeating-linear-gradient(45deg, #f7a64a40 0 4px, #f7a64a1c 4px 8px); }
 .hl { box-sizing: border-box; outline: 1.5px solid var(--acc); border-style: solid; border-color: #5ac46a40; }
 .hl::after { content: ""; position: absolute; inset: 0; background: #4aa3ff1a; }
