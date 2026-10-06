@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Fieldnote: notes that write themselves</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #f7f5f0; color: #1c1b19; font: 16px/1.55 "Iowan Old Style", Georgia, serif; }
+  .sans { font-family: -apple-system, "SF Pro Text", "Helvetica Neue", sans-serif; }
+  nav { display: flex; align-items: center; justify-content: space-between; padding: 26px 80px 0; }
+  .logo { display: flex; align-items: center; gap: 10px; font: 600 17px -apple-system, sans-serif; }
+  .logo i { width: 22px; height: 22px; border-radius: 7px; background: linear-gradient(135deg, #2f6b4f, #7bb38f); }
+  .links { display: flex; gap: 30px; font: 500 14px -apple-system, sans-serif; color: #55524b; }
+  .links a { color: inherit; text-decoration: none; }
+  .signin { font: 600 14px -apple-system, sans-serif; color: #1c1b19; border: 1px solid #d8d3c8; padding: 9px 16px; border-radius: 10px; }
+  .hero { display: grid; grid-template-columns: 1.05fr 1fr; gap: 56px; padding: 64px 80px 40px; align-items: center; }
+  .eyebrow { display: inline-block; font: 600 12px -apple-system, sans-serif; letter-spacing: .08em; text-transform: uppercase; color: #2f6b4f; background: #e3eee6; padding: 6px 10px; border-radius: 999px; margin-bottom: 18px; }
+  h1 { font-size: 54px; line-height: 1.04; letter-spacing: -.02em; margin: 0 0 18px; font-weight: 600; }
+  .lede { font-size: 18px; color: #55524b; max-width: 460px; margin: 0 0 30px; }
+  .ctas { display: flex; gap: 12px; }
+  .btn { font: 600 15px -apple-system, sans-serif; padding: 14px 22px; border-radius: 12px; text-decoration: none; }
+  .btn.primary { background: #1c1b19; color: #fff; }
+  .btn.ghost { color: #1c1b19; border: 1px solid #d8d3c8; }
+  .shot { height: 330px; border-radius: 20px; background: #fff; box-shadow: 0 30px 60px #3b33221f, 0 0 0 1px #e9e4d9; padding: 22px; display: grid; grid-template-columns: 120px 1fr; gap: 18px; }
+  .side { display: flex; flex-direction: column; gap: 10px; }
+  .side b { height: 10px; border-radius: 5px; background: #eeeae1; }
+  .side b:first-child { background: #cfe2d5; width: 70%; }
+  .doc h3 { margin: 4px 0 10px; font-size: 22px; }
+  .doc p { margin: 0 0 10px; font-size: 14px; color: #6a665d; }
+  .pill { display: inline-block; font: 600 11px -apple-system, sans-serif; background: #fdf0d8; color: #8a5a00; padding: 4px 8px; border-radius: 6px; margin-right: 6px; }
+  .features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; padding: 30px 80px 60px; }
+  .card { background: #fff; border-radius: 16px; padding: 26px; box-shadow: 0 0 0 1px #ebe6dc; }
+  .card .ico { width: 36px; height: 36px; border-radius: 10px; background: #e3eee6; margin-bottom: 16px; }
+  .card h4 { margin: 0 0 6px; font: 600 17px -apple-system, sans-serif; }
+  .card p { margin: 0; font-size: 15px; color: #6a665d; }
+</style>
+</head>
+<body>
+  <nav>
+    <div class="logo"><i></i>Fieldnote</div>
+    <div class="links"><a href="#">Product</a><a href="#">Templates</a><a href="#">Pricing</a><a href="#">Changelog</a></div>
+    <a class="signin" href="#">Sign in</a>
+  </nav>
+  <section class="hero">
+    <div>
+      <span class="eyebrow">New · Meeting recaps</span>
+      <h1 id="headline">Notes that write themselves.</h1>
+      <p class="lede">Fieldnote listens to your meetings, drafts the recap, and files every action item where your team already works.</p>
+      <div class="ctas"><a class="btn primary" id="cta" href="#">Start free</a><a class="btn ghost" href="#">Watch the demo</a></div>
+    </div>
+    <div class="shot" id="shot">
+      <div class="side"><b></b><b></b><b></b><b style="width:80%"></b><b></b></div>
+      <div class="doc">
+        <h3>Weekly design sync</h3>
+        <p>Agreed to ship the onboarding checklist behind a flag on Thursday, then review activation numbers.</p>
+        <p><span class="pill">Owner: Priya</span><span class="pill">Due Thu</span></p>
+        <p>Open question: should templates live in the sidebar or the command menu?</p>
+      </div>
+    </div>
+  </section>
+  <section class="features">
+    <div class="card" id="f1"><div class="ico"></div><h4>Instant recaps</h4><p>A clean summary lands in your inbox before the call ends.</p></div>
+    <div class="card" id="f2"><div class="ico"></div><h4>Action items, filed</h4><p>Tasks go straight to the tracker your team already uses.</p></div>
+    <div class="card" id="f3"><div class="ico"></div><h4>Search everything</h4><p>Ask what was decided last quarter and get the exact quote.</p></div>
+  </section>
+</body>
+</html>
