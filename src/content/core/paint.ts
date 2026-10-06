@@ -28,6 +28,8 @@ export const emptyScene = (): Scene => ({ fills: [], outlines: [], strong: [], h
 
 const ACC = '#ff5a36';
 const LAYOUT = '#a970ff';
+const RECT = ['left', 'top', 'width', 'height'];
+const SEG = ['x1', 'y1', 'x2', 'y2'];
 
 /** Paints a Scene onto one viewport-sized canvas, so thousands of boxes cost one element and no DOM work. */
 export function createPainter(canvas: HTMLCanvasElement): { paint(scene: Scene): void } {
@@ -43,6 +45,16 @@ export function createPainter(canvas: HTMLCanvasElement): { paint(scene: Scene):
   t.stroke();
   const hatch = ctx.createPattern(tile, 'repeat')!;
   let blank = true;
+  let last: Scene | null = null; // what the canvas shows now; null when it was cleared or resized
+  const same = (a: Scene, b: Scene) =>
+    (Object.keys(a) as (keyof Scene)[]).every(k => {
+      const x = a[k] as unknown as Record<string, number>[];
+      const y = b[k] as unknown as Record<string, number>[];
+      if (x === y) return true;
+      if (x.length !== y.length) return false;
+      const f = k === 'dashes' ? SEG : RECT;
+      return x.every((e, i) => f.every(p => e[p] === y[i][p]));
+    });
   const rects = (list: Rect[], inset: number) => {
     ctx.beginPath();
     for (const r of list) ctx.rect(r.left + inset, r.top + inset, r.width - 2 * inset, r.height - 2 * inset);
@@ -57,10 +69,13 @@ export function createPainter(canvas: HTMLCanvasElement): { paint(scene: Scene):
         canvas.width = w; // resizing also clears it
         canvas.height = h;
         blank = true;
+        last = null;
       }
       if (__TEST__) canvas.dataset.scene = JSON.stringify(Object.fromEntries(Object.entries(s).map(([k, v]) => [k, v.length])));
       const empty = Object.values(s).every(l => l.length === 0);
       if (empty && blank) return;
+      if (last && same(last, s)) return;
+      last = s; // scenes are rebuilt each frame, never mutated after paint
       blank = empty;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.clearRect(0, 0, innerWidth, innerHeight);

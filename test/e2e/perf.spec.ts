@@ -32,8 +32,10 @@ test('X-ray on a 5,000-element page scrolls and hovers with no long tasks', asyn
     document.body.prepend(box);
   });
   await activate();
-  await page.waitForTimeout(300); // let the async settings load land (see layout.spec.ts)
   await page.keyboard.press('x');
+  await expect
+    .poll(async () => JSON.parse((await page.locator('lidar-root [data-ov="paint"]').getAttribute('data-scene')) ?? '{}').outlines)
+    .toBeGreaterThan(5);
   await page.evaluate(() => {
     const w = window as unknown as { __long: number };
     w.__long = 0;

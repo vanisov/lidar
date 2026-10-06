@@ -240,7 +240,7 @@ export function startOverlay(host: Host, layer: HTMLElement, close: () => void):
     const segs = measuring ? distances(pr!, hr!) : null;
     const scene = emptyScene();
     if (cfg.grid) scene.fills = columnRects(vw, vh, cfg.columns);
-    if (cfg.xray) scene.outlines = [...boxCache.get()];
+    if (cfg.xray) scene.outlines = boxCache.get();
 
     // Write phase.
     if (rulersDirty) layoutRulers();

@@ -40,4 +40,23 @@ describe('changes made while settings are still loading', () => {
     expect(set).toHaveBeenCalledWith({ settings: s.settings.value });
     vi.unstubAllGlobals();
   });
+
+  it('are kept when Lidar is reopened in the same page', async () => {
+    let resolveGet!: (v: unknown) => void;
+    let first = true;
+    const get = () => (first ? Promise.resolve({}) : new Promise(r => (resolveGet = r)));
+    vi.stubGlobal('chrome', { storage: { sync: { get, set: vi.fn(() => Promise.resolve()) } } });
+    vi.resetModules();
+    const s = await import('../../src/content/core/settings');
+
+    await s.loadSettings(); // first session
+    first = false;
+    const loading = s.loadSettings(); // reopened
+    s.saveSettings({ grid: true }); // pressing G right away
+    resolveGet({ settings: { grid: false } });
+    await loading;
+
+    expect(s.settings.value.grid).toBe(true);
+    vi.unstubAllGlobals();
+  });
 });

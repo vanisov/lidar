@@ -70,6 +70,7 @@ let early: Partial<Settings> = {};
 const persist = () => area()?.set({ settings: settings.value }).catch(() => {}); // e.g. the sync quota is full
 
 export async function loadSettings(): Promise<void> {
+  loaded = false; // module state outlives a session, so every open holds early changes until its own load lands
   const a = area();
   const got = a ? await a.get('settings') : {};
   loaded = true;
