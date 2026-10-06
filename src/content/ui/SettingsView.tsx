@@ -1,3 +1,4 @@
+import { KEYS } from '../core/platform';
 import { saveSettings, settings } from '../core/settings';
 
 function Seg<T extends string>(props: { name: string; value: T; options: [T, string][]; onChange(v: T): void }) {
@@ -48,8 +49,34 @@ export function SettingsView() {
         <span>Rulers</span>
         <Seg name="Rulers" value={s.rulers ? 'on' : 'off'} options={[['on', 'On'], ['off', 'Off']]} onChange={v => saveSettings({ rulers: v === 'on' })} />
       </div>
+      <div class="r">
+        <span>Spread stops at</span>
+        <Seg
+          name="Spread stops at"
+          value={s.spreadMode}
+          options={[['visual', 'What you see'], ['layout', 'Element boxes']]}
+          onChange={spreadMode => saveSettings({ spreadMode })}
+        />
+      </div>
+      {s.spreadMode === 'visual' && (
+        <div class="r">
+          <span>Edge tolerance</span>
+          <span>
+            <input
+              type="range"
+              min={1}
+              max={64}
+              aria-label="Edge tolerance"
+              title="How different a color must be to count as an edge. Raise it if lines stop at faint shadows."
+              value={s.spreadTolerance}
+              onInput={e => saveSettings({ spreadTolerance: Number(e.currentTarget.value) })}
+            />{' '}
+            {s.spreadTolerance}
+          </span>
+        </div>
+      )}
       <button class="link" onClick={() => void chrome.runtime.sendMessage({ type: 'open-shortcuts' })}>
-        Change the Alt+L shortcut…
+        Change the {KEYS.toggle} shortcut…
       </button>
     </div>
   );

@@ -57,14 +57,20 @@ test('the size label stays on screen for elements taller than the viewport', asy
   expect(box.y + box.height).toBeLessThanOrEqual(800);
 });
 
-test('rulers track the cursor and R hides them', async ({ page, activate }) => {
+test('rulers show the cursor position, numbered ticks, and R hides them', async ({ page, activate }) => {
   await activate();
   await page.mouse.move(321, 222);
   await frame(page);
-  await expect(page.locator('lidar-root [data-ov="coord"]')).toHaveText('321, 222');
+  await expect(page.locator('lidar-root [data-ov="ruler-pos-x"]')).toHaveText('321');
+  await expect(page.locator('lidar-root [data-ov="ruler-pos-y"]')).toHaveText('222');
+  const first = page.locator('lidar-root [data-ov="ruler-label-x"]').first();
+  await expect(first).toHaveText('100');
+  expect(Math.abs((await first.boundingBox())!.x - 103)).toBeLessThan(1);
+  await expect(page.locator('lidar-root [data-ov="ruler-label-y"]').first()).toHaveText('100');
   await page.keyboard.press('r');
   await frame(page);
   await expect(page.locator('lidar-root [data-ov="ruler-h"]')).toBeHidden();
+  await expect(page.locator('lidar-root [data-ov="ruler-label-x"]').first()).toBeHidden();
 });
 
 test('"Inspect with Lidar" pins the element under the cursor', async ({ page, sw, activate }) => {

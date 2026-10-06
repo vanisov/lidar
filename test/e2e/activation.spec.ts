@@ -151,3 +151,14 @@ test('Lidar survives the page removing an open modal dialog', async ({ page, act
   await page.locator('lidar-root [data-tool="distance"]').click({ timeout: 3000 });
   await expect(page.locator('lidar-root [data-tool="distance"]')).toHaveAttribute('aria-pressed', 'true');
 });
+
+test('key hints say ⌥ on a Mac and Alt everywhere else', async ({ page, activate }) => {
+  await activate();
+  const mac = await page.evaluate(() => {
+    const n = navigator as Navigator & { userAgentData?: { platform: string } };
+    return /mac/i.test(n.userAgentData?.platform ?? n.platform);
+  });
+  const alt = mac ? '⌥' : 'Alt';
+  await expect(page.locator('lidar-root [data-tool="distance"]')).toHaveAttribute('data-tip', new RegExp(`hold ${alt}\\)`));
+  await expect(page.locator('lidar-root .panel .empty kbd').first()).toHaveText(alt);
+});

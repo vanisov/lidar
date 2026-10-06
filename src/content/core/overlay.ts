@@ -1,9 +1,15 @@
 import { effect } from '@preact/signals';
+import { createBoxCache } from './boxes';
 import { distances, formatLength, pillPosition, type Sides } from './geometry';
 import type { Host } from './host';
 import { editable } from './keys';
+import { rulerScale } from './rulers';
 import { settings } from './settings';
-import { altHeld, pinNext, pinned, tool } from './store';
+import { createSnapshotter } from './snapshot';
+import { scanBoxes, scanPixels, type Stops } from './spread';
+import { altHeld, pinNext, pinned, shiftHeld, tool } from './store';
+
+const DIRS = ['left', 'right', 'top', 'bottom'] as const;
 
 const BLOCKED = ['pointerdown', 'mousedown', 'pointerup', 'mouseup', 'dblclick', 'auxclick'] as const;
 
@@ -25,8 +31,11 @@ export function startOverlay(host: Host, layer: HTMLElement, close: () => void):
   };
   const rulerH = node('rul h', 'ruler-h');
   const rulerV = node('rul v', 'ruler-v');
-  const markX = node('mark x', 'mark-x');
-  const markY = node('mark y', 'mark-y');
+  // Numbered long ticks; rebuilt only when the viewport or units change.
+  const rulerLabels = document.createElement('div');
+  layer.append(rulerLabels);
+  const posX = node('rpos x', 'ruler-pos-x');
+  const posY = node('rpos y', 'ruler-pos-y');
   const crossX = node('cross x', 'cross-x');
   const crossY = node('cross y', 'cross-y');
   const margin = node('mar', 'margin');
@@ -35,19 +44,25 @@ export function startOverlay(host: Host, layer: HTMLElement, close: () => void):
   const size = node('pill', 'size');
   const lines = [0, 1, 2, 3].map(i => node('dl', `dist-line-${i}`));
   const labels = [0, 1, 2, 3].map(i => node('pill', `dist-${i}`));
-  const coord = node('coord', 'coord');
+  const spreadLines = DIRS.map(d => node('dl', `spread-line-${d}`));
+  const spreadLabels = DIRS.map(d => node('pill', `spread-${d}`));
+  const spreadGap = node('pill', 'spread-gap');
   // Events inside a frame never reach this window, so a hovered frame gets a shield that keeps the pointer here.
   const shield = node('shield', 'shield');
 
   const rulerPair = [rulerH, rulerV];
-  const cursorNodes = [markX, markY, crossX, crossY, coord];
+  const cursorNodes = [posX, posY, crossX, crossY];
+  const spreadNodes = [...spreadLines, ...spreadLabels, spreadGap];
   const hoverNodes = [margin, hover, size];
 
   let mx = -1;
   let my = -1;
   let hovered: Element | null = null;
   let dirty = true;
+  let rulersDirty = true;
   let raf = 0;
+  const snapshot = createSnapshotter(host.el, () => (dirty = true));
+  const boxCache = createBoxCache(host.el);
   let cfg = settings.peek();
   let fmt = (n: number) => formatLength(n, cfg.units, cfg.remBase);
 
@@ -89,10 +104,14 @@ export function startOverlay(host: Host, layer: HTMLElement, close: () => void):
     const path = e.composedPath();
     return path.includes(host.el) && !path.includes(shield);
   };
-  const pick = (x: number, y: number) => {
-    // Pointing at Lidar's own dock or panel measures nothing; the shield stands in for the frame under it.
+  // True over Lidar's own dock or panel; the shield stands in for the frame under it.
+  const onUi = (x: number, y: number) => {
     const mine = host.root.elementFromPoint(x, y);
-    if (mine && mine !== shield && host.root.contains(mine)) return null;
+    return !!mine && mine !== shield && host.root.contains(mine);
+  };
+  const pick = (x: number, y: number) => {
+    // Pointing at Lidar's own UI measures nothing.
+    if (onUi(x, y)) return null;
     let t: Element | null | undefined = document.elementsFromPoint(x, y).find(e => e !== host.el);
     // Descend into open shadow roots (closed ones stay one box), skipping Lidar's host at every level.
     while (t?.shadowRoot) {
@@ -126,25 +145,57 @@ export function startOverlay(host: Host, layer: HTMLElement, close: () => void):
       (host.root.activeElement as HTMLElement | null)?.blur();
     }
   };
-  const markDirty = () => {
+  const moved = () => {
     dirty = true;
+    snapshot.invalidate();
+    boxCache.invalidate();
+  };
+  const resized = () => {
+    moved();
+    rulersDirty = true;
   };
 
   addEventListener('pointermove', onMove, true);
   addEventListener('pointerover', onMove, true); // entering a frame sends only this to the parent
   BLOCKED.forEach(t => addEventListener(t, block, true));
   addEventListener('click', onClick, true);
-  addEventListener('scroll', markDirty, true);
-  addEventListener('resize', markDirty);
+  addEventListener('scroll', moved, true);
+  addEventListener('resize', resized);
   const unwatch = effect(() => {
     // Reading these subscribes the effect; any change forces a redraw.
     void pinned.value;
     void tool.value;
     void altHeld.value;
+    void shiftHeld.value;
+    const prev = cfg;
     cfg = settings.value;
+    if (cfg.units !== prev.units || cfg.remBase !== prev.remBase) rulersDirty = true;
     fmt = (n: number) => formatLength(n, cfg.units, cfg.remBase);
     dirty = true;
   });
+
+  function layoutRulers() {
+    const sc = rulerScale(cfg.units, cfg.remBase);
+    for (const r of rulerPair) {
+      set(r, '--major', `${sc.major}px`);
+      set(r, '--mid', `${sc.mid}px`);
+      set(r, '--minor', `${sc.minor}px`);
+    }
+    const tick = (axis: 'x' | 'y', n: number) => {
+      const d = document.createElement('div');
+      d.className = `ov rlab ${axis}`;
+      d.dataset.ov = `ruler-label-${axis}`;
+      d.textContent = sc.label(n);
+      d.style.display = 'block';
+      d.style.transform = axis === 'x' ? `translate(${n * sc.major + 3}px, 3px)` : `translate(3px, ${n * sc.major + 3}px) rotate(180deg)`;
+      return d;
+    };
+    const ticks: HTMLElement[] = [];
+    for (let n = 1; n * sc.major < innerWidth; n++) ticks.push(tick('x', n));
+    for (let n = 1; n * sc.major < innerHeight; n++) ticks.push(tick('y', n));
+    rulerLabels.replaceChildren(...ticks);
+    rulersDirty = false;
+  }
 
   function draw() {
     const vw = innerWidth;
@@ -156,8 +207,21 @@ export function startOverlay(host: Host, layer: HTMLElement, close: () => void):
       pinned.value = hovered;
       pinNext.value = false;
     }
+    const t = tool.peek();
+    const spreading = mx >= 0 && (t === 'spread' || (t === 'measure' && shiftHeld.peek())) && !onUi(mx, my);
+    let stops: Stops | null = null;
+    if (spreading && cfg.spreadMode === 'layout') stops = scanBoxes(boxCache.get(), mx, my, vw, vh);
+    else if (spreading) {
+      const px = snapshot.get();
+      if (!px) snapshot.request();
+      else {
+        const s = px.scale;
+        const found = scanPixels(px, Math.min(px.width - 1, Math.round(mx * s)), Math.min(px.height - 1, Math.round(my * s)), cfg.spreadTolerance);
+        stops = { left: found.left / s, right: found.right / s, top: found.top / s, bottom: found.bottom / s };
+      }
+    }
     const p = pinned.peek();
-    const h = tool.peek() === 'color' ? null : hovered;
+    const h = t === 'color' || spreading ? null : hovered;
     const measuring = !!(p && h && h !== p && (altHeld.peek() || tool.peek() === 'distance'));
     const hr = h?.getBoundingClientRect();
     const hcs = h ? getComputedStyle(h) : null;
@@ -169,15 +233,55 @@ export function startOverlay(host: Host, layer: HTMLElement, close: () => void):
     const segs = measuring ? distances(pr!, hr!) : null;
 
     // Write phase.
+    if (rulersDirty) layoutRulers();
     for (const r of rulerPair) cfg.rulers ? place(r, 0, 0) : hide(r);
+    set(rulerLabels, 'display', cfg.rulers ? 'block' : 'none');
     if (cfg.rulers && mx >= 0) {
-      place(markX, mx, 0);
-      place(crossX, mx, 18);
-      place(markY, 0, my);
-      place(crossY, 18, my);
-      const c = label(coord, `${fmt(mx)}, ${fmt(my)}`);
-      place(coord, Math.min(mx + 14, vw - c.w - 4), Math.min(my + 14, vh - 24));
+      const a = label(posX, fmt(mx));
+      place(posX, Math.min(Math.max(mx - a.w / 2, 18), vw - a.w), 1);
+      const b = label(posY, fmt(my));
+      set(posY, 'transform', `translate(1px, ${Math.min(Math.max(my - b.h / 2, 18), vh - b.h)}px) rotate(180deg)`);
+      if (stops) [crossX, crossY].forEach(hide);
+      else {
+        place(crossX, mx, 18);
+        place(crossY, 18, my);
+      }
     } else cursorNodes.forEach(hide);
+
+    if (stops) {
+      const st = stops;
+      const len = DIRS.map(d => st[d]);
+      const line = [
+        [mx - st.left, my - 0.75, st.left, 1.5],
+        [mx, my - 0.75, st.right, 1.5],
+        [mx - 0.75, my - st.top, 1.5, st.top],
+        [mx - 0.75, my, 1.5, st.bottom],
+      ] as const;
+      DIRS.forEach((_, i) => {
+        if (len[i] < 1) {
+          hide(spreadLines[i]);
+          hide(spreadLabels[i]);
+          return;
+        }
+        place(spreadLines[i], line[i][0], line[i][1], line[i][2], line[i][3]);
+        const sz = label(spreadLabels[i], fmt(len[i]));
+        // Centered on its line when it fits, otherwise just past the line's far end so short gaps stay readable.
+        const sign = i % 2 === 0 ? -1 : 1;
+        let cx: number;
+        let cy: number;
+        if (i < 2) {
+          cx = sz.w + 8 <= len[i] ? mx + (sign * len[i]) / 2 - sz.w / 2 : sign < 0 ? mx - len[i] - sz.w - 4 : mx + len[i] + 4;
+          cy = my + 6;
+        } else {
+          cx = mx + 6;
+          cy = sz.h + 8 <= len[i] ? my + (sign * len[i]) / 2 - sz.h / 2 : sign < 0 ? my - len[i] - sz.h - 4 : my + len[i] + 4;
+        }
+        place(spreadLabels[i], cx, cy);
+      });
+      // The gap's size sits above the line, past its right end, clear of the per-side labels.
+      const g = label(spreadGap, `${fmt(st.left + st.right)} × ${fmt(st.top + st.bottom)}`);
+      place(spreadGap, Math.min(mx + st.right + 6, vw - g.w - 4), Math.max(my - g.h - 6, 22));
+    } else spreadNodes.forEach(hide);
 
     if (hr && hm && hp) {
       if (measuring) hide(margin);
@@ -230,8 +334,10 @@ export function startOverlay(host: Host, layer: HTMLElement, close: () => void):
     removeEventListener('pointerover', onMove, true);
     BLOCKED.forEach(t => removeEventListener(t, block, true));
     removeEventListener('click', onClick, true);
-    removeEventListener('scroll', markDirty, true);
-    removeEventListener('resize', markDirty);
+    removeEventListener('scroll', moved, true);
+    removeEventListener('resize', resized);
+    snapshot.dispose();
+    boxCache.dispose();
     layer.replaceChildren();
   };
 }

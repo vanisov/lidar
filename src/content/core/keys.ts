@@ -1,6 +1,6 @@
 import type { Host } from './host';
 import { parentOf } from './inspect';
-import { altHeld, pinned } from './store';
+import { altHeld, pinned, shiftHeld } from './store';
 import { TOOLS } from '../tools/registry';
 
 const SKIP = /^(HEAD|SCRIPT|STYLE|TEMPLATE|META|LINK)$/;
@@ -37,6 +37,10 @@ export function bindKeys(host: Host, close: () => void): () => void {
       altHeld.value = true;
       return;
     }
+    if (e.key === 'Shift') {
+      shiftHeld.value = true;
+      return;
+    }
     if (e.key === 'Escape') {
       swallow(e);
       close();
@@ -61,6 +65,7 @@ export function bindKeys(host: Host, close: () => void): () => void {
   };
   const up = (e: KeyboardEvent) => {
     if (e.key === 'Alt') altHeld.value = false;
+    if (e.key === 'Shift') shiftHeld.value = false;
     if (handled.delete(e.code)) {
       e.preventDefault();
       e.stopImmediatePropagation();
@@ -68,6 +73,7 @@ export function bindKeys(host: Host, close: () => void): () => void {
   };
   const blur = () => {
     altHeld.value = false;
+    shiftHeld.value = false;
   };
   addEventListener('keydown', down, true);
   addEventListener('keyup', up, true);

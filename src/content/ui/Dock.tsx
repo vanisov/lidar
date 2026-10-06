@@ -22,6 +22,7 @@ export function Dock({ onClose }: { onClose(): void }) {
           onClick={() => void t.run()}
         >
           {t.icon()}
+          {t.badge && <span class="badge" aria-hidden="true">{t.badge()}</span>}
         </button>
       ))}
       <span class="sep" />

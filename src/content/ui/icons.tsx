@@ -7,6 +7,7 @@ const svg = (d: string) => () => (
 export const icons = {
   measure: svg('M4 4h16v16H4zM4 9h3M4 14h3M9 4v3M14 4v3'),
   distance: svg('M4 12h16M4 8v8M20 8v8M8 12l-2-2M8 12l-2 2M16 12l2-2M16 12l2 2'),
+  spread: svg('M12 4v16M4 12h16M12 4l-2 2M12 4l2 2M12 20l-2-2M12 20l2-2M4 12l2-2M4 12l2 2M20 12l-2-2M20 12l-2 2'),
   color: svg('M14 6l4 4M5 19l2-.5L17.5 8a2.1 2.1 0 0 0-3-3L4 15.5 3.5 18z'),
   rulers: svg('M3 17L17 3l4 4L7 21zM7 13l2 2M10 10l2 2M13 7l2 2'),
   close: svg('M6 6l12 12M18 6L6 18'),

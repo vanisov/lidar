@@ -9,11 +9,13 @@ free, open-source alternative to paid inspector extensions, and a sibling of [So
 
 | | |
 |---|---|
-| Open / close | Click the toolbar icon, press `Alt+L`, or right-click → **Inspect with Lidar**. `Esc` closes. |
+| Open / close | Click the toolbar icon, press `⌥L` on a Mac or `Alt+L` elsewhere, or right-click → **Inspect with Lidar**. `Esc` closes. |
 | Measure | Hover anything. Click to pin it. |
-| Distance | Pin an element, then hold `Alt` and hover another. |
+| Distance | Pin an element, then hold `⌥` (Mac) or `Alt` and hover another. |
+| Spread | Press `S` (or hold `⇧`) and lines run from the cursor to the nearest edge each way. Press `S` again to switch between **Visual** (stops at what you see) and **Layout** (stops at element boxes). |
+| Rulers | Numbered every 100px (or whole rems), with the cursor's position marked on both rulers. |
 | Navigate | `↑` parent · `↓` first child · `←` `→` siblings |
-| Tools | `M` measure · `D` distance · `C` color picker · `R` rulers |
+| Tools | `M` measure · `D` distance · `S` spread · `C` color picker · `R` rulers |
 | Copy | Click any value. **Copy CSS**, **Copy for AI**, **Screenshot** in the panel. |
 
 ## Privacy

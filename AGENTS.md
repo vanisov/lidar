@@ -7,7 +7,8 @@
 | `src/background.ts` | Toggle, context menu, screenshot capture, shortcuts page |
 | `src/content/mount.tsx` | Builds the host, overlay, keys and UI; `close()` tears it all down |
 | `src/content/core/overlay.ts` | The hot path: one rAF loop, fixed node pool, page pointer input |
-| `src/content/core/geometry.ts`, `color.ts`, `describe.ts` | Pure logic, unit-tested |
+| `src/content/core/geometry.ts`, `color.ts`, `describe.ts`, `spread.ts`, `rulers.ts`, `platform.ts` | Pure logic, unit-tested |
+| `src/content/core/snapshot.ts`, `boxes.ts` | Spread's page pixels (Visual) and element boxes (Layout) |
 | `src/content/core/inspect.ts` | Reads an element from the DOM into `ElementInfo` |
 | `src/content/tools/registry.ts` | Dock tools; add new tools here |
 | `src/content/ui/` | Preact dock, panel, settings, toast, and `styles.css` tokens |

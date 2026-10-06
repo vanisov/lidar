@@ -28,23 +28,29 @@ svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width:
 .pill { font: 600 11px/1 var(--mono); padding: 4px 6px; border-radius: 6px; background: var(--acc); color: #1a1a1a; white-space: nowrap; }
 .dl { background: var(--acc); }
 .ov.shield { pointer-events: auto; }
-.rul { background-color: var(--ruler); color: var(--tick); background-repeat: no-repeat; }
+.rul {
+  --major: 100px; --mid: 50px; --minor: 10px;
+  --tick-x: linear-gradient(90deg, currentColor 1px, transparent 1px);
+  --tick-y: linear-gradient(180deg, currentColor 1px, transparent 1px);
+  background-color: var(--ruler); color: var(--tick);
+}
 .rul.h {
   width: 100vw; height: 18px;
-  background-image: repeating-linear-gradient(90deg, currentColor 0 1px, transparent 1px 10px), repeating-linear-gradient(90deg, currentColor 0 1px, transparent 1px 50px);
-  background-size: 100% 5px, 100% 9px; background-position: bottom, bottom;
+  background-image: var(--tick-x), var(--tick-x), var(--tick-x);
+  background-size: var(--minor) 4px, var(--mid) 8px, var(--major) 18px;
+  background-repeat: repeat-x; background-position: 0 100%, 0 100%, 0 100%;
 }
 .rul.v {
   width: 18px; height: 100vh;
-  background-image: repeating-linear-gradient(0deg, currentColor 0 1px, transparent 1px 10px), repeating-linear-gradient(0deg, currentColor 0 1px, transparent 1px 50px);
-  background-size: 5px 100%, 9px 100%; background-position: right, right;
+  background-image: var(--tick-y), var(--tick-y), var(--tick-y);
+  background-size: 4px var(--minor), 8px var(--mid), 18px var(--major);
+  background-repeat: repeat-y; background-position: 100% 0, 100% 0, 100% 0;
 }
-.mark { background: var(--acc); }
-.mark.x { width: 1px; height: 18px; }
-.mark.y { width: 18px; height: 1px; }
+.rlab { font: 11px/1 var(--mono); color: var(--muted); white-space: nowrap; }
+.rpos { font: 600 11px/1 var(--mono); padding: 3px 4px; border-radius: 4px; background: var(--acc); color: #1a1a1a; white-space: nowrap; z-index: 2; }
+.rlab.y, .rpos.y { writing-mode: vertical-rl; }
 .cross.x { height: 100vh; border-left: 1px dashed #ff5a3680; }
 .cross.y { width: 100vw; border-top: 1px dashed #ff5a3680; }
-.coord { font: 600 11px/1 var(--mono); color: var(--text); background: var(--bg); padding: 4px 6px; border-radius: 6px; box-shadow: inset 0 0 0 1px var(--line); white-space: nowrap; }
 
 /* ---- dock ---- */
 .dock {
@@ -62,6 +68,10 @@ svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width:
   content: attr(data-tip); position: absolute; bottom: 44px; left: 50%; transform: translateX(-50%);
   white-space: pre; background: var(--bg); color: var(--text); font-size: 11px; font-weight: 500;
   padding: 5px 8px; border-radius: 7px; box-shadow: var(--shadow), inset 0 0 0 1px var(--line);
+}
+.dock .badge {
+  position: absolute; right: 1px; bottom: 1px; font: 600 11px/1 var(--mono); padding: 1px 2px; border-radius: 4px;
+  background: var(--bg); color: var(--text); box-shadow: inset 0 0 0 1px var(--line);
 }
 .sep { width: 1px; height: 20px; background: var(--line); margin: 0 4px; }
 .brand { display: flex; align-items: center; gap: 3px; height: 34px; padding: 0 8px 0 6px; }
@@ -112,7 +122,8 @@ kbd { font: 600 11px var(--mono); background: var(--bg3); color: var(--text); bo
 .seg { display: inline-flex; gap: 2px; padding: 2px; background: var(--bg2); border-radius: 8px; }
 .seg button { padding: 4px 10px; border-radius: 6px; font-size: 12px; color: var(--muted); }
 .seg button[aria-checked="true"] { background: var(--bg); color: var(--text); box-shadow: 0 1px 2px #0003, inset 0 0 0 1px var(--line); }
-.settings input { all: unset; width: 44px; text-align: right; font: 12px var(--mono); background: var(--bg2); color: var(--text); border-radius: 6px; padding: 3px 6px; }
+.settings input[type="number"] { all: unset; width: 44px; text-align: right; font: 12px var(--mono); background: var(--bg2); color: var(--text); border-radius: 6px; padding: 3px 6px; }
+.settings input[type="range"] { width: 96px; accent-color: var(--acc); vertical-align: middle; }
 .settings input:focus-visible { outline: 2px solid var(--acc); outline-offset: 1px; }
 .link { margin-top: 10px; color: var(--acc-text); font-size: 12px; }
 

@@ -6,15 +6,8 @@ function dataUrlToBlob(url: string): Blob {
   return new Blob([bytes], { type: head.slice(5, head.indexOf(';')) });
 }
 
-/** PNG of the element's visible part, with Lidar's own UI hidden for the capture. */
-export async function captureElement(el: Element, hostEl: HTMLElement): Promise<Blob> {
-  const r = el.getBoundingClientRect();
-  const x = Math.max(0, r.left);
-  const y = Math.max(0, r.top);
-  const w = Math.min(r.right, innerWidth) - x;
-  const h = Math.min(r.bottom, innerHeight) - y;
-  if (w <= 0 || h <= 0) throw new Error('element is off-screen');
-
+/** The visible tab as a bitmap, with Lidar's own UI hidden for the capture. */
+export async function captureVisible(hostEl: HTMLElement): Promise<ImageBitmap> {
   hostEl.style.setProperty('visibility', 'hidden', 'important');
   let res: { url?: string; error?: string };
   try {
@@ -24,8 +17,19 @@ export async function captureElement(el: Element, hostEl: HTMLElement): Promise<
     hostEl.style.removeProperty('visibility');
   }
   if (!res?.url) throw new Error(res?.error ?? 'capture failed');
+  return createImageBitmap(dataUrlToBlob(res.url));
+}
 
-  const img = await createImageBitmap(dataUrlToBlob(res.url));
+/** PNG of the element's visible part. */
+export async function captureElement(el: Element, hostEl: HTMLElement): Promise<Blob> {
+  const r = el.getBoundingClientRect();
+  const x = Math.max(0, r.left);
+  const y = Math.max(0, r.top);
+  const w = Math.min(r.right, innerWidth) - x;
+  const h = Math.min(r.bottom, innerHeight) - y;
+  if (w <= 0 || h <= 0) throw new Error('element is off-screen');
+
+  const img = await captureVisible(hostEl);
   const scale = img.width / innerWidth;
   const canvas = new OffscreenCanvas(Math.round(w * scale), Math.round(h * scale));
   canvas.getContext('2d')!.drawImage(img, x * scale, y * scale, w * scale, h * scale, 0, 0, canvas.width, canvas.height);

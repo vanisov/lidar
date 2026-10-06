@@ -3,7 +3,9 @@
 ## [1.0.0] - 2026-10-02
 
 ### Added
-- Measure any element: size, padding, margin, and distances to other elements (hold Alt).
+- Measure any element: size, padding, margin, and distances to other elements (hold ⌥ on a Mac, Alt elsewhere).
+- Spread: lines from the cursor to the nearest edge in each direction, stopping at what you see (Visual) or at element boxes (Layout).
+- Numbered rulers, with the cursor's position marked on both.
 - Rulers with crosshair and cursor coordinates.
 - Inspector: box model, font, colors, contrast grade, computed styles, breadcrumb, and arrow-key tree navigation.
 - Copy any value, Copy CSS, element screenshots, and Copy for AI (a markdown brief plus screenshot).
