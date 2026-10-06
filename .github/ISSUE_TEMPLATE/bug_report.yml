@@ -1,0 +1,38 @@
+name: Bug report
+description: Something in Lidar is wrong or broken
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What did you see, and what did you expect instead? Screenshots help.
+    validations:
+      required: true
+  - type: input
+    id: page
+    attributes:
+      label: Page URL
+      description: The page you were inspecting, if it's public. Most bugs depend on the page.
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Open Lidar on the page
+        2. ...
+  - type: input
+    id: browser
+    attributes:
+      label: Browser and OS
+      placeholder: Chrome 141 on macOS 26.1
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Lidar version
+      description: chrome://extensions → Lidar
+      placeholder: "1.0.0"
+    validations:
+      required: true

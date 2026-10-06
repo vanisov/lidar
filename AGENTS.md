@@ -1,5 +1,7 @@
 # Instructions for AI agents
 
+Read [CONTRIBUTING.md](CONTRIBUTING.md) first. It applies to you too.
+
 ## Project map
 
 | File | What it does |
@@ -21,4 +23,7 @@
 - No functional text below 11 px.
 - No new runtime dependencies, no analytics, no network requests.
 - Run `npm run typecheck && npm test && npm run e2e` before committing.
-- Commits follow Conventional Commits.
+- Commits and PR titles follow Conventional Commits (see CONTRIBUTING.md).
+- User-facing changes add a line under `## [Unreleased]` in CHANGELOG.md.
+- Don't tag, upload to the Chrome Web Store, or edit `version` outside a release PR: merging a PR with a new
+  `## [X.Y.Z]` changelog section releases it (see docs/RELEASING.md). Never merge your own PRs.

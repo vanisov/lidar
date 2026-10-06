@@ -76,7 +76,7 @@ Lidar collects no user data. Tick no data types, then tick all three certificati
 ## URLs
 
 - Homepage and support: https://github.com/vanisov/lidar
-- Privacy policy: https://github.com/vanisov/lidar/blob/master/PRIVACY.md
+- Privacy policy: https://github.com/vanisov/lidar/blob/main/PRIVACY.md
 
 ## Images
 

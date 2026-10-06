@@ -1,6 +1,15 @@
 # lidar
 
+<p>
+  <a href="https://github.com/vanisov/lidar/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/vanisov/lidar/ci.yml?branch=main&label=ci&labelColor=333333&color=666666" alt="CI status" /></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-666666?labelColor=333333" alt="MIT license" /></a>
+  <img src="https://img.shields.io/badge/Chrome-MV3-666666?labelColor=333333&logo=googlechrome&logoColor=white" alt="Chrome Manifest V3" />
+  <a href="https://github.com/vanisov/lidar/releases/latest"><img src="https://img.shields.io/github/v/release/vanisov/lidar?label=release&labelColor=333333&color=666666" alt="latest release" /></a>
+</p>
+
 Precision inspection for the web. Free, forever.
+
+<p><img src="store/out/1-inspect.png" alt="Lidar inspecting a button: the outline, size and the inspector panel with box model, font, colors and contrast" width="640" /></p>
 
 Lidar measures and inspects anything on a web page: sizes, spacing, distances, colors, and computed CSS. It's a
 free, open-source alternative to paid inspector extensions, and a sibling of [Sonar](https://github.com/vanisov/sonar).
@@ -31,6 +40,11 @@ npm test               # unit tests
 npm run e2e            # end-to-end tests against the real extension
 npm run package        # lidar.zip for the Chrome Web Store
 ```
+
+## Contributing
+
+Issues and PRs are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md) first; releases are described in
+[docs/RELEASING.md](docs/RELEASING.md).
 
 ## License
 

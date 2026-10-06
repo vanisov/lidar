@@ -1,5 +1,10 @@
 # Changelog
 
+All notable changes to Lidar. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and
+versions follow [Semantic Versioning](https://semver.org).
+
+## [Unreleased]
+
 ## [1.0.0] - 2026-10-02
 
 ### Added
@@ -16,3 +21,6 @@
 - iframes are measured and pinned as one box.
 - Elements inside web components (open shadow DOM) can be inspected.
 - Lidar stays on top of, and usable over, page dialogs and popovers.
+
+[Unreleased]: https://github.com/vanisov/lidar/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/vanisov/lidar/releases/tag/v1.0.0
