@@ -12,19 +12,6 @@ const { class: cls, ...rest } = Astro.props;
 </button>
 
 <script>
-  const root = document.documentElement;
-  const button = document.querySelector<HTMLButtonElement>('.theme-toggle')!;
-  const label = () => button.setAttribute('aria-label', `Switch to ${root.dataset.theme === 'dark' ? 'light' : 'dark'} theme`);
-  label();
-  button.addEventListener('click', () => {
-    root.dataset.theme = root.dataset.theme === 'dark' ? 'light' : 'dark';
-    try { localStorage.setItem('theme', root.dataset.theme); } catch {}
-    label();
-  });
-  // Follow system changes until the visitor picks a theme themselves.
-  matchMedia('(prefers-color-scheme: light)').addEventListener('change', (e) => {
-    let saved = null;
-    try { saved = localStorage.getItem('theme'); } catch {}
-    if (!saved) { root.dataset.theme = e.matches ? 'light' : 'dark'; label(); }
-  });
+  import { initThemeToggle } from '../scripts/themeToggle';
+  initThemeToggle(document.querySelector<HTMLButtonElement>('.theme-toggle')!);
 </script>

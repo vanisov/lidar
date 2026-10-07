@@ -10,6 +10,9 @@
   --color-acc: light-dark(#f74f2a, #ff5a36);
   --color-acc-soft: light-dark(#c4361a, #ff8a6e);
   --color-on-acc: #121110;
+  --color-acc-edge: #b8381a;
+  --color-key: light-dark(#ffffff, #2f2b28);
+  --color-key-edge: light-dark(#d8d3cb, #4a4541);
   --font-sans: "Archivo Variable", system-ui, sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
   --ease-snap: cubic-bezier(.2, .8, .2, 1);
@@ -54,20 +57,20 @@ html[data-theme="light"] .when-dark, html[data-theme="dark"] .when-light, html:n
 .btn:active { translate: 0 5px; box-shadow: 0 0 0 var(--edge), inset 0 0 0 1px var(--ring, transparent); }
 .btn-end { display: grid; place-items: center; padding: 8px 10px; border-radius: 7px; }
 .btn svg { width: 16px; height: 16px; }
-.btn-primary { --edge: #b8381a; background: var(--color-acc); color: var(--color-on-acc); }
+.btn-primary { --edge: var(--color-acc-edge); background: var(--color-acc); color: var(--color-on-acc); }
 .btn-primary .btn-end { background: color-mix(in srgb, var(--color-on-acc) 14%, transparent); box-shadow: inset 0 -2px 0 color-mix(in srgb, var(--color-on-acc) 20%, transparent); }
-.btn-ghost { --edge: light-dark(#d8d3cb, #4a4541); --ring: var(--color-line); background: light-dark(#ffffff, #2f2b28); color: var(--color-ink); }
+.btn-ghost { --edge: var(--color-key-edge); --ring: var(--color-line); background: var(--color-key); color: var(--color-ink); }
 .btn-ghost .btn-end { background: var(--color-page); color: var(--color-muted); box-shadow: inset 0 -2px 0 var(--color-line); }
 .btn-ghost svg { rotate: -45deg; }
 
 @media (max-width: 767px) { .btn { width: 100%; } }
 
-/* ---- Fig. 2 tabs: small keycaps; panels share one grid cell and crossfade ---- */
-.tool-tab { display: inline-flex; align-items: center; gap: 10px; height: 44px; padding: 0 8px 0 16px; border-radius: 10px; cursor: pointer; font: 700 15px/1 var(--font-sans); color: var(--color-ink); background: light-dark(#ffffff, #2f2b28); box-shadow: 0 4px 0 light-dark(#d8d3cb, #4a4541), inset 0 0 0 1px var(--color-line); transition: translate .1s, box-shadow .1s, background-color .15s, color .15s; }
-.tool-tab:not(:has(kbd)) { padding-right: 16px; }
-.tool-tab kbd { font: 600 12px/1 var(--font-mono); padding: 6px 7px; border-radius: 6px; background: var(--color-page); color: var(--color-muted); box-shadow: inset 0 -2px 0 var(--color-line); }
-.tool-tab:hover { translate: 0 2px; box-shadow: 0 2px 0 light-dark(#d8d3cb, #4a4541), inset 0 0 0 1px var(--color-line); }
-.tool-tab[aria-selected="true"] { translate: 0 4px; background: var(--color-acc); color: var(--color-on-acc); box-shadow: 0 0 0 #b8381a; }
+/* ---- small keycaps (Fig. 2 tabs, the demo's pause button); tab panels share one grid cell and crossfade ---- */
+.keycap { display: inline-flex; align-items: center; gap: 10px; height: 44px; padding: 0 8px 0 16px; border-radius: 10px; cursor: pointer; font: 700 15px/1 var(--font-sans); color: var(--color-ink); background: var(--color-key); box-shadow: 0 4px 0 var(--color-key-edge), inset 0 0 0 1px var(--color-line); transition: translate .1s, box-shadow .1s, background-color .15s, color .15s; }
+.keycap:not(:has(kbd)) { padding-right: 16px; }
+.keycap kbd { font: 600 12px/1 var(--font-mono); padding: 6px 7px; border-radius: 6px; background: var(--color-page); color: var(--color-muted); box-shadow: inset 0 -2px 0 var(--color-line); }
+.keycap:hover { translate: 0 2px; box-shadow: 0 2px 0 var(--color-key-edge), inset 0 0 0 1px var(--color-line); }
+.tool-tab[aria-selected="true"] { translate: 0 4px; background: var(--color-acc); color: var(--color-on-acc); box-shadow: 0 0 0 var(--color-acc-edge); }
 .tool-tab[aria-selected="true"] kbd { background: color-mix(in srgb, var(--color-on-acc) 14%, transparent); color: var(--color-on-acc); }
 .demo-toggle.paused .when-playing { display: none; }
 .demo-toggle.paused .when-paused { display: block; }

@@ -9,3 +9,8 @@ const { as: Tag = 'section', band = false, reveal = true, class: cls, ...rest } 
 <Tag class:list={['row', { 'band bg-acc text-on-acc': band }]} {...rest}>
   <div class:list={['col', cls]} data-reveal={reveal ? '' : undefined}><slot /></div>
 </Tag>
+
+<script>
+  import { revealOnScroll } from '../scripts/reveal';
+  revealOnScroll();
+</script>

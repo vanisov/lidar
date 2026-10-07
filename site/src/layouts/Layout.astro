@@ -47,12 +47,5 @@ const url = new URL(Astro.url.pathname, Astro.site);
   <Footer />
   <MeasureOverlay />
 
-  <script>
-    // Reveal each [data-reveal] block once as it scrolls in (see the motion rules in global.css).
-    const io = new IntersectionObserver((entries) => {
-      for (const e of entries) if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
-    }, { threshold: 0.15 });
-    document.querySelectorAll('[data-reveal]').forEach((el) => io.observe(el));
-  </script>
 </body>
 </html>

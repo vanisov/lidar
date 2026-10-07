@@ -1,18 +1,20 @@
 ---
 import Row from './Row.astro';
 import Logo from './Logo.astro';
+import TitleCell from './TitleCell.astro';
 import ThemeToggle from './ThemeToggle.astro';
 import { STORE_URL } from '../links';
 
 // The drawing's title block.
-const cell = 'flex min-h-13 items-center border-r border-line px-6 py-4 no-underline last:border-r-0 max-md:px-4';
 ---
 <Row as="header" class="flex flex-wrap">
-  <a href="/" class:list={[cell, 'fade gap-3 font-sans text-[22px] leading-none font-extrabold font-stretch-125% hover:text-acc-soft']} translate="no">
+  <TitleCell as="a" href="/" class="fade gap-3 font-sans text-[22px] leading-none font-extrabold font-stretch-125% hover:text-acc-soft" translate="no">
     <Logo class="h-6 w-auto" />LIDAR
-  </a>
-  <span class:list={[cell, 'label fade ml-auto border-l max-sm:hidden']} style="--i:1">Rev 1.0</span>
-  <span class:list={[cell, 'label fade max-sm:ml-auto max-sm:border-l']} style="--i:2">Price&nbsp;<span class="text-acc">$0.00</span></span>
+  </TitleCell>
+  <TitleCell class="label fade ml-auto border-l max-sm:hidden" style="--i:1">Rev 1.0</TitleCell>
+  <TitleCell class="label fade max-sm:ml-auto max-sm:border-l" style="--i:2">Price&nbsp;<span class="text-acc">$0.00</span></TitleCell>
   <ThemeToggle class="fade flex min-h-13 w-13 items-center border-r border-line" style="--i:3" />
-  <a href={STORE_URL} class:list={[cell, 'label fade gap-2.5 bg-acc font-semibold text-on-acc transition-colors hover:bg-ink hover:text-page max-sm:w-full max-sm:justify-center']} style="--i:4" data-measure>Add to Chrome <span aria-hidden="true">→</span></a>
+  <TitleCell as="a" href={STORE_URL} class="label fade gap-2.5 bg-acc font-semibold text-on-acc transition-colors hover:bg-ink hover:text-page max-sm:w-full max-sm:justify-center" style="--i:4" data-measure>
+    Add to Chrome <span aria-hidden="true">→</span>
+  </TitleCell>
 </Row>

@@ -7,3 +7,8 @@ type Props = HTMLAttributes<'span'>;
 const { class: cls, ...rest } = Astro.props;
 ---
 <span class:list={['note', cls]} aria-hidden="true" translate="no" {...rest}><slot /></span>
+
+<script>
+  import { watchAnnotations } from '../scripts/annotations';
+  watchAnnotations();
+</script>

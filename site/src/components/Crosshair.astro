@@ -1,0 +1,12 @@
+---
+// Dashed guides and page coordinates following the cursor over the element marked data-crosshair.
+---
+<div class="cross border-l border-dashed border-acc/50" aria-hidden="true"></div>
+<div class="cross border-t border-dashed border-acc/50" aria-hidden="true"></div>
+<div class="cross rounded bg-acc px-1.5 py-1 font-mono text-xs leading-none font-semibold text-on-acc" aria-hidden="true"></div>
+
+<script>
+  import { startCrosshair } from '../scripts/crosshair';
+  const area = document.querySelector<HTMLElement>('[data-crosshair]');
+  if (area && matchMedia('(pointer: fine)').matches) startCrosshair(area, [...document.querySelectorAll<HTMLElement>('.cross')]);
+</script>

@@ -1,0 +1,6 @@
+---
+// An underlined link inside running text. `external` opens a new tab and says so to screen readers.
+interface Props { href: string; external?: boolean }
+const { href, external = false } = Astro.props;
+---
+<a href={href} target={external ? '_blank' : undefined} rel={external ? 'noopener' : undefined} class="underline decoration-line underline-offset-4 transition-colors hover:text-acc-soft hover:decoration-acc"><slot />{external && <span class="sr-only"> (opens in a new tab)</span>}</a>

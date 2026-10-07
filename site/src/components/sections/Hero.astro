@@ -4,9 +4,11 @@ import Note from '../Note.astro';
 import Rise from '../Rise.astro';
 import Dimension from '../Dimension.astro';
 import Button from '../Button.astro';
+import Crosshair from '../Crosshair.astro';
 import { STORE_URL, REPO_URL } from '../../links';
 ---
 <Row class="flex flex-col gap-4.5 px-6 pt-14 pb-18">
+  <Crosshair />
   <div class="fade flex flex-wrap justify-between gap-4">
     <Note data-spec="#h1">&lt;h1&gt;</Note>
     <span class="label">Fig. 0 — hero · hover the headline</span>
