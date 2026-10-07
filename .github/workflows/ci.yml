@@ -6,7 +6,31 @@ on:
   pull_request:
 
 jobs:
+  # The extension's checks skip changes that only touch the website in site/ (it has its own workflow, site.yml).
+  # A skipped job still satisfies the required "build" check, so site-only PRs can merge.
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      extension: ${{ steps.diff.outputs.extension }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - id: diff
+        env:
+          BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: |
+          if [ -z "$BASE" ] || [ "$BASE" = "0000000000000000000000000000000000000000" ]; then
+            echo "extension=true" >> "$GITHUB_OUTPUT"
+          elif git diff --name-only "$BASE" "$GITHUB_SHA" | grep -qv '^site/'; then
+            echo "extension=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "extension=false" >> "$GITHUB_OUTPUT"
+          fi
+
   build:
+    needs: changes
+    if: needs.changes.outputs.extension == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
