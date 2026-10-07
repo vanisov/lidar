@@ -9,6 +9,8 @@ export const altHeld = signal(false);
 export const shiftHeld = signal(false);
 /** Set by the context menu: pin whatever is under the cursor on the next pointer move. */
 export const pinNext = signal(false);
+/** The tool whose options flyout is open in the dock, if any. */
+export const flyout = signal<string | null>(null);
 export const toastMsg = signal<{ text: string; n: number } | null>(null);
 
 let n = 0;

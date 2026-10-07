@@ -5,7 +5,7 @@ test('theme and units apply immediately and persist across sessions', async ({ p
   const panel = page.locator('lidar-root .panel');
   await panel.getByRole('button', { name: 'Settings' }).click();
   await panel.getByRole('radio', { name: 'Light' }).click();
-  await expect(page.locator('lidar-root .dock')).toHaveCSS('background-color', 'rgb(255, 255, 255)');
+  await expect(page.locator('lidar-root .dock')).toHaveCSS('background-color', 'rgb(251, 250, 247)');
   await panel.getByRole('radio', { name: 'rem' }).click();
 
   const b = (await page.locator('.cta').boundingBox())!;
@@ -15,7 +15,7 @@ test('theme and units apply immediately and persist across sessions', async ({ p
 
   await activate(); // close
   await activate(); // reopen
-  await expect(page.locator('lidar-root .dock')).toHaveCSS('background-color', 'rgb(255, 255, 255)');
+  await expect(page.locator('lidar-root .dock')).toHaveCSS('background-color', 'rgb(251, 250, 247)');
 });
 
 test('the rem base is validated', async ({ page, activate }) => {

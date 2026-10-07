@@ -23,7 +23,7 @@ const ctx = await esbuild.context({
   target: 'chrome120',
   minify: !test && !watch,
   sourcemap: test || watch ? 'inline' : false,
-  loader: { '.css': 'text' },
+  loader: { '.css': 'text', '.woff2': 'binary' },
   jsx: 'automatic',
   jsxImportSource: 'preact',
   define: { __TEST__: String(test) },

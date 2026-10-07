@@ -2,11 +2,12 @@ import { effect } from '@preact/signals';
 import { render } from 'preact';
 import css from './ui/styles.css';
 import { createHost } from './core/host';
+import { loadFonts } from './core/fonts';
 import { bindKeys } from './core/keys';
 import { startOverlay } from './core/overlay';
 import { loadSettings, settings } from './core/settings';
-import { altHeld, closeSearch, pinNext, pinned, toastMsg, tool } from './core/store';
-import { App } from './ui/App';
+import { altHeld, closeSearch, flyout, pinNext, pinned, toastMsg, tool } from './core/store';
+import { App } from './ui/app';
 
 export function mount(onClosed: () => void): { close(): void } {
   const host = createHost();
@@ -22,7 +23,7 @@ export function mount(onClosed: () => void): { close(): void } {
   wrap.append(layer, ui);
   host.root.append(wrap);
 
-  const cleanups: Array<() => void> = [];
+  const cleanups: Array<() => void> = [loadFonts()];
   cleanups.push(effect(() => {
     wrap.dataset.theme = settings.value.theme;
   }));
@@ -49,6 +50,7 @@ export function mount(onClosed: () => void): { close(): void } {
     closeSearch();
     toastMsg.value = null;
     altHeld.value = false;
+    flyout.value = null;
     host.destroy();
     onClosed();
   }

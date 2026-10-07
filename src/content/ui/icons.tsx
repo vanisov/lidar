@@ -18,3 +18,4 @@ export const icons = {
   chevronDown: svg('M6 9l6 6 6-6'),
   chevronRight: svg('M9 6l6 6-6 6'),
 };
+

@@ -1,9 +1,9 @@
 import type { Host } from '../core/host';
-import { Dock } from './Dock';
 import { search } from '../core/store';
-import { Panel } from './Panel';
-import { SearchBar } from './SearchBar';
-import { Toast } from './Toast';
+import { Dock } from './components/dock/dock';
+import { Panel } from './components/panel/panel';
+import { SearchBar } from './components/search-bar';
+import { Toast } from './components/toast';
 
 export function App({ host, onClose }: { host: Host; onClose(): void }) {
   return (

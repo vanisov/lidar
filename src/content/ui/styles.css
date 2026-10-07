@@ -1,21 +1,24 @@
+/* The site's palette: warm coal, bone and one orange (site/src/styles/global.css). "graphite" is the stored
+   name of the dark theme. Box-model tints keep the devtools convention: orange margin, green padding, blue content. */
 .lidar {
-  --bg: #1f1f1f; --bg2: #2a2a2a; --bg3: #2c2c2c; --hover: #ffffff12; --line: #ffffff14;
-  --text: #ececec; --muted: #a3a3a3; --acc: #ff5a36; --acc-text: #ff8a6e;
-  --core-bg: #4aa3ff30; --core-text: #a8d4ff; --ok: #6ad47a; --bad: #ff7a6a;
-  --shadow: 0 14px 44px #0006; --ruler: #1f1f1fee; --tick: #ffffff66;
+  --bg: #1b1917; --bg2: #24211e; --bg3: #2e2a27; --hover: #f2efe914; --line: #f2efe91f; --edge: #0c0b0a;
+  --text: #f2efe9; --muted: #a8a29a; --acc: #ff5a36; --acc-text: #ff8a6e; --on-acc: #121110;
+  --core-bg: #4aa3ff30; --core-text: #a8d4ff; --ok: #7bd88f; --bad: #ff8a7a;
+  --shadow: 0 18px 44px #0007, 0 2px 6px #0004; --ruler: #1b1917ee; --tick: #f2efe966;
   --bp: #ffb347;
-  --mono: "SF Mono", ui-monospace, Menlo, Consolas, monospace;
+  --mono: "Lidar Mono", "SF Mono", ui-monospace, Menlo, Consolas, monospace;
   font: 12px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
   color: var(--text);
   -webkit-font-smoothing: antialiased;
 }
 .lidar[data-theme="light"] {
-  --bg: #ffffff; --bg2: #f4f4f5; --bg3: #ececee; --hover: #0000000d; --line: #0000001a;
-  --text: #1d1d1f; --muted: #5f5f66; --acc-text: #c4361a;
+  --bg: #fbfaf7; --bg2: #f1eee8; --bg3: #e7e3db; --hover: #1412100d; --line: #1412101f; --edge: #d8d3cb;
+  --text: #141210; --muted: #6b655d; --acc-text: #c4361a;
   --core-bg: #4aa3ff26; --core-text: #1f5fa8; --ok: #1f7a35; --bad: #c4321f;
-  --shadow: 0 14px 44px #00000026; --ruler: #ffffffee; --tick: #00000059;
+  --shadow: 0 18px 44px #2b241a26, 0 2px 6px #2b241a14; --ruler: #fbfaf7ee; --tick: #14121059;
   --bp: #a35f00;
 }
+.lidar ::selection { background: var(--acc); color: var(--on-acc); }
 .ui { pointer-events: auto; }
 button { all: unset; box-sizing: border-box; cursor: pointer; }
 button:focus-visible, input:focus-visible { outline: 2px solid var(--acc); outline-offset: 1px; }
@@ -28,8 +31,8 @@ svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width:
 .hl { box-sizing: border-box; outline: 1.5px solid var(--acc); border-style: solid; border-color: #5ac46a40; }
 .hl::after { content: ""; position: absolute; inset: 0; background: #4aa3ff1a; }
 .pin { box-sizing: border-box; outline: 1.5px dashed var(--acc); }
-.pill { font: 600 11px/1 var(--mono); padding: 4px 6px; border-radius: 6px; background: var(--acc); color: #1a1a1a; white-space: nowrap; }
-.lnum { font: 600 11px/1 var(--mono); padding: 2px 4px; border-radius: 4px; background: #a970ff; color: #1a1a1a; white-space: nowrap; }
+.pill { font: 600 11px/1 var(--mono); padding: 4px 6px; border-radius: 6px; background: var(--acc); color: var(--on-acc); white-space: nowrap; }
+.lnum { font: 600 11px/1 var(--mono); padding: 2px 4px; border-radius: 4px; background: #a970ff; color: var(--on-acc); white-space: nowrap; }
 .dl { background: var(--acc); }
 .ov.shield { pointer-events: auto; }
 .rul {
@@ -53,12 +56,12 @@ svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width:
 .bp { width: 2px; height: 18px; background: var(--bp); }
 .bprange { background: color-mix(in srgb, var(--bp) 22%, transparent); }
 .rlab { font: 11px/1 var(--mono); color: var(--muted); white-space: nowrap; }
-.rpos { font: 600 11px/1 var(--mono); padding: 3px 4px; border-radius: 4px; background: var(--acc); color: #1a1a1a; white-space: nowrap; z-index: 2; }
+.rpos { font: 600 11px/1 var(--mono); padding: 3px 4px; border-radius: 4px; background: var(--acc); color: var(--on-acc); white-space: nowrap; z-index: 2; }
 .rlab.y, .rpos.y { writing-mode: vertical-rl; }
 .cross.x { height: 100vh; border-left: 1px dashed #ff5a3680; }
 .cross.y { width: 100vw; border-top: 1px dashed #ff5a3680; }
 
-/* ---- dock ---- */
+/* ---- dock: a tool palette. Tooltips name the tool and its key; a corner triangle marks a tool with options ---- */
 .dock {
   position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%);
   display: flex; align-items: center; gap: 2px; padding: 6px;
@@ -66,24 +69,37 @@ svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width:
   animation: dock-in .16s ease-out;
 }
 @keyframes dock-in { from { opacity: 0; transform: translateX(-50%) scale(.96); } }
-.dock button { position: relative; width: 34px; height: 34px; border-radius: 10px; display: grid; place-items: center; color: var(--muted); transition: background .12s, color .12s; }
+.slot { position: relative; display: grid; }
+.dock button { position: relative; width: 34px; height: 34px; border-radius: 10px; display: grid; place-items: center; color: var(--muted); transition: background-color .12s, color .12s; }
 .dock button:hover { background: var(--hover); color: var(--text); }
-.dock button[aria-pressed="true"] { background: var(--acc); color: #1a1a1a; }
+.dock button[aria-pressed="true"] { background: var(--acc); color: var(--on-acc); }
 .dock button.toggle[aria-pressed="true"] { background: var(--hover); color: var(--text); }
-.dock button[data-tip]:hover::after, .dock button[data-tip]:focus-visible::after {
-  content: attr(data-tip); position: absolute; bottom: 44px; left: 50%; transform: translateX(-50%);
-  white-space: pre; background: var(--bg); color: var(--text); font-size: 11px; font-weight: 500;
-  padding: 5px 8px; border-radius: 7px; box-shadow: var(--shadow), inset 0 0 0 1px var(--line);
+.corner { position: absolute; right: 4px; bottom: 4px; width: 5px; height: 5px; background: currentColor; clip-path: polygon(100% 0, 100% 100%, 0 100%); opacity: .75; }
+.tip {
+  position: absolute; bottom: calc(100% + 12px); left: 50%; transform: translateX(-50%) translateY(3px);
+  display: flex; align-items: center; gap: 6px; padding: 5px 5px 5px 9px; border-radius: 9px; white-space: nowrap;
+  background: var(--bg); color: var(--text); box-shadow: var(--shadow), inset 0 0 0 1px var(--line);
+  opacity: 0; visibility: hidden; pointer-events: none; transition: opacity .12s, transform .12s, visibility .12s;
 }
-.dock .badge {
-  position: absolute; right: 1px; bottom: 1px; font: 600 11px/1 var(--mono); padding: 1px 2px; border-radius: 4px;
-  background: var(--bg); color: var(--text); box-shadow: inset 0 0 0 1px var(--line);
+.tip b { font-weight: 600; }
+.tip em { font-style: normal; color: var(--muted); }
+.tip .or { color: var(--muted); margin-left: 2px; }
+.dock button:hover > .tip, .dock button:focus-visible > .tip { opacity: 1; visibility: visible; transform: translateX(-50%); transition-delay: .3s; }
+.slot.open .tip { display: none; }
+.flyout {
+  position: absolute; bottom: calc(100% + 12px); left: 50%; transform: translateX(-50%); min-width: 200px;
+  display: flex; flex-direction: column; gap: 2px; padding: 5px; border-radius: 12px;
+  background: var(--bg); box-shadow: var(--shadow), inset 0 0 0 1px var(--line); animation: fly-in .14s ease-out;
 }
+@keyframes fly-in { from { opacity: 0; transform: translateX(-50%) translateY(4px); } }
+.dock .flyout button { width: auto; height: auto; display: flex; align-items: center; gap: 10px; padding: 8px 10px; text-align: left; color: var(--text); }
+.flyout b { display: block; font-weight: 600; }
+.flyout small { display: block; font-size: 11px; color: var(--muted); }
+.flyout .dot { width: 8px; height: 8px; flex: none; border-radius: 50%; box-shadow: inset 0 0 0 1.5px var(--line); }
+.flyout [aria-checked="true"] .dot { background: var(--acc); box-shadow: none; }
 .sep { width: 1px; height: 20px; background: var(--line); margin: 0 4px; }
-.brand { display: flex; align-items: center; gap: 3px; height: 34px; padding: 0 8px 0 6px; }
-.brand i { width: 4px; border-radius: 2px; background: var(--text); }
-.brand i:nth-child(3) { background: var(--muted); }
-.brand b { width: 5px; height: 5px; border-radius: 50%; background: var(--acc); align-self: flex-start; margin-top: 7px; }
+.mark { display: grid; place-items: center; width: 34px; height: 34px; color: var(--text); }
+.mark .mark-svg { width: 20px; height: 20px; }
 
 /* ---- panel ---- */
 .panel {
@@ -120,10 +136,10 @@ svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width:
 .btns { display: flex; gap: 6px; margin-top: 12px; }
 .btns button { flex: 1; text-align: center; padding: 8px 0; border-radius: 9px; font-weight: 600; font-size: 12px; background: var(--bg3); color: var(--text); }
 .btns button:hover { filter: brightness(1.12); }
-.btns button.pri { background: var(--acc); color: #1a1a1a; }
+.btns button.pri { background: var(--acc); color: var(--on-acc); }
 .empty { color: var(--muted); line-height: 1.7; padding: 2px 0 4px; }
 .empty b { color: var(--text); }
-kbd { font: 600 11px var(--mono); background: var(--bg3); color: var(--text); border-radius: 5px; padding: 1px 5px; box-shadow: inset 0 -1px 0 #0004; }
+kbd { font: 600 11px/1 var(--mono); background: var(--bg3); color: var(--text); border-radius: 5px; padding: 3px 5px 4px; box-shadow: inset 0 -2px 0 var(--edge), inset 0 0 0 1px var(--line); }
 .settings .r { padding: 8px 0; }
 .seg { display: inline-flex; gap: 2px; padding: 2px; background: var(--bg2); border-radius: 8px; }
 .seg button { padding: 4px 10px; border-radius: 6px; font-size: 12px; color: var(--muted); }

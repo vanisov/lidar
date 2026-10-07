@@ -1,0 +1,20 @@
+---
+import Row from './row.astro';
+import TitleCell from './title-cell.astro';
+import TextLink from '../ui/text-link.astro';
+import { REPO_URL, LICENSE_URL, AUTHOR_URL } from '../../config/links';
+
+const links = [
+  { href: REPO_URL, text: 'GitHub' },
+  { href: '/privacy', text: 'Privacy' },
+  { href: '/changelog', text: 'Changelog' },
+];
+---
+<Row as="footer" class="flex flex-wrap" reveal={false}>
+  <TitleCell as="p" class="label m-0 grow basis-70 flex-wrap gap-x-2">
+    <span>© {new Date().getFullYear()}</span><span aria-hidden="true">·</span>
+    <span>Crafted by <TextLink href={AUTHOR_URL} external>Vlad Anisov</TextLink></span><span aria-hidden="true">·</span>
+    <TextLink href={LICENSE_URL}>MIT licensed</TextLink>
+  </TitleCell>
+  {links.map((l) => <TitleCell as="a" href={l.href} class="label hover:text-acc-soft">{l.text}</TitleCell>)}
+</Row>

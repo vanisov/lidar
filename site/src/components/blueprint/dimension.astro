@@ -1,0 +1,15 @@
+---
+import Note from './note.astro';
+
+// A drafting dimension line that reads its target's live width (x) or height (y).
+interface Props { target: string; axis?: 'x' | 'y'; class?: string }
+const { target, axis = 'x', class: cls } = Astro.props;
+const x = axis === 'x';
+---
+<div class:list={['note flex items-center', x ? 'gap-2.5' : 'w-5 flex-col gap-2', cls]} aria-hidden="true">
+  <span class:list={['bg-acc', x ? 'h-3.5 w-px' : 'h-px w-3.5']}></span>
+  <span class:list={['grow flex-1 bg-acc', x ? 'x h-px origin-right' : 'y w-px origin-bottom']}></span>
+  <Note data-dim={`#${target} ${x ? 'w' : 'h'}`} class:list={{ '[writing-mode:vertical-rl]': !x }}>— px</Note>
+  <span class:list={['grow flex-1 bg-acc', x ? 'x h-px origin-left' : 'y w-px origin-top']}></span>
+  <span class:list={['bg-acc', x ? 'h-3.5 w-px' : 'h-px w-3.5']}></span>
+</div>

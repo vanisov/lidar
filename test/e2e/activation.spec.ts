@@ -22,7 +22,9 @@ test('Lidar is styled under a strict CSP and ignores hostile page CSS', async ({
   await page.evaluate(() => scrollTo(0, 600));
   await activate();
   const dock = page.locator('lidar-root .dock');
-  await expect(dock).toHaveCSS('background-color', 'rgb(31, 31, 31)');
+  await expect(dock).toHaveCSS('background-color', 'rgb(27, 25, 23)');
+  // The bundled mono face loads from bytes, so the page's CSP can't block it.
+  await expect.poll(() => page.evaluate(() => [...document.fonts].filter(f => f.family.includes('Lidar Mono') && f.status === 'loaded').length)).toBe(2);
   expect(await dock.evaluate(el => getComputedStyle(el).fontFamily)).not.toContain('Comic Sans');
   const box = (await dock.boundingBox())!;
   expect(box.y + box.height).toBeGreaterThan(800 - 40);
@@ -159,6 +161,6 @@ test('key hints say ⌥ on a Mac and Alt everywhere else', async ({ page, activa
     return /mac/i.test(n.userAgentData?.platform ?? n.platform);
   });
   const alt = mac ? '⌥' : 'Alt';
-  await expect(page.locator('lidar-root [data-tool="distance"]')).toHaveAttribute('data-tip', new RegExp(`hold ${alt}\\)`));
+  await expect(page.locator('lidar-root [data-tool="distance"] .tip')).toContainText(`or hold${alt}`);
   await expect(page.locator('lidar-root .panel .empty kbd').first()).toHaveText(alt);
 });

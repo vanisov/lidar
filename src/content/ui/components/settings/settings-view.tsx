@@ -1,17 +1,6 @@
-import { KEYS } from '../core/platform';
-import { saveSettings, settings } from '../core/settings';
-
-function Seg<T extends string>(props: { name: string; value: T; options: [T, string][]; onChange(v: T): void }) {
-  return (
-    <div class="seg" role="radiogroup" aria-label={props.name}>
-      {props.options.map(([v, text]) => (
-        <button key={v} role="radio" aria-checked={v === props.value} onClick={() => props.onChange(v)}>
-          {text}
-        </button>
-      ))}
-    </div>
-  );
-}
+import { KEYS } from '../../../core/platform';
+import { saveSettings, settings } from '../../../core/settings';
+import { Seg } from './seg';
 
 function Int(props: { label: string; value: number; min: number; max: number; unit?: string; onChange(v: number): void }) {
   return (
@@ -46,7 +35,7 @@ export function SettingsView() {
     <div class="settings">
       <div class="r">
         <span>Theme</span>
-        <Seg name="Theme" value={s.theme} options={[['graphite', 'Graphite'], ['light', 'Light']]} onChange={theme => saveSettings({ theme })} />
+        <Seg name="Theme" value={s.theme} options={[['graphite', 'Dark'], ['light', 'Light']]} onChange={theme => saveSettings({ theme })} />
       </div>
       <div class="r">
         <span>Units</span>

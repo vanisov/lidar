@@ -1,6 +1,6 @@
 import { useLayoutEffect, useRef, useState } from 'preact/hooks';
-import type { Host } from '../core/host';
-import { closeSearch, pinned, search } from '../core/store';
+import type { Host } from '../../core/host';
+import { closeSearch, pinned, search } from '../../core/store';
 
 export function SearchBar({ host }: { host: Host }) {
   const s = search.value;

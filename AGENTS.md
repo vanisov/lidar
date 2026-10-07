@@ -14,12 +14,13 @@ Read [CONTRIBUTING.md](CONTRIBUTING.md) first. It applies to you too.
 | `src/content/core/snapshot.ts`, `boxes.ts` | Spread's page pixels (Visual) and element boxes (Layout) |
 | `src/content/core/inspect.ts` | Reads an element from the DOM into `ElementInfo` |
 | `src/content/tools/registry.ts` | Dock tools; add new tools here |
-| `src/content/ui/` | Preact dock, panel, settings, toast, and `styles.css` tokens |
+| `src/content/ui/` | Preact UI: `components/` (dock, panel, settings), `hooks/`, `utils/`, and `styles.css` tokens |
 
 ## Rules
 
 - Nothing runs on a page until the user activates Lidar, and `Esc` must restore the page DOM exactly.
 - Keep Preact out of the overlay hot path.
+- Kebab-case file names, one component per file, and files grouped by concern (see CONTRIBUTING.md).
 - Load styles only through `adoptedStyleSheets` so strict page CSPs can't break Lidar.
 - No functional text below 11 px.
 - No new runtime dependencies, no analytics, no network requests.
