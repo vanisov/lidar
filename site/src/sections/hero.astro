@@ -1,11 +1,11 @@
 ---
-import Row from '../Row.astro';
-import Note from '../Note.astro';
-import Rise from '../Rise.astro';
-import Dimension from '../Dimension.astro';
-import Button from '../Button.astro';
-import Crosshair from '../Crosshair.astro';
-import { STORE_URL, REPO_URL } from '../../links';
+import Row from '../components/layout/row.astro';
+import Note from '../components/blueprint/note.astro';
+import Rise from '../components/ui/rise.astro';
+import Dimension from '../components/blueprint/dimension.astro';
+import Button from '../components/ui/button.astro';
+import Crosshair from '../components/overlay/crosshair.astro';
+import { STORE_URL, REPO_URL } from '../config/links';
 ---
 <Row class="flex flex-col gap-4.5 px-6 pt-14 pb-18">
   <Crosshair />

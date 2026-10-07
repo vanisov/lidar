@@ -1,10 +1,6 @@
-type Rect = { x: number; y: number; w: number; h: number };
+import { easeOut, lerpRect, type Rect } from '../utils/motion';
 
 const GLIDE_MS = 240;
-const easeOut = (k: number) => 1 - (1 - k) ** 3;
-const lerp = (a: Rect, b: Rect, e: number): Rect => ({
-  x: a.x + (b.x - a.x) * e, y: a.y + (b.y - a.y) * e, w: a.w + (b.w - a.w) * e, h: a.h + (b.h - a.h) * e,
-});
 
 /**
  * Lidar's hover label on the site: hovering a `[data-measure]` element outlines it and shows its size
@@ -30,7 +26,7 @@ export function startMeasureLabel(box: HTMLElement) {
     const from = cur, start = performance.now();
     const step = (now: number) => {
       const k = Math.min(1, (now - start) / GLIDE_MS);
-      draw((cur = lerp(from, to, easeOut(k))));
+      draw((cur = lerpRect(from, to, easeOut(k))));
       if (k < 1) raf = requestAnimationFrame(step);
     };
     raf = requestAnimationFrame(step);

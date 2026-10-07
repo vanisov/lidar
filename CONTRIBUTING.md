@@ -49,6 +49,11 @@ src/content/ui/              Preact UI: app.tsx, icons.tsx, and styles.css token
 test/unit/                   Vitest, pure modules
 test/e2e/                    Playwright against a deliberately hostile fixture page
 store/                       Chrome Web Store screenshots and listing (`npm run store`)
+site/                        lidarcss.com, Astro + Tailwind (`cd site && npm run dev`)
+  src/sections/              the page's sections, top to bottom
+  src/components/            layout/ (header, footer, rows), ui/, blueprint/ (notes, dimensions), overlay/
+  src/scripts/               browser behavior, one module per component that needs it
+  src/utils/, src/config/    pure helpers; links
 ```
 
 - File and folder names are kebab-case (`tool-button.tsx`, `use-menu.ts`); one component per file.

@@ -1,14 +1,14 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import Hero from '../components/sections/Hero.astro';
-import DemoVideo from '../components/sections/DemoVideo.astro';
-import Features from '../components/sections/Features.astro';
-import PriceBand from '../components/sections/PriceBand.astro';
-import Tools from '../components/sections/Tools.astro';
-import Roadmap from '../components/sections/Roadmap.astro';
-import Closer from '../components/sections/Closer.astro';
+import BaseLayout from '../layouts/base-layout.astro';
+import Hero from '../sections/hero.astro';
+import DemoVideo from '../sections/demo-video.astro';
+import Features from '../sections/features.astro';
+import PriceBand from '../sections/price-band.astro';
+import Tools from '../sections/tools.astro';
+import Roadmap from '../sections/roadmap.astro';
+import Closer from '../sections/closer.astro';
 ---
-<Layout
+<BaseLayout
   title="Lidar: measure and inspect any web page, free"
   description="A free, open-source Chrome extension that measures sizes, spacing, distances and colors on any page and reads you the computed CSS. No account, no paywall."
 >
@@ -19,4 +19,4 @@ import Closer from '../components/sections/Closer.astro';
   <Tools />
   <Roadmap />
   <Closer />
-</Layout>
+</BaseLayout>

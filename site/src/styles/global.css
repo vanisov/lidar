@@ -51,7 +51,7 @@ html[data-theme="light"] .when-dark, html[data-theme="dark"] .when-light, html:n
 
 .m-box.pill-only { outline-color: transparent; background-color: transparent; }
 
-/* ---- buttons: keycaps that press down; Lidar's size label appears on hover (Button.astro) ---- */
+/* ---- buttons: keycaps that press down; Lidar's size label appears on hover (components/ui/button.astro) ---- */
 .btn { position: relative; display: inline-flex; align-items: center; justify-content: space-between; gap: 14px; height: 56px; padding: 0 10px 0 24px; border-radius: 12px; text-decoration: none; font: 700 17px/1 var(--font-sans); font-stretch: 108%; box-shadow: 0 5px 0 var(--edge), inset 0 0 0 1px var(--ring, transparent); transition: translate .1s, box-shadow .1s; }
 .btn:hover { translate: 0 2px; box-shadow: 0 3px 0 var(--edge), inset 0 0 0 1px var(--ring, transparent); }
 .btn:active { translate: 0 5px; box-shadow: 0 0 0 var(--edge), inset 0 0 0 1px var(--ring, transparent); }

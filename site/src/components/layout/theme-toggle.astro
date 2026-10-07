@@ -1,6 +1,6 @@
 ---
 // Switches between light and dark. The choice is kept in localStorage; until one is made the
-// page follows the system theme (Layout's head script sets data-theme before first paint).
+// page follows the system theme (base-layout.astro's head script sets data-theme before first paint).
 import type { HTMLAttributes } from 'astro/types';
 
 type Props = HTMLAttributes<'button'>;
@@ -12,6 +12,6 @@ const { class: cls, ...rest } = Astro.props;
 </button>
 
 <script>
-  import { initThemeToggle } from '../scripts/themeToggle';
+  import { initThemeToggle } from '../../scripts/theme-toggle';
   initThemeToggle(document.querySelector<HTMLButtonElement>('.theme-toggle')!);
 </script>

@@ -1,11 +1,11 @@
 ---
 import { Image } from 'astro:assets';
-import Row from '../Row.astro';
-import Caption from '../Caption.astro';
-import distance from '../../../../store/out/3-distance.png';
-import spread from '../../../../store/out/2-spread.png';
-import copyForAi from '../../../../store/out/5-copy-for-ai.png';
-import light from '../../../../store/out/4-light-rem.png';
+import Row from '../components/layout/row.astro';
+import Caption from '../components/ui/caption.astro';
+import distance from '../../../store/out/3-distance.png';
+import spread from '../../../store/out/2-spread.png';
+import copyForAi from '../../../store/out/5-copy-for-ai.png';
+import light from '../../../store/out/4-light-rem.png';
 
 // One large figure at a time, picked with keycap tabs (an ARIA tabs pattern; script below).
 const tools = [
@@ -35,6 +35,6 @@ const tools = [
 </Row>
 
 <script>
-  import { initTabs } from '../../scripts/tabs';
+  import { initTabs } from '../scripts/tabs';
   initTabs(document.querySelector<HTMLElement>('[role="tablist"]')!);
 </script>
