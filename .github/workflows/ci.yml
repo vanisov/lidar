@@ -6,7 +6,7 @@ on:
   pull_request:
 
 jobs:
-  # The extension's checks skip changes that only touch the website in site/ (it has its own workflow, site.yml).
+  # The extension's checks skip changes that only touch the website in site/ (Cloudflare builds and deploys it).
   # A skipped job still satisfies the required "build" check, so site-only PRs can merge.
   changes:
     runs-on: ubuntu-latest

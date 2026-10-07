@@ -1,6 +1,6 @@
 // The site/ Worker. It's static: wrangler serves the Astro build in dist/ as assets, with no Worker code.
-// .github/workflows/site.yml deploys it. (Without this file, `wrangler deploy` sets the project up itself and
-// converts it to server rendering.)
+// Cloudflare's Git integration deploys it (root directory: site, build watch paths: site/*). Without this
+// file, `wrangler deploy` sets the project up itself and converts it to server rendering.
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "lidar",
