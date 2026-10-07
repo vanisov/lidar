@@ -1,4 +1,4 @@
-import { KEYS } from '../core/platform';
+import { KEYS } from '../../../core/platform';
 
 /** What the inspector says before anything is pinned: how to use it. */
 export function PanelHint() {

@@ -1,10 +1,10 @@
 import { useRef } from 'preact/hooks';
-import { copyImage, copyText } from '../core/clipboard';
-import { aiBrief } from '../core/describe';
-import type { Host } from '../core/host';
-import type { ElementInfo } from '../core/describe';
-import { captureElement } from '../core/screenshot';
-import { toast } from '../core/store';
+import { copyImage, copyText } from '../../core/clipboard';
+import { aiBrief } from '../../core/describe';
+import type { Host } from '../../core/host';
+import type { ElementInfo } from '../../core/describe';
+import { captureElement } from '../../core/screenshot';
+import { toast } from '../../core/store';
 
 /**
  * Screenshot and Copy for AI. Copies the image (with the brief, for AI) and falls back step by step: a

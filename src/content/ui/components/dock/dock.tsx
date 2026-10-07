@@ -1,8 +1,8 @@
-import { TOOLS } from '../tools/registry';
-import { icons } from './icons';
-import { Mark } from './Mark';
-import { Tip } from './Tip';
-import { ToolButton } from './ToolButton';
+import { TOOLS } from '../../../tools/registry';
+import { icons } from '../../icons';
+import { Mark } from './mark';
+import { Tip } from './tip';
+import { ToolButton } from './tool-button';
 
 export function Dock({ onClose }: { onClose(): void }) {
   return (

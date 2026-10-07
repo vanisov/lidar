@@ -1,6 +1,6 @@
-import { KEYS } from '../core/platform';
-import { saveSettings, settings } from '../core/settings';
-import { Seg } from './Seg';
+import { KEYS } from '../../../core/platform';
+import { saveSettings, settings } from '../../../core/settings';
+import { Seg } from './seg';
 
 export function SettingsView() {
   const s = settings.value;

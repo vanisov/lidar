@@ -1,14 +1,14 @@
 import { useLayoutEffect, useMemo, useState } from 'preact/hooks';
-import { panelSide } from '../core/geometry';
-import type { Host } from '../core/host';
-import { describe } from '../core/inspect';
-import { pinned } from '../core/store';
-import { icons } from './icons';
-import { Inspection } from './Inspection';
-import { PanelHint } from './PanelHint';
-import { SettingsView } from './SettingsView';
-import { useDrag } from './useDrag';
-import { useShot } from './useShot';
+import { panelSide } from '../../../core/geometry';
+import type { Host } from '../../../core/host';
+import { describe } from '../../../core/inspect';
+import { pinned } from '../../../core/store';
+import { icons } from '../../icons';
+import { Inspection } from './inspection';
+import { PanelHint } from './panel-hint';
+import { SettingsView } from '../settings/settings-view';
+import { useDrag } from '../../hooks/use-drag';
+import { useShot } from '../../hooks/use-shot';
 
 const PANEL_WIDTH = 280;
 

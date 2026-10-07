@@ -1,5 +1,5 @@
-import { compactSides } from '../core/geometry';
-import type { ElementInfo } from '../core/describe';
+import { compactSides } from '../../../core/geometry';
+import type { ElementInfo } from '../../../core/describe';
 
 /** Margin around padding around the content size, devtools-style. */
 export function BoxModel({ info, fmt }: { info: ElementInfo; fmt(n: number): string }) {

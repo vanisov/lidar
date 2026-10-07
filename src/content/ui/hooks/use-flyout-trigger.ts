@@ -1,6 +1,6 @@
 import { useRef } from 'preact/hooks';
-import { flyout } from '../core/store';
-import type { Tool } from '../tools/registry';
+import { flyout } from '../../core/store';
+import type { Tool } from '../../tools/registry';
 
 const HOLD_MS = 350;
 

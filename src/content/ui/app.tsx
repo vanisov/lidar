@@ -1,7 +1,7 @@
 import type { Host } from '../core/host';
-import { Dock } from './Dock';
-import { Panel } from './Panel';
-import { Toast } from './Toast';
+import { Dock } from './components/dock/dock';
+import { Panel } from './components/panel/panel';
+import { Toast } from './components/toast';
 
 export function App({ host, onClose }: { host: Host; onClose(): void }) {
   return (

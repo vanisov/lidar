@@ -1,9 +1,9 @@
 import { useRef } from 'preact/hooks';
-import { flyout } from '../core/store';
-import type { Tool } from '../tools/registry';
-import { Flyout } from './Flyout';
-import { Tip } from './Tip';
-import { useFlyoutTrigger } from './useFlyoutTrigger';
+import { flyout } from '../../../core/store';
+import type { Tool } from '../../../tools/registry';
+import { Flyout } from './flyout';
+import { Tip } from './tip';
+import { useFlyoutTrigger } from '../../hooks/use-flyout-trigger';
 
 /** One dock tool: its icon, its tooltip and, for a tool with options, the corner triangle and flyout. */
 export function ToolButton({ tool }: { tool: Tool }) {

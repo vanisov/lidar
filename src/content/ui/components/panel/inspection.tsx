@@ -1,12 +1,12 @@
-import { contrast, grade, toHex } from '../core/color';
-import { cssRule, type ElementInfo } from '../core/describe';
-import { formatLength } from '../core/geometry';
-import { hasImageBackdrop } from '../core/inspect';
-import { settings } from '../core/settings';
-import { BoxModel } from './BoxModel';
-import { Breadcrumbs } from './Breadcrumbs';
-import { copyValue } from './copyValue';
-import { Row } from './Row';
+import { contrast, grade, toHex } from '../../../core/color';
+import { cssRule, type ElementInfo } from '../../../core/describe';
+import { formatLength } from '../../../core/geometry';
+import { hasImageBackdrop } from '../../../core/inspect';
+import { settings } from '../../../core/settings';
+import { BoxModel } from './box-model';
+import { Breadcrumbs } from './breadcrumbs';
+import { copyValue } from '../../utils/copy-value';
+import { Row } from './row';
 
 /** The inspector body for a pinned element: where it sits, its box, its styles, and the copy actions. */
 export function Inspection({ el, info, onShot }: { el: Element; info: ElementInfo; onShot(forAI: boolean): void }) {

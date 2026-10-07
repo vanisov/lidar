@@ -7,7 +7,7 @@ import { bindKeys } from './core/keys';
 import { startOverlay } from './core/overlay';
 import { loadSettings, settings } from './core/settings';
 import { altHeld, flyout, pinNext, pinned, toastMsg, tool } from './core/store';
-import { App } from './ui/App';
+import { App } from './ui/app';
 
 export function mount(onClosed: () => void): { close(): void } {
   const host = createHost();
