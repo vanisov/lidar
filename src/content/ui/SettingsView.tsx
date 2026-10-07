@@ -19,7 +19,7 @@ export function SettingsView() {
     <div class="settings">
       <div class="r">
         <span>Theme</span>
-        <Seg name="Theme" value={s.theme} options={[['graphite', 'Graphite'], ['light', 'Light']]} onChange={theme => saveSettings({ theme })} />
+        <Seg name="Theme" value={s.theme} options={[['graphite', 'Dark'], ['light', 'Light']]} onChange={theme => saveSettings({ theme })} />
       </div>
       <div class="r">
         <span>Units</span>

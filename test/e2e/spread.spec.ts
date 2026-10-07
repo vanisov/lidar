@@ -16,7 +16,7 @@ test('Spread in Visual mode stops at the cards on either side of a gap', async (
   await page.mouse.move(g.x, g.y);
   await page.keyboard.press('s');
   await expect(spreadBtn(page)).toHaveAttribute('aria-pressed', 'true');
-  await expect(spreadBtn(page).locator('.badge')).toHaveText('V');
+  await expect(spreadBtn(page)).toHaveAttribute('data-mode', 'visual');
   await page.mouse.move(g.x, g.y + 1);
   await expect(stop(page, 'left')).toHaveText(String(g.left));
   await expect(stop(page, 'right')).toHaveText(String(g.right));
@@ -28,7 +28,7 @@ test('Spread in Layout mode stops at element boxes, and S switches modes', async
   await page.mouse.move(g.x, g.y);
   await page.keyboard.press('s');
   await page.keyboard.press('s');
-  await expect(spreadBtn(page).locator('.badge')).toHaveText('L');
+  await expect(spreadBtn(page)).toHaveAttribute('data-mode', 'layout');
   await expect(page.locator('lidar-root .toast')).toHaveText('Spread: Layout');
   await page.mouse.move(g.x, g.y + 1);
   await frame(page);
@@ -41,10 +41,10 @@ test('the Spread mode is remembered across sessions', async ({ page, activate })
   await activate();
   await page.keyboard.press('s');
   await page.keyboard.press('s');
-  await expect(spreadBtn(page).locator('.badge')).toHaveText('L');
+  await expect(spreadBtn(page)).toHaveAttribute('data-mode', 'layout');
   await activate(); // close
   await activate(); // reopen
-  await expect(spreadBtn(page).locator('.badge')).toHaveText('L');
+  await expect(spreadBtn(page)).toHaveAttribute('data-mode', 'layout');
 });
 
 test('holding Shift in Measure mode spreads lines temporarily', async ({ page, activate }) => {
@@ -59,4 +59,22 @@ test('holding Shift in Measure mode spreads lines temporarily', async ({ page, a
   await frame(page);
   await expect(stop(page, 'left')).toBeHidden();
   await expect(page.locator('lidar-root [data-tool="measure"]')).toHaveAttribute('aria-pressed', 'true');
+});
+
+test('Spread options open from the corner flyout, and Esc closes the flyout before Lidar', async ({ page, activate }) => {
+  await activate();
+  await spreadBtn(page).click({ button: 'right' });
+  const menu = page.locator('lidar-root .flyout[role="menu"]');
+  await expect(menu).toBeVisible();
+  await expect(menu.getByRole('menuitemradio', { name: /Visual/ })).toHaveAttribute('aria-checked', 'true');
+  await menu.getByRole('menuitemradio', { name: /Layout/ }).click();
+  await expect(menu).toBeHidden();
+  await expect(spreadBtn(page)).toHaveAttribute('data-mode', 'layout');
+  await expect(spreadBtn(page)).toHaveAttribute('aria-pressed', 'true');
+
+  await spreadBtn(page).click({ button: 'right' });
+  await expect(menu).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(menu).toBeHidden();
+  await expect(page.locator('lidar-root .dock')).toBeVisible();
 });
