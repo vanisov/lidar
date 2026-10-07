@@ -5,6 +5,9 @@ versions follow [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Changed
+- New icon: an L-shaped ruler with an orange cursor dot, with a simpler version for the 16 px toolbar size.
+
 ### Fixed
 - Changing a setting right after opening Lidar (pressing R or S straight away) no longer resets your other saved
   settings, like the theme.

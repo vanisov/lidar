@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <!-- The 16 px cut: ruler ticks drop out (they'd be half-pixel smudges) and the dot grows to stay visible. -->
+  <rect x="4" y="4" width="120" height="120" rx="28" fill="#262321"/>
+  <path d="M40 36v52h48" fill="none" stroke="#f2efe9" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="84" cy="48" r="13" fill="#ff5a36"/>
+</svg>
