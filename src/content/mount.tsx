@@ -6,7 +6,7 @@ import { loadFonts } from './core/fonts';
 import { bindKeys } from './core/keys';
 import { startOverlay } from './core/overlay';
 import { loadSettings, settings } from './core/settings';
-import { altHeld, flyout, pinNext, pinned, toastMsg, tool } from './core/store';
+import { altHeld, closeSearch, flyout, pinNext, pinned, toastMsg, tool } from './core/store';
 import { App } from './ui/app';
 
 export function mount(onClosed: () => void): { close(): void } {
@@ -47,6 +47,7 @@ export function mount(onClosed: () => void): { close(): void } {
     pinned.value = null;
     tool.value = 'measure';
     pinNext.value = false;
+    closeSearch();
     toastMsg.value = null;
     altHeld.value = false;
     flyout.value = null;

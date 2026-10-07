@@ -5,13 +5,21 @@ versions follow [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Added
+- Flex and grid overlays: hover a flex or grid container to see its tracks, gaps and line numbers. Pin it to see its
+  layout in the panel.
+- Column grid (G): a design column grid over the page. Set columns, gutter, margin and max width in Settings.
+- Breakpoints: the page's media-query widths are marked on the top ruler, with the current range highlighted.
+- X-ray (X): outlines every element on screen.
+- Find by selector (/): highlights every match. Arrow keys step through them and Enter pins one.
+
 ### Changed
 - New icon: an L-shaped ruler with an orange cursor dot, with a simpler version for the 16 px toolbar size.
 - New look: warm dark and light themes, IBM Plex Mono for values and keys (bundled, so no network requests), and the new mark in the dock.
 - Dock tooltips show every tool's shortcut the same way. Spread's Visual / Layout choice moved from a letter badge to a corner flyout: press and hold or right-click the tool.
 
 ### Fixed
-- Changing a setting right after opening Lidar (pressing R or S straight away) no longer resets your other saved
+- Changing a setting right after opening or reopening Lidar (pressing R or S straight away) no longer resets your other saved
   settings, like the theme.
 
 ## [1.0.0] - 2026-10-02

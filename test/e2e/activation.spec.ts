@@ -80,8 +80,8 @@ test('the page keeps no keyup for a key Lidar handled', async ({ page, activate 
   });
   await activate();
   await page.keyboard.press('d');
-  await page.keyboard.press('x'); // not Lidar's: the page still gets it
-  expect(await page.evaluate(() => (window as unknown as { ups: string[] }).ups)).toEqual(['x']);
+  await page.keyboard.press('q'); // not Lidar's: the page still gets it
+  expect(await page.evaluate(() => (window as unknown as { ups: string[] }).ups)).toEqual(['q']);
 });
 
 test('if the page removes Lidar, the session ends and the toggle opens a fresh one', async ({ page, activate }) => {

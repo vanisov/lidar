@@ -31,10 +31,11 @@ Items marked ★ are features Screen Ruler doesn't have.
 | Release | Features |
 |---|---|
 | 1.0 | **Measure:** element size, padding/margin overlay, distance between elements, rulers and crosshair, keyboard tree navigation. **Inspect:** tag/id/classes and breadcrumb, box model, computed CSS, copy CSS, color picker, element screenshot, context menu entry, settings. ★ **Copy for AI:** one click copies a markdown brief of the pinned element (selector, DOM path, box model, key computed styles, text content) for pasting into Claude Code or Cursor. The element screenshot goes to the clipboard alongside it. |
-| 1.1 | **Layout:** flex/grid overlays, layout column grid overlay, breakpoint detection, X-ray mode (outline every element), CSS selector search. ★ **Debug detectives:** "Why can't I click this?" shows the element on top of the cursor and why (pointer-events, z-index, overlay). "What causes horizontal scroll?" finds and highlights elements wider than the viewport. A stacking-context and z-index explorer shows the stacking contexts above the pinned element and which property created each one. |
-| 1.2 | **Editing:** live CSS editor with @media support, floating compare for up to 4 elements, Tailwind class generator, source stylesheet browser. ★ **Annotate:** pin notes to elements, then export them all as one markdown fix-list (selectors, notes, screenshots) for a person or an AI agent. |
-| 1.3 | **Visual details:** box shadow, gradient, animation and transition visualization; typography analysis; asset extraction; canvas inspection. ★ **Design tokens:** extracts the page's palette, type scale, spacing scale, radii and shadows, grouped and deduplicated, and exports them as CSS custom properties, a Tailwind theme or JSON. ★ **Modern color:** values shown in HEX, RGB, HSL, OKLCH and Display P3. |
-| 1.4 | **Audits:** contrast and a11y issues, SEO and meta tags, social previews (Facebook, X, LinkedIn), page weight, technology detection, responsive device emulator. ★ **APCA contrast** alongside WCAG 2. ★ **Live CLS/LCP:** layout shifts flash where they happen, and the LCP element is marked. ★ **Emulation toggles:** dark mode, reduced motion, forced colors, print. |
+| 1.1 | **Layout:** flex/grid overlays, layout column grid overlay, breakpoint detection, X-ray mode (outline every element), CSS selector search. |
+| 1.2 | ★ **Debug detectives:** "Why can't I click this?" shows the element on top of the cursor and why (pointer-events, z-index, overlay). "What causes horizontal scroll?" finds and highlights elements wider than the viewport. A stacking-context and z-index explorer shows the stacking contexts above the pinned element and which property created each one. |
+| 1.3 | **Editing:** live CSS editor with @media support, floating compare for up to 4 elements, Tailwind class generator, source stylesheet browser. ★ **Annotate:** pin notes to elements, then export them all as one markdown fix-list (selectors, notes, screenshots) for a person or an AI agent. |
+| 1.4 | **Visual details:** box shadow, gradient, animation and transition visualization; typography analysis; asset extraction; canvas inspection. ★ **Design tokens:** extracts the page's palette, type scale, spacing scale, radii and shadows, grouped and deduplicated, and exports them as CSS custom properties, a Tailwind theme or JSON. ★ **Modern color:** values shown in HEX, RGB, HSL, OKLCH and Display P3. |
+| 1.5 | **Audits:** contrast and a11y issues, SEO and meta tags, social previews (Facebook, X, LinkedIn), page weight, technology detection, responsive device emulator. ★ **APCA contrast** alongside WCAG 2. ★ **Live CLS/LCP:** layout shifts flash where they happen, and the LCP element is marked. ★ **Emulation toggles:** dark mode, reduced motion, forced colors, print. |
 
 The device emulator and emulation toggles need `chrome.debugger`. Chrome shows a "Lidar is debugging this browser"
 banner while it's attached. That permission is declared optional and requested only the first time one of these tools
@@ -139,5 +140,5 @@ The approved mockup is at `.superpowers/brainstorm/*/content/visual-direction.ht
 
 ## Out of scope for 1.0
 
-Everything in releases 1.1 to 1.4. Also inspecting inside iframes, Firefox and Safari builds, and any account or sync
+Everything in releases 1.1 to 1.5. Also inspecting inside iframes, Firefox and Safari builds, and any account or sync
 features.

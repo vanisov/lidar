@@ -37,3 +37,19 @@ test('the rem base is validated', async ({ page, activate }) => {
   await frame(page);
   await expect(page.locator('lidar-root [data-ov="size"]')).toHaveText('20rem × 10rem');
 });
+
+test('column grid fields change the grid and reject out-of-range values', async ({ page, activate }) => {
+  await activate();
+  const panel = page.locator('lidar-root .panel');
+  await panel.getByRole('button', { name: 'Settings' }).click();
+  await panel.getByRole('radiogroup', { name: 'Column grid' }).getByRole('radio', { name: 'On' }).click();
+  const fills = () => page.locator('lidar-root [data-ov="paint"]').evaluate(c => JSON.parse((c as HTMLElement).dataset.scene!).fills);
+  await expect.poll(fills).toBe(12);
+  const cols = panel.getByLabel('Columns');
+  await cols.fill('6');
+  await expect.poll(fills).toBe(6);
+  await cols.fill('99');
+  await cols.blur();
+  await expect(cols).toHaveValue('6');
+  await expect.poll(fills).toBe(6);
+});

@@ -6,6 +6,7 @@ import { settings } from '../../../core/settings';
 import { BoxModel } from './box-model';
 import { Breadcrumbs } from './breadcrumbs';
 import { copyValue } from '../../utils/copy-value';
+import { LayoutRows } from './layout-rows';
 import { Row } from './row';
 
 /** The inspector body for a pinned element: where it sits, its box, its styles, and the copy actions. */
@@ -18,7 +19,6 @@ export function Inspection({ el, info, onShot }: { el: Element; info: ElementInf
   const styleOf = (prop: string) => info.styles.find(([k]) => k === prop)?.[1];
   const radius = styleOf('border-radius');
   const display = styleOf('display') ?? '';
-  const gap = styleOf('gap');
   return (
     <>
       <Breadcrumbs el={el} />
@@ -29,7 +29,7 @@ export function Inspection({ el, info, onShot }: { el: Element; info: ElementInf
       <Row name="Color" raw={toHex(info.color)}><i class="sw" style={{ background: toHex(info.color) }} />{toHex(info.color)}</Row>
       <Row name="Background" raw={toHex(info.background)}><i class="sw" style={{ background: toHex(info.background) }} />{toHex(info.background)}</Row>
       {radius && <Row name="Radius" raw={radius}>{radius}</Row>}
-      {/flex|grid/.test(display) && <Row name="Layout" raw={display}>{display}{gap ? ` · gap ${gap}` : ''}</Row>}
+      {/flex|grid/.test(display) && <LayoutRows el={el} display={display} />}
       <Row name="Contrast" raw={ratio.toFixed(2)}><span class={g === 'Fail' ? 'bad' : 'ok'} title={approx ? "Approximate: there's a background image behind this text" : undefined}>{approx ? '≈ ' : ''}{ratio.toFixed(1)} {g}</span></Row>
       <details class="computed">
         <summary>Computed styles · {info.styles.length}</summary>

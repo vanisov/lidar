@@ -1,6 +1,6 @@
 import type { ComponentChild } from 'preact';
-import { pinned, toast, tool } from '../core/store';
-import { saveSettings, settings } from '../core/settings';
+import { closeSearch, pinned, search, toast, tool } from '../core/store';
+import { saveSettings, settings, type Settings } from '../core/settings';
 import { KEYS } from '../core/platform';
 import { icons } from '../ui/icons';
 import { pickColor } from './color';
@@ -28,6 +28,14 @@ export interface Tool {
   isOn(): boolean;
   run(): void | Promise<void>;
 }
+
+const toggle = (key: 'rulers' | 'grid' | 'xray', name: string) => () => {
+  const on = !settings.value[key];
+  const patch: Partial<Settings> = {};
+  patch[key] = on; // a computed `{ [key]: on }` widens to an index signature that Partial<Settings> rejects
+  saveSettings(patch);
+  toast(`${name} ${on ? 'on' : 'off'}`);
+};
 
 const spreadMode = (mode: 'visual' | 'layout') => () => {
   tool.value = 'spread';
@@ -67,10 +75,12 @@ export const TOOLS: Tool[] = [
   { id: 'color', key: 'c', label: 'Color picker', icon: icons.color, isOn: () => tool.value === 'color', run: pickColor },
   {
     id: 'rulers', key: 'r', label: 'Rulers', toggle: true, icon: icons.rulers, isOn: () => settings.value.rulers,
-    run: () => {
-      const on = !settings.value.rulers;
-      saveSettings({ rulers: on });
-      toast(on ? 'Rulers on' : 'Rulers off');
-    },
+    run: toggle('rulers', 'Rulers'),
+  },
+  { id: 'grid', key: 'g', label: 'Column grid', toggle: true, icon: icons.grid, isOn: () => settings.value.grid, run: toggle('grid', 'Column grid') },
+  { id: 'xray', key: 'x', label: 'X-ray: outline every element', toggle: true, icon: icons.xray, isOn: () => settings.value.xray, run: toggle('xray', 'X-ray') },
+  {
+    id: 'search', key: '/', label: 'Find by CSS selector', toggle: true, icon: icons.search, isOn: () => search.value.open,
+    run: () => (search.value.open ? closeSearch() : (search.value = { ...search.value, open: true })),
   },
 ];

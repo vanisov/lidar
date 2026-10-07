@@ -5,6 +5,7 @@
   --text: #f2efe9; --muted: #a8a29a; --acc: #ff5a36; --acc-text: #ff8a6e; --on-acc: #121110;
   --core-bg: #4aa3ff30; --core-text: #a8d4ff; --ok: #7bd88f; --bad: #ff8a7a;
   --shadow: 0 18px 44px #0007, 0 2px 6px #0004; --ruler: #1b1917ee; --tick: #f2efe966;
+  --bp: #ffb347;
   --mono: "Lidar Mono", "SF Mono", ui-monospace, Menlo, Consolas, monospace;
   font: 12px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
   color: var(--text);
@@ -15,6 +16,7 @@
   --text: #141210; --muted: #6b655d; --acc-text: #c4361a;
   --core-bg: #4aa3ff26; --core-text: #1f5fa8; --ok: #1f7a35; --bad: #c4321f;
   --shadow: 0 18px 44px #2b241a26, 0 2px 6px #2b241a14; --ruler: #fbfaf7ee; --tick: #14121059;
+  --bp: #a35f00;
 }
 .lidar ::selection { background: var(--acc); color: var(--on-acc); }
 .ui { pointer-events: auto; }
@@ -24,11 +26,13 @@ svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width:
 
 /* ---- overlay ---- */
 .ov { position: fixed; left: 0; top: 0; display: none; pointer-events: none; will-change: transform; }
+.ov.paint { display: block; width: 100vw; height: 100vh; }
 .mar { background: repeating-linear-gradient(45deg, #f7a64a40 0 4px, #f7a64a1c 4px 8px); }
 .hl { box-sizing: border-box; outline: 1.5px solid var(--acc); border-style: solid; border-color: #5ac46a40; }
 .hl::after { content: ""; position: absolute; inset: 0; background: #4aa3ff1a; }
 .pin { box-sizing: border-box; outline: 1.5px dashed var(--acc); }
 .pill { font: 600 11px/1 var(--mono); padding: 4px 6px; border-radius: 6px; background: var(--acc); color: var(--on-acc); white-space: nowrap; }
+.lnum { font: 600 11px/1 var(--mono); padding: 2px 4px; border-radius: 4px; background: #a970ff; color: var(--on-acc); white-space: nowrap; }
 .dl { background: var(--acc); }
 .ov.shield { pointer-events: auto; }
 .rul {
@@ -49,6 +53,8 @@ svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width:
   background-size: 4px var(--minor), 8px var(--mid), 18px var(--major);
   background-repeat: repeat-y; background-position: 100% 0, 100% 0, 100% 0;
 }
+.bp { width: 2px; height: 18px; background: var(--bp); }
+.bprange { background: color-mix(in srgb, var(--bp) 22%, transparent); }
 .rlab { font: 11px/1 var(--mono); color: var(--muted); white-space: nowrap; }
 .rpos { font: 600 11px/1 var(--mono); padding: 3px 4px; border-radius: 4px; background: var(--acc); color: var(--on-acc); white-space: nowrap; z-index: 2; }
 .rlab.y, .rpos.y { writing-mode: vertical-rl; }
@@ -142,6 +148,17 @@ kbd { font: 600 11px/1 var(--mono); background: var(--bg3); color: var(--text); 
 .settings input[type="range"] { width: 96px; accent-color: var(--acc); vertical-align: middle; }
 .settings input:focus-visible { outline: 2px solid var(--acc); outline-offset: 1px; }
 .link { margin-top: 10px; color: var(--acc-text); font-size: 12px; }
+
+/* ---- search ---- */
+.search {
+  position: fixed; left: 50%; bottom: 70px; transform: translateX(-50%);
+  display: flex; align-items: center; gap: 8px; min-width: 340px; padding: 8px 12px;
+  background: var(--bg); border-radius: 12px; box-shadow: var(--shadow), inset 0 0 0 1px var(--line);
+  font: 12px var(--mono); color: var(--muted); animation: panel-in .16s ease-out;
+}
+.search input { all: unset; flex: 1; font: 12px var(--mono); color: var(--text); }
+.search input::placeholder { color: var(--muted); }
+.search .n { white-space: nowrap; }
 
 /* ---- toast ---- */
 .toast {

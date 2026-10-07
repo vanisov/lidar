@@ -14,6 +14,12 @@
   .row { display: flex; gap: 20px; padding: 0 64px; }
   .card { width: 200px; height: 100px; background: #fff; }
   .tall { height: 2400px; margin: 40px 64px; background: linear-gradient(#eee, #ccc); }
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; padding: 20px 64px; }
+  .grid > div { height: 60px; background: #fff; }
+  .wrap { display: flex; flex-wrap: wrap; gap: 12px; width: 300px; padding: 8px; margin: 0 64px 40px; }
+  .wrap > i { width: 80px; height: 40px; background: #ddd; }
+  @media (min-width: 768px) { .grid { outline: 0 solid transparent; } }
+  .hero { @media (min-width: 1100px) { outline: 0 solid transparent; } }
 </style>
 </head>
 <body>
@@ -24,5 +30,7 @@
   </section>
   <div class="row"><div class="card" id="c1">One</div><div class="card" id="c2">Two</div><div class="card" id="c3">Three</div></div>
   <div class="tall" id="tall"></div>
+  <div class="grid" id="grid"><div>A</div><div>B</div><div>C</div></div>
+  <div class="wrap" id="wrap"><i></i><i></i><i></i><i></i><i></i></div>
 </body>
 </html>
