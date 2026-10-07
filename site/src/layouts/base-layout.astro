@@ -9,6 +9,7 @@ import Footer from '../components/layout/footer.astro';
 import MeasureOverlay from '../components/overlay/measure-overlay.astro';
 import shot from '../../../store/out/1-inspect.png';
 import favicon from '../../../brand/icon.svg?url';
+import { pagePath } from '../utils/paths';
 
 interface Props { title: string; description: string }
 const { title, description } = Astro.props;
@@ -25,7 +26,7 @@ const url = new URL(Astro.url.pathname, Astro.site);
   <meta name="theme-color" content="#121110" media="(prefers-color-scheme: dark)">
   <link rel="canonical" href={url}>
   <link rel="icon" href={favicon} type="image/svg+xml">
-  <link rel="sitemap" href="/sitemap-index.xml">
+  <link rel="sitemap" href={pagePath('/sitemap-index.xml')}>
   <meta property="og:title" content={title}>
   <meta property="og:description" content={description}>
   <meta property="og:image" content={new URL(shot.src, Astro.site)}>

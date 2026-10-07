@@ -3,11 +3,12 @@ import Row from './row.astro';
 import TitleCell from './title-cell.astro';
 import TextLink from '../ui/text-link.astro';
 import { REPO_URL, LICENSE_URL, AUTHOR_URL } from '../../config/links';
+import { pagePath } from '../../utils/paths';
 
 const links = [
   { href: REPO_URL, text: 'GitHub' },
-  { href: '/privacy', text: 'Privacy' },
-  { href: '/changelog', text: 'Changelog' },
+  { href: pagePath('/privacy'), text: 'Privacy' },
+  { href: pagePath('/changelog'), text: 'Changelog' },
 ];
 ---
 <Row as="footer" class="flex flex-wrap" reveal={false}>
