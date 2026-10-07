@@ -1,0 +1,11 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+
+// One band of the blueprint: hatched gutters either side of the 1160px column.
+// Extra attributes go on the band; `class` styles the column inside it.
+interface Props extends HTMLAttributes<'section'> { as?: 'section' | 'header' | 'footer'; band?: boolean; reveal?: boolean }
+const { as: Tag = 'section', band = false, reveal = true, class: cls, ...rest } = Astro.props;
+---
+<Tag class:list={['row', { 'band bg-acc text-on-acc': band }]} {...rest}>
+  <div class:list={['col', cls]} data-reveal={reveal ? '' : undefined}><slot /></div>
+</Tag>

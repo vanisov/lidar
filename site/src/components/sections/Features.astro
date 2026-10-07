@@ -1,0 +1,28 @@
+---
+import Row from '../Row.astro';
+
+const features = [
+  { name: 'Measure', spec: 'Size, padding and margin of whatever you hover. Pin one, hold Alt, read the distance to the next.', keys: 'M · D' },
+  { name: 'Rulers & Spread', spec: 'Numbered rulers with your cursor marked. Spread shoots lines to the nearest edge, visual or layout. Pixels or rem.', keys: 'R · S' },
+  { name: 'Inspect', spec: 'Box model, font, colors, computed styles and a WCAG contrast grade. Arrow keys walk the DOM, into iframes and web components.', keys: '← ↑ → ↓' },
+  { name: 'Copy', spec: 'Any value in one click. A ready CSS rule, a crisp element screenshot, or a markdown brief for your AI coding tool.', keys: 'C' },
+];
+const cols = 'grid grid-cols-[72px_minmax(170px,1fr)_minmax(300px,2fr)_110px]';
+const cell = 'border-l border-line px-5 py-5.5 max-md:border-0 max-md:px-4';
+---
+<Row aria-label="Features" class="overflow-x-auto">
+  <dl>
+    <div class:list={[cols, 'fade label border-b border-line max-md:hidden']} aria-hidden="true">
+      <span class="px-6 py-4">Ref</span><span class="border-l border-line px-5 py-4">Feature</span><span class="border-l border-line px-5 py-4">Spec</span><span class="border-l border-line px-5 py-4">Key</span>
+    </div>
+    {features.map((f, i) => (
+      <div class:list={[cols, "fade border-b border-line text-[17px] transition-colors last:border-b-0 hover:bg-acc/6 max-md:grid-cols-[56px_1fr_auto] max-md:[grid-template-areas:'r_f_k'_'r_s_s']"]} style={`--i:${i + 1}`}>
+        <span class="px-6 py-5.5 font-mono text-base font-semibold text-acc max-md:px-4 max-md:[grid-area:r]" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+        <dt class:list={[cell, 'font-extrabold font-stretch-115% uppercase max-md:pb-0 max-md:[grid-area:f]']}>{f.name}</dt>
+        <dd class:list={[cell, 'leading-normal text-body max-md:pt-2 max-md:[grid-area:s]']}>{f.spec}</dd>
+        <dd class:list={[cell, 'font-mono text-[15px] font-semibold max-md:pb-0 max-md:text-muted max-md:[grid-area:k]']}><span class="sr-only">Shortcut: </span>{f.keys}</dd>
+      </div>
+    ))}
+  </dl>
+</Row>
+

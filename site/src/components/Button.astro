@@ -1,0 +1,12 @@
+---
+// A keycap that presses down (styles in global.css). Hovering shows Lidar's live size label
+// (data-measure="pill", drawn by MeasureOverlay).
+interface Props { href: string; ghost?: boolean; class?: string; style?: string }
+const { href, ghost = false, class: cls, style } = Astro.props;
+---
+<a href={href} style={style} data-measure="pill" class:list={['btn', ghost ? 'btn-ghost' : 'btn-primary', cls]}>
+  <span class="btn-label"><slot /></span>
+  <span class="btn-end">
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M2 8h11M9 4l4 4-4 4" /></svg>
+  </span>
+</a>

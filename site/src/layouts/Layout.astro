@@ -1,0 +1,58 @@
+---
+import '@fontsource-variable/archivo/standard.css';
+import '@fontsource/ibm-plex-mono/400.css';
+import '@fontsource/ibm-plex-mono/500.css';
+import '@fontsource/ibm-plex-mono/600.css';
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import MeasureOverlay from '../components/MeasureOverlay.astro';
+import shot from '../../../store/out/1-inspect.png';
+import favicon from '../../../brand/icon.svg?url';
+
+interface Props { title: string; description: string }
+const { title, description } = Astro.props;
+const url = new URL(Astro.url.pathname, Astro.site);
+---
+<!doctype html>
+<html lang="en" class="bg-page">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{title}</title>
+  <meta name="description" content={description}>
+  <meta name="theme-color" content="#f5f3ef" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#121110" media="(prefers-color-scheme: dark)">
+  <link rel="canonical" href={url}>
+  <link rel="icon" href={favicon} type="image/svg+xml">
+  <link rel="sitemap" href="/sitemap-index.xml">
+  <meta property="og:title" content={title}>
+  <meta property="og:description" content={description}>
+  <meta property="og:image" content={new URL(shot.src, Astro.site)}>
+  <meta property="og:url" content={url}>
+  <meta name="twitter:card" content="summary_large_image">
+  <script is:inline>
+    // Runs before first paint so there's no flash: a saved theme wins, else the system's.
+    const root = document.documentElement;
+    root.classList.add('js');
+    let theme = null;
+    try { theme = localStorage.getItem('theme'); } catch {}
+    root.dataset.theme = theme || (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+  </script>
+</head>
+<body class="bg-page font-sans text-ink antialiased">
+  <a href="#main" class="sr-only z-50 bg-acc font-semibold text-on-acc focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:px-4 focus:py-3">Skip to content</a>
+  <Header />
+  <main id="main"><slot /></main>
+  <Footer />
+  <MeasureOverlay />
+
+  <script>
+    // Reveal each [data-reveal] block once as it scrolls in (see the motion rules in global.css).
+    const io = new IntersectionObserver((entries) => {
+      for (const e of entries) if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+    }, { threshold: 0.15 });
+    document.querySelectorAll('[data-reveal]').forEach((el) => io.observe(el));
+  </script>
+</body>
+</html>

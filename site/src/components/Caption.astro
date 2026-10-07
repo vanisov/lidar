@@ -1,0 +1,10 @@
+---
+// The mono label row above a block: a title on the left, an aside (the slot) on the right.
+interface Props { title: string; heading?: boolean; class?: string }
+const { title, heading = false, class: cls } = Astro.props;
+const Title = heading ? 'h2' : 'span';
+---
+<div class:list={['fade label flex flex-wrap justify-between gap-4', cls]}>
+  <Title>{title}</Title>
+  <slot />
+</div>

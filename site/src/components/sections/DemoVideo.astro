@@ -1,0 +1,40 @@
+---
+import { getImage } from 'astro:assets';
+import Row from '../Row.astro';
+import Note from '../Note.astro';
+import Caption from '../Caption.astro';
+import demo from '../../../../store/out/demo.mp4?url';
+import still from '../../../../store/out/1-inspect.png';
+
+// The recorded walkthrough (`npm run demo`). It plays muted while on screen, never for people who ask
+// for reduced motion, and the keycap button pauses it (motion over 5 s needs a way to stop it).
+const poster = await getImage({ src: still, width: 1280, format: 'webp' });
+---
+<Row class="flex flex-col gap-3.5 px-6 pt-10 pb-14">
+  <Caption title="Fig. 1 — Lidar on a dashboard"><span>Real recording · 27 s</span></Caption>
+  <div class="fade hatch relative p-4" style="--i:1">
+    <video class="demo block h-auto w-full shadow-[0_0_0_1px_var(--color-line)]" src={demo} poster={poster.src} width="1920" height="1200" muted loop playsinline preload="metadata" aria-label="Lidar measuring cards on an analytics dashboard: hovering, pinning, Alt-distances, Spread and Copy for AI" data-measure></video>
+    <button type="button" class="demo-toggle tool-tab absolute right-7 bottom-7 !h-10 !px-3" aria-label="Pause demo">
+      <svg class="when-playing size-4" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><rect x="3" y="2" width="3.5" height="12" rx="1" /><rect x="9.5" y="2" width="3.5" height="12" rx="1" /></svg>
+      <svg class="when-paused hidden size-4" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M4 2.5v11l9.5-5.5z" /></svg>
+    </button>
+    <Note class="absolute right-4 bottom-0 translate-y-full pt-1.5">padding: 16px</Note>
+  </div>
+</Row>
+
+<script>
+  const video = document.querySelector<HTMLVideoElement>('video.demo')!;
+  const button = document.querySelector<HTMLButtonElement>('.demo-toggle')!;
+  let wanted = !matchMedia('(prefers-reduced-motion: reduce)').matches; // the visitor's choice, once they make one
+  let visible = false;
+
+  const sync = () => {
+    if (wanted && visible) video.play().catch(() => {});
+    else video.pause();
+    button.setAttribute('aria-label', wanted ? 'Pause demo' : 'Play demo');
+    button.classList.toggle('paused', !wanted);
+  };
+  button.addEventListener('click', () => { wanted = !wanted; sync(); });
+  new IntersectionObserver(([e]) => { visible = e.isIntersecting; sync(); }, { threshold: 0.4 }).observe(video);
+  sync();
+</script>

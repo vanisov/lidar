@@ -1,0 +1,13 @@
+---
+import Row from '../Row.astro';
+import Rise from '../Rise.astro';
+import Button from '../Button.astro';
+import { STORE_URL } from '../../links';
+---
+<Row class="flex flex-wrap items-end justify-between gap-8 px-6 py-18">
+  <h2 class="big text-[clamp(44px,7vw,92px)] leading-[.9] tracking-[-.025em]">
+    <Rise>Stop paying for</Rise>
+    <Rise i={1}><span class="text-acc">pixel-perfect.</span></Rise>
+  </h2>
+  <Button href={STORE_URL} class="fade" style="--i:3">Add to Chrome</Button>
+</Row>

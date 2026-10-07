@@ -1,0 +1,19 @@
+---
+import Layout from './Layout.astro';
+import Row from '../components/Row.astro';
+import Note from '../components/Note.astro';
+import Rise from '../components/Rise.astro';
+
+// A text page rendered from one of the repo's markdown files.
+interface Props { title: string; heading: string; description: string; source: string }
+const { title, heading, description, source } = Astro.props;
+---
+<Layout title={title} description={description}>
+  <Row class="flex flex-col gap-5 px-6 pt-14 pb-10">
+    <Note class="fade">source: {source}</Note>
+    <h1 class="big text-[clamp(44px,9vw,120px)]"><Rise>{heading}</Rise></h1>
+  </Row>
+  <Row class="px-6 pt-4 pb-20">
+    <div class="fade prose"><slot /></div>
+  </Row>
+</Layout>

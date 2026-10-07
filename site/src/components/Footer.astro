@@ -1,0 +1,20 @@
+---
+import Row from './Row.astro';
+import { REPO_URL, LICENSE_URL, AUTHOR_URL } from '../links';
+
+const cell = 'label flex min-h-13 items-center border-r border-line px-6 py-4 no-underline last:border-r-0 max-md:px-4';
+const inline = 'underline decoration-line underline-offset-4 transition-colors hover:text-acc-soft hover:decoration-acc';
+const links = [
+  { href: REPO_URL, text: 'GitHub' },
+  { href: '/privacy', text: 'Privacy' },
+  { href: '/changelog', text: 'Changelog' },
+];
+---
+<Row as="footer" class="flex flex-wrap" reveal={false}>
+  <p class:list={[cell, 'm-0 grow basis-70 gap-x-2 flex-wrap']}>
+    <span>© {new Date().getFullYear()}</span><span aria-hidden="true">·</span>
+    <span>Crafted by <a href={AUTHOR_URL} target="_blank" rel="noopener" class={inline}>Vlad Anisov<span class="sr-only"> (opens in a new tab)</span></a></span><span aria-hidden="true">·</span>
+    <a href={LICENSE_URL} class={inline}>MIT licensed</a>
+  </p>
+  {links.map((l) => <a href={l.href} class:list={[cell, 'hover:text-acc-soft']}>{l.text}</a>)}
+</Row>

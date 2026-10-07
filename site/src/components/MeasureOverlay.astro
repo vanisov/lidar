@@ -1,0 +1,80 @@
+---
+// Lidar's own overlay on its own site: live notes and dimension lines, a size pill on
+// anything marked data-measure, and a crosshair clipped to the element marked data-crosshair.
+---
+<div class="m-box" aria-hidden="true"><span class="absolute bottom-full -left-px mb-2 rounded-md bg-acc px-[7px] py-[5px] font-mono text-xs leading-none font-semibold whitespace-nowrap text-on-acc"></span></div>
+<div class="cross border-l border-dashed border-acc/50" aria-hidden="true"></div>
+<div class="cross border-t border-dashed border-acc/50" aria-hidden="true"></div>
+<div class="cross rounded bg-acc px-1.5 py-1 font-mono text-xs leading-none font-semibold text-on-acc" aria-hidden="true"></div>
+
+<script>
+  const $ = <T extends Element = HTMLElement>(s: string) => document.querySelector<T>(s)!;
+  const $$ = <T extends Element = HTMLElement>(s: string) => [...document.querySelectorAll<T>(s)];
+  const px = Math.round;
+
+  // All reads happen before any write, so one layout pass serves every note.
+  function annotate() {
+    const specs = $$('[data-spec]').map((n) => {
+      const el = $(n.dataset.spec!), cs = getComputedStyle(el), r = el.getBoundingClientRect(), fs = parseFloat(cs.fontSize);
+      return [n, `<${el.localName}> font: ${cs.fontWeight} ${px(fs)}px/${+(parseFloat(cs.lineHeight) / fs).toFixed(2)} · ${px(r.width)} × ${px(r.height)}`] as const;
+    });
+    const dims = $$('[data-dim]').map((n) => {
+      const [sel, axis] = n.dataset.dim!.split(' '), r = $(sel).getBoundingClientRect();
+      return [n, `${px(axis === 'h' ? r.height : r.width)} px`] as const;
+    });
+    for (const [n, text] of [...specs, ...dims]) n.textContent = text;
+  }
+  new ResizeObserver(annotate).observe(document.body);
+  document.fonts.ready.then(annotate);
+
+  if (matchMedia('(pointer: fine)').matches) {
+    // The box glides from one measured element to the next and its numbers count along the way;
+    // leaving fades it out after a beat, so crossing the gap between two buttons doesn't blink.
+    const box = $('.m-box'), pill = box.firstElementChild!;
+    type Rect = { x: number; y: number; w: number; h: number };
+    let cur: Rect | null = null, target: Element | null = null, raf = 0, hideTimer = 0;
+    const draw = (r: Rect) => {
+      Object.assign(box.style, { transform: `translate(${r.x}px, ${r.y}px)`, width: `${r.w}px`, height: `${r.h}px` });
+      pill.textContent = `${px(r.w)} × ${px(r.h)}`;
+    };
+    const moveTo = (to: Rect) => {
+      clearTimeout(hideTimer);
+      cancelAnimationFrame(raf);
+      if (!cur || !box.classList.contains('on')) { draw((cur = to)); box.classList.add('on'); return; }
+      const from = cur, start = performance.now();
+      const step = (now: number) => {
+        const k = Math.min(1, (now - start) / 240), e = 1 - (1 - k) ** 3;
+        draw((cur = { x: from.x + (to.x - from.x) * e, y: from.y + (to.y - from.y) * e, w: from.w + (to.w - from.w) * e, h: from.h + (to.h - from.h) * e }));
+        if (k < 1) raf = requestAnimationFrame(step);
+      };
+      raf = requestAnimationFrame(step);
+    };
+    const hide = (delay: number) => {
+      target = null;
+      clearTimeout(hideTimer);
+      hideTimer = window.setTimeout(() => box.classList.remove('on'), delay);
+    };
+    document.addEventListener('pointerover', (e) => {
+      const el = (e.target as Element).closest<HTMLElement>('[data-measure]');
+      if (!el) return hide(150);
+      if (el === target) return;
+      target = el;
+      const r = el.getBoundingClientRect();
+      box.classList.toggle('pill-only', el.dataset.measure === 'pill');
+      moveTo({ x: r.left, y: r.top, w: el.offsetWidth, h: el.offsetHeight });
+    });
+    addEventListener('scroll', () => hide(0), { passive: true });
+
+    const area = document.querySelector('[data-crosshair]');
+    const [cx, cy, pos] = $$('.cross');
+    area?.addEventListener('pointerenter', () => document.body.classList.add('crossing'));
+    area?.addEventListener('pointerleave', () => document.body.classList.remove('crossing'));
+    area?.addEventListener('pointermove', (ev) => {
+      const e = ev as PointerEvent, r = area.getBoundingClientRect();
+      Object.assign(cx.style, { height: `${r.height}px`, transform: `translate(${e.clientX}px, ${r.top}px)` });
+      Object.assign(cy.style, { width: `${r.width}px`, transform: `translate(${r.left}px, ${e.clientY}px)` });
+      pos.style.transform = `translate(${e.clientX + 10}px, ${e.clientY + 10}px)`;
+      pos.textContent = `${px(e.pageX)}, ${px(e.pageY)}`;
+    });
+  }
+</script>

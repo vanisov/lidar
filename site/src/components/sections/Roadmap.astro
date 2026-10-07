@@ -1,0 +1,12 @@
+---
+import Row from '../Row.astro';
+import Caption from '../Caption.astro';
+
+const planned = ['Flex & grid overlays', 'Live CSS editor', 'Tailwind export', 'Design-token export', 'Accessibility audits', 'SEO audits'];
+---
+<Row class="flex flex-col gap-5 px-6 py-12">
+  <Caption title="Rev 2.0 → planned, also free" heading><span class="note">status: in progress</span></Caption>
+  <ul class="grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-px bg-line shadow-[0_0_0_1px_var(--color-line)]">
+    {planned.map((item, i) => <li class="fade bg-page p-5.5 text-xl font-bold font-stretch-112%" style={`--i:${i + 1}`}>{item}</li>)}
+  </ul>
+</Row>

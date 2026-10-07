@@ -1,0 +1,9 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+
+// An orange code annotation. Decorative, so screen readers and translators skip it.
+// Give it `data-spec="#id"` to print that element's live font and size instead.
+type Props = HTMLAttributes<'span'>;
+const { class: cls, ...rest } = Astro.props;
+---
+<span class:list={['note', cls]} aria-hidden="true" translate="no" {...rest}><slot /></span>

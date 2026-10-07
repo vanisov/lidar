@@ -1,0 +1,57 @@
+---
+import { Image } from 'astro:assets';
+import Row from '../Row.astro';
+import Caption from '../Caption.astro';
+import distance from '../../../../store/out/3-distance.png';
+import spread from '../../../../store/out/2-spread.png';
+import copyForAi from '../../../../store/out/5-copy-for-ai.png';
+import light from '../../../../store/out/4-light-rem.png';
+
+// One large figure at a time, picked with keycap tabs (an ARIA tabs pattern; script below).
+const tools = [
+  { id: 'distance', name: 'Distance', key: 'D', img: distance, text: 'Pin one element, hold Alt and hover another. Lidar draws the gap between them, 66 px from the card to the chart here.' },
+  { id: 'spread', name: 'Spread', key: 'S', img: spread, text: 'Press S and lines shoot from the cursor to the nearest edge in every direction, so you can read the spacing around anything.' },
+  { id: 'copy', name: 'Copy for AI', key: null, img: copyForAi, text: 'One click puts a markdown brief of the element (selector, layout, styles, text) and its screenshot on your clipboard, ready for Claude Code or Cursor.' },
+  { id: 'light', name: 'Light + rem', key: null, img: light, text: 'A light theme, and every value in rem when that is how your team works.' },
+];
+---
+<Row aria-label="Tools" class="flex flex-col gap-5 px-6 py-12">
+  <Caption title="Fig. 2 — The tools" heading><span class="note max-sm:hidden">← → to switch</span></Caption>
+  <div class="fade flex flex-wrap gap-3" role="tablist" aria-label="Tools" style="--i:1">
+    {tools.map((t, i) => (
+      <button type="button" role="tab" id={`tab-${t.id}`} aria-controls={`panel-${t.id}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1} class="tool-tab">
+        {t.name}{t.key && <kbd>{t.key}</kbd>}
+      </button>
+    ))}
+  </div>
+  <div class="fade grid" style="--i:2">
+    {tools.map((t, i) => (
+      <figure id={`panel-${t.id}`} role="tabpanel" aria-labelledby={`tab-${t.id}`} class:list={['tool-panel m-0 flex flex-col gap-3 [grid-area:1/1]', { on: i === 0 }]}>
+        <Image src={t.img} widths={[640, 1280]} sizes="(max-width: 1200px) 100vw, 1112px" alt={`Lidar ${t.name}, shown on an analytics dashboard`} class="block h-auto w-full shadow-[0_0_0_1px_var(--color-line)]" data-measure />
+        <figcaption class="max-w-160 text-[17px] leading-normal text-body">{t.text}</figcaption>
+      </figure>
+    ))}
+  </div>
+</Row>
+
+<script>
+  const tabs = [...document.querySelectorAll<HTMLButtonElement>('[role="tab"]')];
+  const select = (tab: HTMLButtonElement, focus = false) => {
+    for (const t of tabs) {
+      const on = t === tab;
+      t.setAttribute('aria-selected', String(on));
+      t.tabIndex = on ? 0 : -1;
+      document.getElementById(t.getAttribute('aria-controls')!)!.classList.toggle('on', on);
+    }
+    if (focus) tab.focus();
+  };
+  for (const [i, tab] of tabs.entries()) {
+    tab.addEventListener('click', () => select(tab));
+    tab.addEventListener('keydown', (e) => {
+      const to = { ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: tabs.length - 1 }[e.key];
+      if (to === undefined) return;
+      e.preventDefault();
+      select(tabs[(to + tabs.length) % tabs.length], true);
+    });
+  }
+</script>
