@@ -6,3 +6,4 @@ playwright-report/
 lidar.zip
 .impeccable/
 .astro/
+.wrangler/
