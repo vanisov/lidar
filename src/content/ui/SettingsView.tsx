@@ -1,17 +1,6 @@
 import { KEYS } from '../core/platform';
 import { saveSettings, settings } from '../core/settings';
-
-function Seg<T extends string>(props: { name: string; value: T; options: [T, string][]; onChange(v: T): void }) {
-  return (
-    <div class="seg" role="radiogroup" aria-label={props.name}>
-      {props.options.map(([v, text]) => (
-        <button key={v} role="radio" aria-checked={v === props.value} onClick={() => props.onChange(v)}>
-          {text}
-        </button>
-      ))}
-    </div>
-  );
-}
+import { Seg } from './Seg';
 
 export function SettingsView() {
   const s = settings.value;
