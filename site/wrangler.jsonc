@@ -1,0 +1,11 @@
+// Cloudflare Workers Builds deploys the site from here (root directory: site). It's static: wrangler serves
+// the Astro build in dist/ as assets, with no Worker code. Without this file, `wrangler deploy` tries to set
+// the project up itself and converts it to server rendering.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "lidar",
+  "compatibility_date": "2026-10-06",
+  "assets": {
+    "directory": "./dist"
+  }
+}
