@@ -1,0 +1,36 @@
+---
+import Row from '../components/layout/row.astro';
+import Note from '../components/blueprint/note.astro';
+import Rise from '../components/ui/rise.astro';
+import Dimension from '../components/blueprint/dimension.astro';
+import Button from '../components/ui/button.astro';
+import Crosshair from '../components/overlay/crosshair.astro';
+import { STORE_URL, REPO_URL } from '../config/links';
+---
+<Row class="flex flex-col gap-4.5 px-6 pt-14 pb-18">
+  <Crosshair />
+  <div class="fade flex flex-wrap justify-between gap-4">
+    <Note data-spec="#h1">&lt;h1&gt;</Note>
+    <span class="label">Fig. 0 — hero · hover the headline</span>
+  </div>
+  <Dimension target="h1" class="fade" />
+  <div class="flex items-stretch gap-5">
+    <h1 id="h1" data-crosshair class="big min-w-0 flex-1 text-[clamp(40px,11vw,148px)] outline outline-dashed outline-offset-8 outline-acc/65">
+      <Rise>Measure.</Rise>
+      <Rise i={1}>Inspect.</Rise>
+      <Rise i={2}><span class="text-acc">Copy.</span></Rise>
+    </h1>
+    <Dimension target="h1" axis="y" class="max-md:hidden" />
+  </div>
+  <div class="fade hatch mt-2.5 flex h-10 items-center px-2.5" style="--i:4"><Note class="text-ink">margin-bottom: 40px</Note></div>
+  <div class="flex flex-wrap items-end justify-between gap-10">
+    <div class="fade flex max-w-140 flex-col gap-3" style="--i:5">
+      <Note data-spec="#lede">&lt;p&gt;</Note>
+      <p id="lede" class="text-[17px] leading-normal text-body">A free Chrome extension that draws sizes, spacing, distances and colors right on the page, and reads you the computed CSS. No account. No trial. No Pro tier.</p>
+    </div>
+    <div class="fade grid auto-cols-fr grid-flow-col gap-6 max-md:w-full max-sm:grid-flow-row" style="--i:6">
+      <Button href={STORE_URL}>Add to Chrome</Button>
+      <Button href={REPO_URL} ghost>View source</Button>
+    </div>
+  </div>
+</Row>

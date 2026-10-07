@@ -12,7 +12,8 @@
     "e2e": "npm run build:test && playwright test",
     "icons": "node scripts/make-icons.mjs",
     "package": "npm run build && rm -f lidar.zip && cd dist && zip -qr ../lidar.zip .",
-    "store": "npm run build:test && node store/shoot.mjs"
+    "store": "npm run build:test && node store/shoot.mjs",
+    "demo": "npm run build:test && node store/record.mjs"
   },
   "dependencies": {
     "@preact/signals": "^2.11.3",

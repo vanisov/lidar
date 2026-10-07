@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'preact/hooks';
-import { toastMsg } from '../core/store';
+import { toastMsg } from '../../core/store';
 
 export function Toast() {
   const msg = toastMsg.value;

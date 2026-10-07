@@ -5,32 +5,53 @@ import { KEYS } from '../core/platform';
 import { icons } from '../ui/icons';
 import { pickColor } from './color';
 
+export interface ToolOption {
+  label: string;
+  hint: string;
+  isOn(): boolean;
+  select(): void;
+}
+
 export interface Tool {
   id: string;
   key: string;
   label: string;
+  /** A modifier that works the tool while held, shown in the tooltip next to the key. */
+  hold?: string;
+  /** The current mode, shown in the tooltip and the accessible name. */
+  detail?(): string;
+  /** Sub-options, Photoshop-style: a corner triangle on the button, and a flyout on press-and-hold or right-click. */
+  options?: ToolOption[];
   /** Toggles (like rulers) are styled as on/off rather than as the active tool. */
   toggle?: boolean;
-  /** A short mode marker shown on the dock button. */
-  badge?(): string;
   icon(): ComponentChild;
   isOn(): boolean;
   run(): void | Promise<void>;
 }
 
+const spreadMode = (mode: 'visual' | 'layout') => () => {
+  tool.value = 'spread';
+  saveSettings({ spreadMode: mode });
+  toast(`Spread: ${mode === 'visual' ? 'Visual' : 'Layout'}`);
+};
+
 export const TOOLS: Tool[] = [
   { id: 'measure', key: 'm', label: 'Measure', icon: icons.measure, isOn: () => tool.value === 'measure', run: () => { tool.value = 'measure'; } },
   {
-    id: 'distance', key: 'd', label: `Distance (or hold ${KEYS.alt})`, icon: icons.distance, isOn: () => tool.value === 'distance',
+    id: 'distance', key: 'd', label: 'Distance', hold: KEYS.alt, icon: icons.distance, isOn: () => tool.value === 'distance',
     run: () => {
       tool.value = 'distance';
       if (!pinned.value) toast('Click an element to pin it, then hover another');
     },
   },
   {
-    id: 'spread', key: 's', label: 'Spread (or hold ⇧) · S again switches Visual / Layout', icon: icons.spread,
+    id: 'spread', key: 's', label: 'Spread', hold: '⇧', icon: icons.spread,
     isOn: () => tool.value === 'spread',
-    badge: () => (settings.value.spreadMode === 'visual' ? 'V' : 'L'),
+    detail: () => (settings.value.spreadMode === 'visual' ? 'Visual' : 'Layout'),
+    options: [
+      { label: 'Visual', hint: 'Stops at what you see', isOn: () => settings.value.spreadMode === 'visual', select: spreadMode('visual') },
+      { label: 'Layout', hint: 'Stops at element boxes', isOn: () => settings.value.spreadMode === 'layout', select: spreadMode('layout') },
+    ],
     run: () => {
       const mode = settings.value.spreadMode;
       if (tool.value !== 'spread') {

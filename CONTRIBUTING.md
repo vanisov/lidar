@@ -42,12 +42,21 @@ src/background.ts            service worker: toggle, context menu, screenshot ca
 src/content/mount.tsx        builds the host, overlay, keys and UI; close() tears it all down
 src/content/core/            overlay engine, keys, DOM reading, and the pure logic (unit-tested)
 src/content/tools/           dock tools; add new tools to registry.ts
-src/content/ui/              Preact dock, panel, settings, toast, and styles.css tokens
+src/content/ui/              Preact UI: app.tsx, icons.tsx, and styles.css tokens
+  components/                one component per file, grouped by area: dock/, panel/, settings/
+  hooks/                     use-*.ts: behavior that isn't rendering (press-and-hold, menus, drag, screenshots)
+  utils/                     small helpers shared by components
 test/unit/                   Vitest, pure modules
 test/e2e/                    Playwright against a deliberately hostile fixture page
 store/                       Chrome Web Store screenshots and listing (`npm run store`)
+site/                        lidarcss.com, Astro + Tailwind (`cd site && npm run dev`)
+  src/sections/              the page's sections, top to bottom
+  src/components/            layout/ (header, footer, rows), ui/, blueprint/ (notes, dimensions), overlay/
+  src/scripts/               browser behavior, one module per component that needs it
+  src/utils/, src/config/    pure helpers; links
 ```
 
+- File and folder names are kebab-case (`tool-button.tsx`, `use-menu.ts`); one component per file.
 - Pure logic (math, parsing, formatting) goes in its own module with a unit test.
 - Anything visible or interactive gets an e2e test. Use `el.style.cssText` in tests, not `setAttribute('style')`:
   the fixture page has a strict CSP, on purpose.

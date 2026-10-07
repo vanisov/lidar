@@ -1,6 +1,6 @@
 import type { Host } from './host';
 import { parentOf } from './inspect';
-import { altHeld, pinned, shiftHeld } from './store';
+import { altHeld, flyout, pinned, shiftHeld } from './store';
 import { TOOLS } from '../tools/registry';
 
 const SKIP = /^(HEAD|SCRIPT|STYLE|TEMPLATE|META|LINK)$/;
@@ -43,9 +43,11 @@ export function bindKeys(host: Host, close: () => void): () => void {
     }
     if (e.key === 'Escape') {
       swallow(e);
-      close();
+      if (flyout.value) flyout.value = null; // Esc closes the open flyout first, then Lidar
+      else close();
       return;
     }
+    if (flyout.value) return; // the open flyout handles its own keys
     if (editable(host.root.activeElement)) return; // typing in Lidar's own inputs
     if (editable(e.target)) return; // the page field keeps its keystrokes
     if (e.metaKey || e.ctrlKey || e.altKey) return;
