@@ -3,11 +3,6 @@ import { useEffect, useRef } from 'preact/hooks';
 const ITEM = '[role="menuitemradio"]';
 const items = (menu: HTMLElement) => [...menu.querySelectorAll<HTMLButtonElement>(ITEM)];
 
-/**
- * Keyboard and focus behaviour for a small popup menu: focus starts on the checked item, arrows and Home/End
- * move between items, a press outside the menu and its trigger calls onDismiss, and focus returns to the
- * trigger when the menu goes away.
- */
 export function useMenu(trigger: HTMLElement | null, onDismiss: () => void) {
   const ref = useRef<HTMLDivElement>(null);
 

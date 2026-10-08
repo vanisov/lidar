@@ -71,7 +71,6 @@ export function pillPosition(target: Rect, w: number, h: number, vw: number, vh:
   return { x, y };
 }
 
-/** Which side the inspector panel should dock to so it doesn't cover `target`. */
 export function panelSide(target: Rect, panelWidth: number, vw: number, margin = 18): 'left' | 'right' {
   const underRight = target.right > vw - margin - panelWidth && target.left < vw - margin;
   if (!underRight) return 'right';

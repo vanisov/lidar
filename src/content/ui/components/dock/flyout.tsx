@@ -2,7 +2,6 @@ import { flyout } from '../../../core/store';
 import type { Tool } from '../../../tools/registry';
 import { useMenu } from '../../hooks/use-menu';
 
-/** A tool's options, opened from the corner triangle on its dock button. Choosing one selects it and closes. */
 export function Flyout({ tool, trigger }: { tool: Tool; trigger: HTMLButtonElement | null }) {
   const close = () => (flyout.value = null);
   const { ref, onKeyDown } = useMenu(trigger, close);

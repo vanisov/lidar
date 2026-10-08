@@ -10,7 +10,6 @@ test("on a page Chrome keeps extensions out of, the toggle explains instead of o
     return {
       opened,
       badge: await chrome.action.getBadgeText({ tabId: tab.id! }),
-      // The popup is only set while it opens, so later clicks on allowed pages still toggle Lidar.
       popup: await chrome.action.getPopup({ tabId: tab.id! }),
     };
   });

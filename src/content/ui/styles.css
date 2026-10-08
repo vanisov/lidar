@@ -1,5 +1,4 @@
-/* The site's palette: warm coal, bone and one orange (site/src/styles/global.css). "graphite" is the stored
-   name of the dark theme. Box-model tints keep the devtools convention: orange margin, green padding, blue content. */
+/* Palette kept in step with site/src/styles/global.css. "graphite" is the stored name of the dark theme. */
 .lidar {
   --bg: #1b1917; --bg2: #24211e; --bg3: #2e2a27; --hover: #f2efe914; --line: #f2efe91f; --edge: #0c0b0a;
   --text: #f2efe9; --muted: #a8a29a; --acc: #ff5a36; --acc-text: #ff8a6e; --on-acc: #121110;
@@ -24,7 +23,6 @@ button { all: unset; box-sizing: border-box; cursor: pointer; }
 button:focus-visible, input:focus-visible { outline: 2px solid var(--acc); outline-offset: 1px; }
 svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
 
-/* ---- overlay ---- */
 .ov { position: fixed; left: 0; top: 0; display: none; pointer-events: none; will-change: transform; }
 .ov.paint { display: block; width: 100vw; height: 100vh; }
 .mar { background: repeating-linear-gradient(45deg, #f7a64a40 0 4px, #f7a64a1c 4px 8px); }
@@ -61,7 +59,6 @@ svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width:
 .cross.x { height: 100vh; border-left: 1px dashed #ff5a3680; }
 .cross.y { width: 100vw; border-top: 1px dashed #ff5a3680; }
 
-/* ---- dock: a tool palette. Tooltips name the tool and its key; a corner triangle marks a tool with options ---- */
 .dock {
   position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%);
   display: flex; align-items: center; gap: 2px; padding: 6px;
@@ -101,7 +98,6 @@ svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width:
 .mark { display: grid; place-items: center; width: 34px; height: 34px; color: var(--text); }
 .mark .mark-svg { width: 20px; height: 20px; }
 
-/* ---- panel ---- */
 .panel {
   position: fixed; width: 280px; max-height: calc(100vh - 120px); overflow: auto; overscroll-behavior: contain;
   background: var(--bg); border-radius: 16px; box-shadow: var(--shadow), inset 0 0 0 1px var(--line);
@@ -149,7 +145,6 @@ kbd { font: 600 11px/1 var(--mono); background: var(--bg3); color: var(--text); 
 .settings input:focus-visible { outline: 2px solid var(--acc); outline-offset: 1px; }
 .link { margin-top: 10px; color: var(--acc-text); font-size: 12px; }
 
-/* ---- search ---- */
 .search {
   position: fixed; left: 50%; bottom: 70px; transform: translateX(-50%);
   display: flex; align-items: center; gap: 8px; min-width: 340px; padding: 8px 12px;
@@ -160,7 +155,6 @@ kbd { font: 600 11px/1 var(--mono); background: var(--bg3); color: var(--text); 
 .search input::placeholder { color: var(--muted); }
 .search .n { white-space: nowrap; }
 
-/* ---- toast ---- */
 .toast {
   position: fixed; left: 50%; bottom: 76px; transform: translate(-50%, 6px); opacity: 0;
   background: var(--bg); color: var(--text); padding: 7px 12px; border-radius: 9px; font-size: 12px; font-weight: 500;

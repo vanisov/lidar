@@ -89,8 +89,26 @@ Commits and PR titles follow [Conventional Commits 1.0.0](https://www.convention
 
 ## Code style
 
-- Match the surrounding code. Comments explain *why*, not *what*.
+- Match the surrounding code.
 - Prefer deleting code to adding it. No abstractions for a single use.
+
+### Comments
+
+Most code needs no comment. Write one only when a careful reader, without it, would likely get the code wrong or
+waste real time. That means:
+
+- a reason the code can't show: a Chrome or browser quirk, a page CSP, a workaround, a performance limit;
+- a rule the code depends on but doesn't state: an order that matters, an invariant, a unit;
+- a choice that looks wrong but is deliberate, so nobody "fixes" it.
+
+Don't write comments that:
+
+- repeat what the code, a name or a type already says;
+- narrate the next few lines, or label sections of a file;
+- record history ("used to", "now", "moved from"). That belongs in the commit message.
+
+Keep the ones you write short, usually one line. If a comment needs a paragraph, try a clearer name or a smaller
+function first.
 
 ## Reporting bugs
 

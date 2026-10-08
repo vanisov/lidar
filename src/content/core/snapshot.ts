@@ -6,10 +6,7 @@ export interface Snapshot extends Pixels {
   scale: number;
 }
 
-/**
- * The page's pixels for Spread's Visual mode. Captured on request once the page has been still for a moment, and
- * dropped whenever it scrolls or resizes. Chrome allows two captures a second, so failures back off.
- */
+/** Chrome allows two captures a second, so failures back off. */
 export function createSnapshotter(hostEl: HTMLElement, onReady: () => void) {
   let snap: Snapshot | null = null;
   let gen = 0; // bumped on invalidate, so a capture that started before a scroll is thrown away

@@ -3,7 +3,6 @@ import { label } from '../../../core/describe';
 import { ancestors } from '../../../core/inspect';
 import { pinned } from '../../../core/store';
 
-/** The pinned element's last few ancestors; clicking one pins it instead. */
 export function Breadcrumbs({ el }: { el: Element }) {
   const chain = ancestors(el).slice(-4);
   return (

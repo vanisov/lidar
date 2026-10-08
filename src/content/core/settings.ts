@@ -14,13 +14,10 @@ export interface Settings {
   units: Units;
   remBase: number;
   rulers: boolean;
-  /** What the Spread tool's lines stop at: visible pixels, or element boxes. */
   spreadMode: 'visual' | 'layout';
   /** Visual mode: how different a pixel's color must be (per channel, 0–255) to count as an edge. */
   spreadTolerance: number;
-  /** The column grid overlay is on. */
   grid: boolean;
-  /** X-ray: outline every element. */
   xray: boolean;
   columns: Columns;
 }
@@ -62,8 +59,7 @@ export function sanitize(raw: unknown): Settings {
 
 const area = () => globalThis.chrome?.storage?.sync;
 
-// Changes made before the stored settings arrive (pressing R or S right after opening) are held here and applied on
-// top of them. Writing earlier would replace the user's stored settings with the defaults.
+// Changes made before the stored settings load are held here; writing earlier would overwrite them with defaults.
 let loaded = false;
 let early: Partial<Settings> = {};
 

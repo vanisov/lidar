@@ -1,9 +1,5 @@
 import type { Rect } from './geometry';
 
-/**
- * Boxes of the visible page elements for Spread's Layout mode. Rebuilt lazily after the page scrolls, resizes or
- * changes, and at most every 250ms while the page keeps changing.
- */
 export function createBoxCache(hostEl: HTMLElement) {
   let boxes: Rect[] = [];
   let builtAt = -Infinity;

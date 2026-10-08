@@ -15,7 +15,7 @@ export async function copyText(text: string): Promise<void> {
   }
 }
 
-/** Copies a PNG (optionally with text in the same item). Downloads it instead when the clipboard refuses images. */
+/** Downloads the PNG instead when the clipboard refuses images. */
 export async function copyImage(png: Blob, text?: string): Promise<'copied' | 'downloaded'> {
   try {
     const parts: Record<string, Blob> = { 'image/png': png };

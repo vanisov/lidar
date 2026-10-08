@@ -31,7 +31,7 @@ export function mergeBreakpoints(found: [px: number, query: string][]): Breakpoi
   return out;
 }
 
-/** Every viewport-width breakpoint in the page's stylesheets. Cross-origin sheets can't be read; they're counted. */
+/** Cross-origin sheets can't be read, so they're only counted. */
 export function scanBreakpoints(): { points: Breakpoint[]; unreadable: number } {
   const found: [number, string][] = [];
   let unreadable = 0;
@@ -51,7 +51,7 @@ export function scanBreakpoints(): { points: Breakpoint[]; unreadable: number } 
     }
   };
   const walkSheet = (sheet: CSSStyleSheet) => {
-    if (sheet.media.mediaText) add(sheet.media.mediaText); // <link media="…"> and @import … media
+    if (sheet.media.mediaText) add(sheet.media.mediaText);
     let rules: CSSRuleList;
     try {
       rules = sheet.cssRules;

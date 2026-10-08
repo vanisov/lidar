@@ -48,7 +48,7 @@ test('a toast from one session is gone when Lidar reopens', async ({ page, activ
   await expect(page.locator('lidar-root')).toHaveCount(0);
   await activate();
   await expect(page.locator('lidar-root .toast')).not.toHaveClass(/show/);
-  await expect(page.locator('lidar-root .toast')).toHaveText(''); // no stale message either
+  await expect(page.locator('lidar-root .toast')).toHaveText('');
 });
 
 test('page fields keep their keystrokes while Lidar is open', async ({ page, activate }) => {
@@ -95,7 +95,7 @@ test('if the page removes Lidar, the session ends and the toggle opens a fresh o
     document.addEventListener('mousedown', () => w.clicks++);
   });
   await page.mouse.click(b.x + 5, b.y + 5);
-  expect(await page.evaluate(() => (window as unknown as { clicks: number }).clicks)).toBe(1); // page input is back
+  expect(await page.evaluate(() => (window as unknown as { clicks: number }).clicks)).toBe(1);
   await activate();
   await expect(page.locator('lidar-root .dock')).toBeVisible();
 });

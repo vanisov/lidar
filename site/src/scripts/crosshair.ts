@@ -1,7 +1,3 @@
-/**
- * Dashed guides and page coordinates that follow the cursor, clipped to `area`. `lines` are the vertical
- * guide, the horizontal guide and the coordinate label, in that order.
- */
 export function startCrosshair(area: HTMLElement, [x, y, label]: HTMLElement[]) {
   area.addEventListener('pointerenter', () => document.body.classList.add('crossing'));
   area.addEventListener('pointerleave', () => document.body.classList.remove('crossing'));

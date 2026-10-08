@@ -1,6 +1,5 @@
 import { useState } from 'preact/hooks';
 
-/** Drag a floating box by its header. Returns where it was dropped (null until moved) and the header's handler. */
 export function useDrag() {
   const [pos, setPos] = useState<{ x: number; y: number } | null>(null);
 

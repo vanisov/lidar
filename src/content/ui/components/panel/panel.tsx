@@ -12,7 +12,6 @@ import { useShot } from '../../hooks/use-shot';
 
 const PANEL_WIDTH = 280;
 
-/** The floating inspector: docks on whichever side keeps the pinned element visible, until dragged. */
 export function Panel({ host }: { host: Host }) {
   const el = pinned.value;
   const info = useMemo(() => (el ? describe(el) : null), [el]);

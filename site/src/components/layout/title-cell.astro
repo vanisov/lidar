@@ -1,7 +1,6 @@
 ---
 import type { HTMLAttributes } from 'astro/types';
 
-// One cell of the header/footer title block: bordered on the right, except the last.
 interface Props extends HTMLAttributes<'a'> { as?: 'a' | 'span' | 'p' }
 const { as: Tag = 'span', class: cls, ...rest } = Astro.props;
 ---

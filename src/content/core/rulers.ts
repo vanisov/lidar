@@ -5,7 +5,6 @@ export interface RulerScale {
   major: number;
   mid: number;
   minor: number;
-  /** Text for the n-th long tick. */
   label(n: number): string;
 }
 

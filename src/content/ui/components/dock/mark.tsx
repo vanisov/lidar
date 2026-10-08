@@ -1,4 +1,4 @@
-/** The brand mark (brand/mark.svg, kept in step by hand): the L and ticks take the text color, the dot is orange. */
+/** Kept in step with brand/mark.svg by hand. */
 export function Mark() {
   return (
     <svg class="mark-svg" viewBox="30 28 68 68" aria-hidden="true">

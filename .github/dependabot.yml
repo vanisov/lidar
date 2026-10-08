@@ -1,4 +1,3 @@
-# Keeps the GitHub Actions and npm packages up to date.
 version: 2
 updates:
   - package-ecosystem: github-actions

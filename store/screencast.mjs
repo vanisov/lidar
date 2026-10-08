@@ -1,11 +1,9 @@
-// Records a page through Chrome's screencast and encodes an MP4. Frames arrive only when something changes,
-// each with a timestamp; ffmpeg holds each frame for its real duration, so motion keeps its timing.
+// Screencast frames arrive only on change, so ffmpeg holds each one for its real duration to keep motion timing.
 import { execFileSync } from 'node:child_process';
 import { mkdtemp, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 
-/** Starts capturing. Call `stop(outFile)` to end it and write the video (needs ffmpeg on PATH). */
 export async function startScreencast(ctx, page) {
   const dir = await mkdtemp(path.join(tmpdir(), 'lidar-demo-'));
   const cdp = await ctx.newCDPSession(page);
@@ -22,7 +20,6 @@ export async function startScreencast(ctx, page) {
     async stop(outFile, { hold = 0.6 } = {}) {
       await cdp.send('Page.stopScreencast');
       await page.waitForTimeout(300); // let in-flight frames land
-      // The last frame holds for `hold` seconds before the loop restarts.
       const list = frames.map((f, i) => `file '${f.file}'\nduration ${((frames[i + 1]?.t ?? f.t + hold) - f.t).toFixed(4)}`);
       await writeFile(path.join(dir, 'list.txt'), `ffconcat version 1.0\n${list.join('\n')}\nfile '${frames.at(-1).file}'\n`);
       execFileSync('ffmpeg', ['-y', '-loglevel', 'error', '-f', 'concat', '-safe', '0', '-i', path.join(dir, 'list.txt'),

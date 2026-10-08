@@ -1,5 +1,4 @@
 ---
-// One headline line that slides up into view; `i` staggers it after the lines before it.
 interface Props { i?: number }
 ---
 <span class="rise"><span style={`--i:${Astro.props.i ?? 0}`}><slot /></span></span>

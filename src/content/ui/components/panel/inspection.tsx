@@ -9,7 +9,6 @@ import { copyValue } from '../../utils/copy-value';
 import { LayoutRows } from './layout-rows';
 import { Row } from './row';
 
-/** The inspector body for a pinned element: where it sits, its box, its styles, and the copy actions. */
 export function Inspection({ el, info, onShot }: { el: Element; info: ElementInfo; onShot(forAI: boolean): void }) {
   const s = settings.value;
   const fmt = (n: number) => formatLength(n, s.units, s.remBase);

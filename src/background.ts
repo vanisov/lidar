@@ -13,7 +13,6 @@ async function title(): Promise<string> {
 }
 void title().then(t => chrome.action.setTitle({ title: t }));
 
-/** Runs content.js in the tab. content.js opens Lidar, or closes it when it's already open. */
 async function toggle(tabId: number): Promise<boolean> {
   try {
     await chrome.scripting.executeScript({ target: { tabId }, files: ['content.js'] });
@@ -29,16 +28,15 @@ async function toggle(tabId: number): Promise<boolean> {
   }
 }
 
-/** Opens blocked.html as a one-off popup under the toolbar icon, saying why Lidar can't run on this tab. The popup
- *  is set only while it opens, so the next click on a page that does allow Lidar still toggles it. Chrome before 127
- *  can't open popups this way and keeps just the badge and tooltip. */
+/** The popup is set only while it opens, so the next click on an allowed page still toggles Lidar.
+ *  Chrome before 127 can't open popups this way and keeps just the badge and tooltip. */
 async function explainBlocked(tabId: number): Promise<void> {
   const url = (await chrome.tabs.get(tabId).catch(() => undefined))?.url ?? '';
   try {
     await chrome.action.setPopup({ tabId, popup: url.startsWith('file:') ? 'blocked.html?file' : 'blocked.html' });
     await chrome.action.openPopup();
   } catch {
-    // No popup this time; the badge and tooltip still say what happened.
+    // No popup (old Chrome or unfocused window): the badge and tooltip still explain.
   } finally {
     await chrome.action.setPopup({ tabId, popup: '' });
   }

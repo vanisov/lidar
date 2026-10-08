@@ -20,6 +20,7 @@ Read [CONTRIBUTING.md](CONTRIBUTING.md) first. It applies to you too.
 
 - Nothing runs on a page until the user activates Lidar, and `Esc` must restore the page DOM exactly.
 - Keep Preact out of the overlay hot path.
+- Comment only what the code can't say: see Comments in CONTRIBUTING.md. Most code needs none.
 - Kebab-case file names, one component per file, and files grouped by concern (see CONTRIBUTING.md).
 - Load styles only through `adoptedStyleSheets` so strict page CSPs can't break Lidar.
 - No functional text below 11 px.

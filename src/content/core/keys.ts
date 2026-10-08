@@ -5,7 +5,6 @@ import { TOOLS } from '../tools/registry';
 
 const SKIP = /^(HEAD|SCRIPT|STYLE|TEMPLATE|META|LINK)$/;
 const shown = (e: Element) => !SKIP.test(e.tagName) && e.getClientRects().length > 0;
-/** Steps with `next` until it reaches a rendered element, or null. */
 const walk = (e: Element | null, next: (e: Element) => Element | null) => {
   while (e && !shown(e)) e = next(e);
   return e;
@@ -24,7 +23,7 @@ const NAV: Record<string, (e: Element) => Element | null> = {
 export const editable = (t: EventTarget | null) =>
   t instanceof HTMLElement && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName));
 
-/** Lidar's keyboard map. Handled keys are swallowed, keydown and keyup, so the page never sees them. */
+/** Handled keys are swallowed on keydown and keyup, so the page never sees them. */
 export function bindKeys(host: Host, close: () => void): () => void {
   const handled = new Set<string>();
   const swallow = (e: KeyboardEvent) => {
@@ -43,15 +42,14 @@ export function bindKeys(host: Host, close: () => void): () => void {
     }
     if (e.key === 'Escape') {
       swallow(e);
-      // Esc closes the open flyout first, then the search, then Lidar.
       if (flyout.value) flyout.value = null;
       else if (search.peek().open) closeSearch();
       else close();
       return;
     }
     if (flyout.value) return; // the open flyout handles its own keys
-    if (editable(host.root.activeElement)) return; // typing in Lidar's own inputs
-    if (editable(e.target)) return; // the page field keeps its keystrokes
+    if (editable(host.root.activeElement)) return;
+    if (editable(e.target)) return;
     if (e.metaKey || e.ctrlKey || e.altKey) return;
     const go = NAV[e.key];
     const p = pinned.value;

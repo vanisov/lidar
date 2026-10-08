@@ -1,8 +1,7 @@
 name: Release
 
-# Merging a PR that adds a new version section to CHANGELOG.md (e.g. "## [1.1.0] - …") releases it: this workflow
-# tags that commit, publishes the GitHub release with lidar.zip, and uploads it to the Chrome Web Store for review.
-# Pushing a vX.Y.Z tag by hand reruns a release.
+# Merging a PR that adds a new "## [X.Y.Z]" section to CHANGELOG.md releases it: tag, GitHub release, Chrome Web
+# Store upload. Pushing a vX.Y.Z tag by hand reruns a release.
 on:
   push:
     branches: [main]
@@ -31,7 +30,6 @@ jobs:
             echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
             exit 0
           fi
-          # On main: the newest version in the changelog, unless it's already tagged.
           VERSION=$(grep -m1 -oE '^## \[[0-9]+\.[0-9]+\.[0-9]+\]' CHANGELOG.md | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' || true)
           if [ -z "$VERSION" ] || git rev-parse -q --verify "refs/tags/v$VERSION" > /dev/null; then
             echo "Nothing to release: the newest changelog version (${VERSION:-none}) is already tagged."

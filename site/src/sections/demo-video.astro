@@ -6,8 +6,6 @@ import Caption from '../components/ui/caption.astro';
 import demo from '../../../store/out/demo.mp4?url';
 import still from '../../../store/out/1-inspect.png';
 
-// The recorded walkthrough (`npm run demo`). It plays muted while on screen, never for people who ask
-// for reduced motion, and the keycap button pauses it (motion over 5 s needs a way to stop it).
 const poster = await getImage({ src: still, width: 1280, format: 'webp' });
 ---
 <Row class="flex flex-col gap-3.5 px-6 pt-10 pb-14">
