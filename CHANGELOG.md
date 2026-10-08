@@ -5,6 +5,8 @@ versions follow [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-10-08
+
 ### Added
 - Flex and grid overlays: hover a flex or grid container to see its tracks, gaps and line numbers. Pin it to see its
   layout in the panel.
@@ -12,9 +14,12 @@ versions follow [Semantic Versioning](https://semver.org).
 - Breakpoints: the page's media-query widths are marked on the top ruler, with the current range highlighted.
 - X-ray (X): outlines every element on screen.
 - Find by selector (/): highlights every match. Arrow keys step through them and Enter pins one.
+- On pages Chrome keeps extensions out of (chrome:// pages, the Chrome Web Store, other extensions), clicking Lidar
+  opens a short note explaining why, instead of doing nothing. On local files it links to the setting that allows them.
 
 ### Changed
-- New icon: an L-shaped ruler with an orange cursor dot, with a simpler version for the 16 px toolbar size.
+- New icon: an L-shaped ruler with an orange cursor dot, with a simpler version for the 16 px toolbar size. It's
+  padded to Chrome's icon guidelines, so it no longer looks oversized next to other extensions.
 - New look: warm dark and light themes, IBM Plex Mono for values and keys (bundled, so no network requests), and the new mark in the dock.
 - Dock tooltips show every tool's shortcut the same way. Spread's Visual / Layout choice moved from a letter badge to a corner flyout: press and hold or right-click the tool.
 
@@ -39,5 +44,6 @@ versions follow [Semantic Versioning](https://semver.org).
 - Elements inside web components (open shadow DOM) can be inspected.
 - Lidar stays on top of, and usable over, page dialogs and popovers.
 
-[Unreleased]: https://github.com/vanisov/lidar/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/vanisov/lidar/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/vanisov/lidar/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/vanisov/lidar/releases/tag/v1.0.0
