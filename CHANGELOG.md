@@ -14,7 +14,8 @@ versions follow [Semantic Versioning](https://semver.org).
 - Find by selector (/): highlights every match. Arrow keys step through them and Enter pins one.
 
 ### Changed
-- New icon: an L-shaped ruler with an orange cursor dot, with a simpler version for the 16 px toolbar size.
+- New icon: an L-shaped ruler with an orange cursor dot, with a simpler version for the 16 px toolbar size. It's
+  padded to Chrome's icon guidelines, so it no longer looks oversized next to other extensions.
 - New look: warm dark and light themes, IBM Plex Mono for values and keys (bundled, so no network requests), and the new mark in the dock.
 - Dock tooltips show every tool's shortcut the same way. Spread's Visual / Layout choice moved from a letter badge to a corner flyout: press and hold or right-click the tool.
 
