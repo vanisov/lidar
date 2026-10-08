@@ -13,7 +13,7 @@ const poster = await getImage({ src: still, width: 1280, format: 'webp' });
   <Caption title="Fig. 1 — Lidar on a dashboard"><span>Real recording <Sep /> 27 s</span></Caption>
   <div class="fade hatch relative p-4" style="--i:1">
     <video class="demo block h-auto w-full shadow-[0_0_0_1px_var(--color-line)]" src={demo} poster={poster.src} width="1920" height="1200" muted loop playsinline preload="metadata" aria-label="Lidar measuring cards on an analytics dashboard: hovering, pinning, Alt-distances, Spread and Copy for AI" data-measure></video>
-    <button type="button" class="demo-toggle keycap absolute right-7 bottom-7 !h-10 !px-3" aria-label="Pause demo">
+    <button type="button" class="demo-toggle keycap absolute right-7 bottom-7 !h-10 !px-3" aria-label="Pause demo" data-measure="pill">
       <svg class="when-playing size-4" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><rect x="3" y="2" width="3.5" height="12" rx="1" /><rect x="9.5" y="2" width="3.5" height="12" rx="1" /></svg>
       <svg class="when-paused hidden size-4" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M4 2.5v11l9.5-5.5z" /></svg>
     </button>
