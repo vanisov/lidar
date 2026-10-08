@@ -10,6 +10,7 @@ export function startMeasureLabel(box: HTMLElement) {
   const draw = (r: Rect) => {
     Object.assign(box.style, { transform: `translate(${r.x}px, ${r.y}px)`, width: `${r.w}px`, height: `${r.h}px` });
     label.textContent = `${Math.round(r.w)} × ${Math.round(r.h)}`;
+    box.classList.toggle('below', r.y < 32);
   };
   const moveTo = (to: Rect) => {
     clearTimeout(hideTimer);
