@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Lidar can't run here</title>
+<style>
+  :root {
+    --bg: #1b1917; --text: #f2efe9; --muted: #a8a29a; --line: #f2efe91f; --acc: #ff5a36; --on-acc: #121110;
+    color-scheme: dark;
+  }
+  @media (prefers-color-scheme: light) {
+    :root { --bg: #fbfaf7; --text: #141210; --muted: #6b655d; --line: #1412101f; color-scheme: light; }
+  }
+  body {
+    width: 280px; margin: 0; padding: 16px; box-sizing: border-box;
+    background: var(--bg); color: var(--text);
+    font: 13px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  img { width: 32px; height: 32px; }
+  h1 { margin: 0; font-size: 14px; font-weight: 600; }
+  p { margin: 0 0 8px; color: var(--muted); }
+  p:last-child { margin-bottom: 0; }
+  .file, .local .page { display: none; }
+  .local .file { display: block; }
+  button {
+    margin-top: 4px; padding: 6px 10px; border: 0; border-radius: 6px; cursor: pointer;
+    background: var(--acc); color: var(--on-acc); font-family: inherit; font-size: 12px; font-weight: 600;
+  }
+  button:focus-visible { outline: 2px solid var(--acc); outline-offset: 2px; }
+</style>
+</head>
+<body>
+  <header>
+    <img src="icons/128.png" alt="">
+    <h1>Lidar can't run on this page</h1>
+  </header>
+  <div class="page">
+    <p>Chrome keeps extensions out of its own pages (like chrome://), the Chrome Web Store, and other extensions' pages.</p>
+    <p>Open any regular website and click Lidar again.</p>
+  </div>
+  <div class="file">
+    <p>Chrome only lets Lidar into local files when you allow it.</p>
+    <p>Turn on <strong>Allow access to file URLs</strong> in Lidar's details, then reload this page.</p>
+    <button id="details" type="button">Open Lidar's details</button>
+  </div>
+  <script src="blocked.js"></script>
+</body>
+</html>

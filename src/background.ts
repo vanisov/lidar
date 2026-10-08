@@ -24,7 +24,23 @@ async function toggle(tabId: number): Promise<boolean> {
     await chrome.action.setBadgeBackgroundColor({ tabId, color: '#8e8e93' });
     await chrome.action.setBadgeText({ tabId, text: '–' });
     await chrome.action.setTitle({ tabId, title: BLOCKED });
+    await explainBlocked(tabId);
     return false;
+  }
+}
+
+/** Opens blocked.html as a one-off popup under the toolbar icon, saying why Lidar can't run on this tab. The popup
+ *  is set only while it opens, so the next click on a page that does allow Lidar still toggles it. Chrome before 127
+ *  can't open popups this way and keeps just the badge and tooltip. */
+async function explainBlocked(tabId: number): Promise<void> {
+  const url = (await chrome.tabs.get(tabId).catch(() => undefined))?.url ?? '';
+  try {
+    await chrome.action.setPopup({ tabId, popup: url.startsWith('file:') ? 'blocked.html?file' : 'blocked.html' });
+    await chrome.action.openPopup();
+  } catch {
+    // No popup this time; the badge and tooltip still say what happened.
+  } finally {
+    await chrome.action.setPopup({ tabId, popup: '' });
   }
 }
 

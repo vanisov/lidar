@@ -12,6 +12,8 @@ versions follow [Semantic Versioning](https://semver.org).
 - Breakpoints: the page's media-query widths are marked on the top ruler, with the current range highlighted.
 - X-ray (X): outlines every element on screen.
 - Find by selector (/): highlights every match. Arrow keys step through them and Enter pins one.
+- On pages Chrome keeps extensions out of (chrome:// pages, the Chrome Web Store, other extensions), clicking Lidar
+  opens a short note explaining why, instead of doing nothing. On local files it links to the setting that allows them.
 
 ### Changed
 - New icon: an L-shaped ruler with an orange cursor dot, with a simpler version for the 16 px toolbar size. It's

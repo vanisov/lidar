@@ -16,7 +16,7 @@ if (test) manifest.host_permissions = ['<all_urls>'];
 await writeFile('dist/manifest.json', JSON.stringify(manifest, null, 2));
 
 const ctx = await esbuild.context({
-  entryPoints: { background: 'src/background.ts', content: 'src/content/index.ts' },
+  entryPoints: { background: 'src/background.ts', blocked: 'src/blocked.ts', content: 'src/content/index.ts' },
   bundle: true,
   outdir: 'dist',
   format: 'iife',
