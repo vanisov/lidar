@@ -5,6 +5,8 @@ versions follow [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-10-08
+
 ### Added
 - Flex and grid overlays: hover a flex or grid container to see its tracks, gaps and line numbers. Pin it to see its
   layout in the panel.
@@ -42,5 +44,6 @@ versions follow [Semantic Versioning](https://semver.org).
 - Elements inside web components (open shadow DOM) can be inspected.
 - Lidar stays on top of, and usable over, page dialogs and popovers.
 
-[Unreleased]: https://github.com/vanisov/lidar/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/vanisov/lidar/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/vanisov/lidar/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/vanisov/lidar/releases/tag/v1.0.0
