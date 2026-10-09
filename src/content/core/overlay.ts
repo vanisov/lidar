@@ -21,11 +21,7 @@ const BLOCKED = ['pointerdown', 'mousedown', 'pointerup', 'mouseup', 'dblclick',
 const sidesOf = (cs: CSSStyleDeclaration, prop: 'margin' | 'padding'): Sides =>
   (['top', 'right', 'bottom', 'left'] as const).map(s => parseFloat(cs.getPropertyValue(`${prop}-${s}`)) || 0) as Sides;
 
-/**
- * Draws hover, pin, distance and ruler overlays into `layer` and owns page pointer input while Lidar is open.
- * The hot path never touches Preact: one rAF loop updates a fixed pool of nodes. Returns a stop function.
- * Calls `close` if the page removes Lidar's host.
- */
+/** The hot path: never touches Preact; one rAF loop updates a fixed pool of nodes. Returns a stop function. */
 export function startOverlay(host: Host, layer: HTMLElement, close: () => void): () => void {
   const node = (cls: string, name: string) => {
     const d = document.createElement('div');
@@ -41,10 +37,8 @@ export function startOverlay(host: Host, layer: HTMLElement, close: () => void):
   const painter = createPainter(canvas);
   const rulerH = node('rul h', 'ruler-h');
   const rulerV = node('rul v', 'ruler-v');
-  // Numbered long ticks; rebuilt only when the viewport or units change.
   const rulerLabels = document.createElement('div');
   layer.append(rulerLabels);
-  // Breakpoint ticks; rebuilt with the ruler labels.
   const bpRange = node('bprange', 'bp-range');
   const bpTicks = document.createElement('div');
   layer.append(bpTicks);
@@ -122,13 +116,12 @@ export function startOverlay(host: Host, layer: HTMLElement, close: () => void):
     const path = e.composedPath();
     return path.includes(host.el) && !path.includes(shield);
   };
-  // True over Lidar's own dock or panel; the shield stands in for the frame under it.
+  // The shield doesn't count: it stands in for the frame under it.
   const onUi = (x: number, y: number) => {
     const mine = host.root.elementFromPoint(x, y);
     return !!mine && mine !== shield && host.root.contains(mine);
   };
   const pick = (x: number, y: number) => {
-    // Pointing at Lidar's own UI measures nothing.
     if (onUi(x, y)) return null;
     let t: Element | null | undefined = document.elementsFromPoint(x, y).find(e => e !== host.el);
     // Descend into open shadow roots (closed ones stay one box), skipping Lidar's host at every level.
@@ -263,7 +256,6 @@ export function startOverlay(host: Host, layer: HTMLElement, close: () => void):
     // clientWidth excludes a classic scrollbar, which innerWidth includes; the grid centres in what the page can use.
     if (cfg.grid) scene.fills = columnRects(document.documentElement.clientWidth, vh, cfg.columns);
     if (cfg.xray) scene.outlines = boxCache.get();
-    // The pinned container always shows its layout; a hovered one only in Measure.
     const drawn: LayoutDrawing[] = [];
     const pd = p && pcs ? readLayout(p, pcs) : null;
     if (pd) drawn.push(pd);
@@ -289,7 +281,6 @@ export function startOverlay(host: Host, layer: HTMLElement, close: () => void):
     const marks = drawn
       .filter(d => { const b = d.boxes[0]; return b.right > 0 && b.left < vw && b.bottom > 0 && b.top < vh; })
       .flatMap(d => d.marks).slice(0, MARKS);
-    // The current range runs from the widest breakpoint at or below the viewport to the viewport's edge.
     const bpLo = cfg.rulers ? bps.points.filter(b => b.px <= vw).at(-1)?.px : undefined;
     let tip = '';
     if (cfg.rulers && mx > 18 && my >= 0 && my < 18) {
@@ -299,7 +290,7 @@ export function startOverlay(host: Host, layer: HTMLElement, close: () => void):
         .filter(Boolean).join(' · ');
     }
 
-    // Write phase.
+    // Write phase: no layout or style reads from here on.
     if (rulersDirty) layoutRulers();
     for (const r of rulerPair) cfg.rulers ? place(r, 0, 0) : hide(r);
     set(rulerLabels, 'display', cfg.rulers ? 'block' : 'none');
@@ -339,7 +330,6 @@ export function startOverlay(host: Host, layer: HTMLElement, close: () => void):
         }
         place(spreadLines[i], line[i][0], line[i][1], line[i][2], line[i][3]);
         const sz = label(spreadLabels[i], fmt(len[i]));
-        // Centered on its line when it fits, otherwise just past the line's far end so short gaps stay readable.
         const sign = i % 2 === 0 ? -1 : 1;
         let cx: number;
         let cy: number;
@@ -352,7 +342,6 @@ export function startOverlay(host: Host, layer: HTMLElement, close: () => void):
         }
         place(spreadLabels[i], cx, cy);
       });
-      // The gap's size sits above the line, past its right end, clear of the per-side labels.
       const g = label(spreadGap, `${fmt(st.left + st.right)} × ${fmt(st.top + st.bottom)}`);
       place(spreadGap, Math.min(mx + st.right + 6, vw - g.w - 4), Math.max(my - g.h - 6, 22));
     } else spreadNodes.forEach(hide);
@@ -389,7 +378,6 @@ export function startOverlay(host: Host, layer: HTMLElement, close: () => void):
       const m = marks[i];
       if (!m) return hide(n);
       const sz = label(n, m.text);
-      // Column numbers sit above the grid, row numbers to its left, both clear of the rulers.
       if (m.axis === 'col') place(n, m.x - sz.w / 2, Math.max(m.y - sz.h - 3, 20));
       else place(n, Math.max(m.x - sz.w - 3, 20), m.y - sz.h / 2);
     });

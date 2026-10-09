@@ -1,5 +1,4 @@
-// Renders the Chrome Web Store screenshots (1280×800) and promo tiles from store/demo.html.
-// Run with `npm run store` (it builds the test bundle first, which lets this script open Lidar).
+// Run with `npm run store`: it builds the test bundle first, which lets this script open Lidar.
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { launch, box, settle } from './session.mjs';
@@ -12,10 +11,8 @@ async function pin(page, sel, dx = 8, dy = 8) {
   await page.mouse.click(b.x + dx, b.y + dy);
   await settle(page);
 }
-// Every shot keeps the inspector open. It docks on the right because each target sits on the left.
 const restOnPanel = page => page.mouse.move(1120, 240);
 
-// 1. Inspect: a pinned KPI card with the full inspector.
 {
   const page = await open();
   await pin(page, '#k1');
@@ -25,7 +22,6 @@ const restOnPanel = page => page.mouse.move(1120, 240);
   await page.close();
 }
 
-// 2. Spread (Visual) in the gap between the first two KPI cards.
 {
   const page = await open();
   const k1 = await box(page, '#k1');
@@ -38,7 +34,6 @@ const restOnPanel = page => page.mouse.move(1120, 240);
   await page.close();
 }
 
-// 3. Distance: pinned first KPI card, Alt-hover the chart below it.
 {
   const page = await open();
   await pin(page, '#k1');
@@ -52,7 +47,6 @@ const restOnPanel = page => page.mouse.move(1120, 240);
   await page.close();
 }
 
-// 4. Light theme, rem units: pinned page title, hovering a KPI card.
 {
   const page = await open({ theme: 'light', units: 'rem' });
   await pin(page, '#headline', 10, 10);
@@ -63,7 +57,6 @@ const restOnPanel = page => page.mouse.move(1120, 240);
   await page.close();
 }
 
-// 5. Copy for AI: the brief + screenshot toast for the Top pages card.
 {
   const page = await open();
   await pin(page, '#pages', 8, 8);
@@ -75,7 +68,6 @@ const restOnPanel = page => page.mouse.move(1120, 240);
   await page.close();
 }
 
-// Promo tiles.
 const icon = await readFile('static/icons/128.png');
 const iconUrl = `data:image/png;base64,${icon.toString('base64')}`;
 async function tile(name, w, h, scale) {

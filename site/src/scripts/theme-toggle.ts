@@ -2,10 +2,7 @@ import { readStorage, writeStorage } from '../utils/storage';
 
 const root = document.documentElement;
 
-/**
- * The header's light/dark switch. A click pins the choice in localStorage; until then the page follows the
- * system theme as it changes. (base-layout.astro's head script applies the theme before first paint.)
- */
+/** base-layout.astro's head script applies the saved theme before first paint. */
 export function initThemeToggle(button: HTMLButtonElement) {
   const label = () => button.setAttribute('aria-label', `Switch to ${root.dataset.theme === 'dark' ? 'light' : 'dark'} theme`);
   label();

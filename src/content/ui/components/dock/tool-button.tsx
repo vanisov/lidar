@@ -5,7 +5,6 @@ import { Flyout } from './flyout';
 import { Tip } from './tip';
 import { useFlyoutTrigger } from '../../hooks/use-flyout-trigger';
 
-/** One dock tool: its icon, its tooltip and, for a tool with options, the corner triangle and flyout. */
 export function ToolButton({ tool }: { tool: Tool }) {
   const btn = useRef<HTMLButtonElement>(null);
   const { props, opened } = useFlyoutTrigger(tool);

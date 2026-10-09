@@ -16,11 +16,9 @@ export interface Tool {
   id: string;
   key: string;
   label: string;
-  /** A modifier that works the tool while held, shown in the tooltip next to the key. */
+  /** A modifier key that works the tool while held. */
   hold?: string;
-  /** The current mode, shown in the tooltip and the accessible name. */
   detail?(): string;
-  /** Sub-options, Photoshop-style: a corner triangle on the button, and a flyout on press-and-hold or right-click. */
   options?: ToolOption[];
   /** Toggles (like rulers) are styled as on/off rather than as the active tool. */
   toggle?: boolean;

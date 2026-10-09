@@ -15,7 +15,7 @@ export function toRgba(css: string): RGBA {
   return [r, g, b, Math.round((a / 255) * 100) / 100];
 }
 
-/** What's actually behind the element's text: its background layers composited down to an opaque one, or white. */
+/** The background layers composited down to an opaque one, or white. */
 export function effectiveBackground(el: Element): RGBA {
   const layers: RGBA[] = [];
   for (let e: Element | null = el; e; e = parentOf(e)) {

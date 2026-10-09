@@ -8,20 +8,13 @@ export interface Seg {
   y2: number;
 }
 
-/** Everything the canvas draws in one frame. Plain data, rebuilt by the overlay on each dirty frame. */
 export interface Scene {
-  /** Column grid. */
-  fills: Rect[];
-  /** X-ray boxes and search matches. */
-  outlines: Rect[];
-  /** The current search match. */
-  strong: Rect[];
-  /** Flex and grid gaps. */
-  hatches: Rect[];
-  /** Flex/grid containers and flex items. */
-  boxes: Rect[];
-  /** Grid track edges and flex line breaks. */
-  dashes: Seg[];
+  fills: Rect[]; // column grid
+  outlines: Rect[]; // X-ray boxes and search matches
+  strong: Rect[]; // the current search match
+  hatches: Rect[]; // flex and grid gaps
+  boxes: Rect[]; // flex/grid containers and flex items
+  dashes: Seg[]; // grid track edges and flex line breaks
 }
 
 export const emptyScene = (): Scene => ({ fills: [], outlines: [], strong: [], hatches: [], boxes: [], dashes: [] });
@@ -31,7 +24,7 @@ const LAYOUT = '#a970ff';
 const RECT = ['left', 'top', 'width', 'height'];
 const SEG = ['x1', 'y1', 'x2', 'y2'];
 
-/** Paints a Scene onto one viewport-sized canvas, so thousands of boxes cost one element and no DOM work. */
+/** One canvas, so thousands of boxes cost one element and no DOM work. */
 export function createPainter(canvas: HTMLCanvasElement): { paint(scene: Scene): void } {
   const ctx = canvas.getContext('2d')!;
   const tile = new OffscreenCanvas(8, 8);

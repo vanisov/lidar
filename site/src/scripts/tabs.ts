@@ -1,4 +1,3 @@
-/** The ARIA tabs pattern: click or arrow keys pick a tab, and its panel gets `on` (global.css crossfades). */
 export function initTabs(tablist: HTMLElement) {
   const tabs = [...tablist.querySelectorAll<HTMLButtonElement>('[role="tab"]')];
   const select = (tab: HTMLButtonElement, focus = false) => {

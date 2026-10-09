@@ -1,6 +1,5 @@
 import { KEYS } from '../../../core/platform';
 
-/** What the inspector says before anything is pinned: how to use it. */
 export function PanelHint() {
   return (
     <div class="empty">

@@ -4,6 +4,7 @@ import Note from '../components/blueprint/note.astro';
 import Rise from '../components/ui/rise.astro';
 import Dimension from '../components/blueprint/dimension.astro';
 import Button from '../components/ui/button.astro';
+import Sep from '../components/ui/sep.astro';
 import Crosshair from '../components/overlay/crosshair.astro';
 import { STORE_URL, REPO_URL } from '../config/links';
 ---
@@ -11,10 +12,10 @@ import { STORE_URL, REPO_URL } from '../config/links';
   <Crosshair />
   <div class="fade flex flex-wrap justify-between gap-4">
     <Note data-spec="#h1">&lt;h1&gt;</Note>
-    <span class="label">Fig. 0 — hero · hover the headline</span>
+    <span class="label">Fig. 0 — hero <Sep /> hover the headline</span>
   </div>
   <Dimension target="h1" class="fade" />
-  <div class="flex items-stretch gap-5">
+  <div class="relative flex items-stretch gap-5">
     <h1 id="h1" data-crosshair class="big min-w-0 flex-1 text-[clamp(40px,11vw,148px)] outline outline-dashed outline-offset-8 outline-acc/65">
       <Rise>Measure.</Rise>
       <Rise i={1}>Inspect.</Rise>
@@ -28,9 +29,17 @@ import { STORE_URL, REPO_URL } from '../config/links';
       <Note data-spec="#lede">&lt;p&gt;</Note>
       <p id="lede" class="text-[17px] leading-normal text-body">A free Chrome extension that draws sizes, spacing, distances and colors right on the page, and reads you the computed CSS. No account. No trial. No Pro tier.</p>
     </div>
-    <div class="fade grid auto-cols-fr grid-flow-col gap-6 max-md:w-full max-sm:grid-flow-row" style="--i:6">
-      <Button href={STORE_URL}>Add to Chrome</Button>
-      <Button href={REPO_URL} ghost>View source</Button>
+    <div class="fade flex flex-col gap-4 max-md:w-full" style="--i:6">
+      <p class="sr-only">100% free, forever.</p>
+      <div class="note flex items-center gap-2.5" aria-hidden="true">
+        <span class="h-3.5 w-px bg-acc"></span><span class="h-px flex-1 bg-acc"></span>
+        <span class="rounded-md bg-acc px-2 py-1.5 font-mono text-[13px] leading-none font-semibold text-on-acc">100% free <span class="opacity-45">//</span> forever</span>
+        <span class="h-px flex-1 bg-acc"></span><span class="h-3.5 w-px bg-acc"></span>
+      </div>
+      <div class="grid auto-cols-fr grid-flow-col gap-6 max-sm:grid-flow-row">
+        <Button href={STORE_URL}>Add to Chrome</Button>
+        <Button href={REPO_URL} ghost>View source</Button>
+      </div>
     </div>
   </div>
 </Row>

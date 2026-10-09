@@ -2,9 +2,8 @@ import regular from '../fonts/plex-mono-400.woff2';
 import semibold from '../fonts/plex-mono-600.woff2';
 
 /**
- * IBM Plex Mono (OFL, see ../fonts/OFL.txt) for keys, values and labels. The bytes ship inside the content
- * script, so no request is made and no page CSP can block them; @font-face in a shadow root is ignored, so
- * the faces go on document.fonts and come off again when Lidar closes.
+ * IBM Plex Mono (OFL, see ../fonts/OFL.txt). The bytes ship in the content script so no page CSP can block them;
+ * @font-face in a shadow root is ignored, so the faces go on document.fonts and come off when Lidar closes.
  */
 export function loadFonts(): () => void {
   const faces = [

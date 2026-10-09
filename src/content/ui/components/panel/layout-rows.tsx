@@ -5,7 +5,6 @@ const ROWS: Record<'grid' | 'flex', [name: string, prop: string][]> = {
   flex: [['Direction', 'flex-direction'], ['Wrap', 'flex-wrap'], ['Gap', 'gap'], ['Justify', 'justify-content'], ['Align', 'align-items']],
 };
 
-/** The pinned flex or grid container's layout: its display, then the properties that shape its tracks or lines. */
 export function LayoutRows({ el, display }: { el: Element; display: string }) {
   const cs = getComputedStyle(el);
   return (

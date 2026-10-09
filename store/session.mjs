@@ -1,5 +1,4 @@
-// Shared by shoot.mjs and record.mjs: a Chromium with the test build of Lidar loaded, serving store/demo.html.
-// Run after `npm run build:test`, which lets these scripts toggle Lidar from the service worker.
+// Needs `npm run build:test`, which lets these scripts toggle Lidar from the service worker.
 import { chromium } from '@playwright/test';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
@@ -19,7 +18,6 @@ export async function launch({ deviceScaleFactor = 1 } = {}) {
   await ctx.route(`${URL}**`, r => r.fulfill({ contentType: 'text/html', body: html }));
   const sw = ctx.serviceWorkers()[0] ?? (await ctx.waitForEvent('serviceworker'));
 
-  // Opens the demo page with Lidar active and the given settings.
   async function open(settings = {}) {
     await sw.evaluate(s => chrome.storage.sync.set({ settings: { theme: 'graphite', units: 'px', remBase: 16, rulers: true, spreadMode: 'visual', spreadTolerance: 6, ...s } }), settings);
     const page = await ctx.newPage();

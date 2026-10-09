@@ -1,10 +1,5 @@
-// Uploads a package to the Chrome Web Store and submits it for review, via the Chrome Web Store API v2.
-//
-//   node scripts/publish-cws.mjs lidar.zip 1.2.0
-//
-// Needs CWS_SERVICE_ACCOUNT_JSON (the service account's JSON key), CWS_PUBLISHER_ID and CWS_EXTENSION_ID.
-// When any of them is missing it says so and exits 0, so releases still work before the store is set up.
-// Setup steps: docs/RELEASING.md.
+// Usage: node scripts/publish-cws.mjs lidar.zip 1.2.0 (setup: docs/RELEASING.md)
+// Exits 0 when a CWS_* secret is missing, so releases still work before the store is set up.
 import { createSign } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import { pathToFileURL } from 'node:url';
@@ -14,7 +9,6 @@ const SCOPE = 'https://www.googleapis.com/auth/chromewebstore';
 
 const b64url = v => Buffer.from(typeof v === 'string' ? v : JSON.stringify(v)).toString('base64url');
 
-/** A signed JWT that Google exchanges for an access token (OAuth 2.0 for service accounts). */
 export function serviceAccountJwt(key, now = Math.floor(Date.now() / 1000)) {
   const unsigned = `${b64url({ alg: 'RS256', typ: 'JWT' })}.${b64url({
     iss: key.client_email,
@@ -26,7 +20,6 @@ export function serviceAccountJwt(key, now = Math.floor(Date.now() / 1000)) {
   return `${unsigned}.${createSign('RSA-SHA256').update(unsigned).sign(key.private_key, 'base64url')}`;
 }
 
-/** 'done', 'wait' or 'failed' for an UploadState from upload or fetchStatus. */
 export function uploadOutcome(state) {
   if (state === 'SUCCEEDED') return 'done';
   if (state === 'IN_PROGRESS' || state === 'UPLOAD_IN_PROGRESS') return 'wait';

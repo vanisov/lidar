@@ -15,7 +15,7 @@ export interface ElementInfo {
   font: string;
   lineHeight: string;
   color: RGBA;
-  /** Effective background: the element's layers composited down to the first opaque ancestor. */
+  /** Composited down to the first opaque ancestor. */
   background: RGBA;
   largeText: boolean;
   styles: [string, string][];
@@ -47,7 +47,6 @@ const STYLE_PROPS: [string, RegExp | null, When?][] = [
   ['transition', /^all 0s ease 0s$/], ['cursor', /^auto$/],
 ];
 
-/** The computed styles worth showing and copying, minus the noise of defaults. */
 export function interestingStyles(get: (prop: string) => string): [string, string][] {
   const layout = /flex|grid/.test(get('display'));
   const positioned = !/^(static|)$/.test(get('position'));
@@ -65,7 +64,6 @@ export function cssRule(info: ElementInfo): string {
   return `${info.label} {\n${info.styles.map(([k, v]) => `  ${k}: ${v};`).join('\n')}\n}`;
 }
 
-/** Markdown brief of one element, written to be pasted into an AI coding agent. */
 export function aiBrief(i: ElementInfo, url: string): string {
   const px = (n: number) => (n === 0 ? '0' : `${Math.round(n)}px`);
   const ratio = contrast(i.color, i.background);

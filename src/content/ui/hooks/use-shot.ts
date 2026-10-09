@@ -6,10 +6,6 @@ import type { ElementInfo } from '../../core/describe';
 import { captureElement } from '../../core/screenshot';
 import { toast } from '../../core/store';
 
-/**
- * Screenshot and Copy for AI. Copies the image (with the brief, for AI) and falls back step by step: a
- * download when the clipboard refuses an image, the brief alone when the capture fails. One run at a time.
- */
 export function useShot(host: Host, el: Element | null, info: ElementInfo | null) {
   const busy = useRef(false);
 

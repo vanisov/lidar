@@ -2,11 +2,7 @@ import { easeOut, lerpRect, type Rect } from '../utils/motion';
 
 const GLIDE_MS = 240;
 
-/**
- * Lidar's hover label on the site: hovering a `[data-measure]` element outlines it and shows its size
- * (`data-measure="pill"` shows the label alone). The box glides from one element to the next while its
- * numbers count along, and leaving fades it out after a beat, so crossing a gap between buttons doesn't blink.
- */
+/** Leaving hides the box after a beat, so crossing a gap between buttons doesn't blink. */
 export function startMeasureLabel(box: HTMLElement) {
   const label = box.firstElementChild!;
   let cur: Rect | null = null, target: Element | null = null, raf = 0, hideTimer = 0;
@@ -14,6 +10,7 @@ export function startMeasureLabel(box: HTMLElement) {
   const draw = (r: Rect) => {
     Object.assign(box.style, { transform: `translate(${r.x}px, ${r.y}px)`, width: `${r.w}px`, height: `${r.h}px` });
     label.textContent = `${Math.round(r.w)} × ${Math.round(r.h)}`;
+    box.classList.toggle('below', r.y < 32);
   };
   const moveTo = (to: Rect) => {
     clearTimeout(hideTimer);

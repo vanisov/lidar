@@ -31,7 +31,7 @@ describe('changes made while settings are still loading', () => {
     const s = await import('../../src/content/core/settings');
 
     const loading = s.loadSettings();
-    s.saveSettings({ rulers: false }); // e.g. pressing R right after opening
+    s.saveSettings({ rulers: false });
     expect(set).not.toHaveBeenCalled(); // writing now would replace the stored theme with the default
     resolveGet({ settings: { theme: 'light', spreadMode: 'layout' } });
     await loading;
@@ -49,10 +49,10 @@ describe('changes made while settings are still loading', () => {
     vi.resetModules();
     const s = await import('../../src/content/core/settings');
 
-    await s.loadSettings(); // first session
+    await s.loadSettings();
     first = false;
-    const loading = s.loadSettings(); // reopened
-    s.saveSettings({ grid: true }); // pressing G right away
+    const loading = s.loadSettings();
+    s.saveSettings({ grid: true });
     resolveGet({ settings: { grid: false } });
     await loading;
 
@@ -70,7 +70,7 @@ describe('changes made while settings are still loading', () => {
     const s = await import('../../src/content/core/settings');
 
     const loading = s.loadSettings();
-    s.saveSettings({ rulers: false }); // e.g. pressing R right after opening
+    s.saveSettings({ rulers: false });
     expect(set).not.toHaveBeenCalled(); // writing now would replace the stored theme with the default
     resolveGet({ settings: { theme: 'light', spreadMode: 'layout' } });
     await loading;

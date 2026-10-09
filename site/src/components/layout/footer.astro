@@ -2,6 +2,7 @@
 import Row from './row.astro';
 import TitleCell from './title-cell.astro';
 import TextLink from '../ui/text-link.astro';
+import Sep from '../ui/sep.astro';
 import { REPO_URL, LICENSE_URL, AUTHOR_URL } from '../../config/links';
 
 const links = [
@@ -11,10 +12,10 @@ const links = [
 ];
 ---
 <Row as="footer" class="flex flex-wrap" reveal={false}>
-  <TitleCell as="p" class="label m-0 grow basis-70 flex-wrap gap-x-2">
-    <span>© {new Date().getFullYear()}</span><span aria-hidden="true">·</span>
-    <span>Crafted by <TextLink href={AUTHOR_URL} external>Vlad Anisov</TextLink></span><span aria-hidden="true">·</span>
+  <TitleCell as="p" class="label m-0 min-h-11! grow basis-70 flex-wrap gap-x-2 py-3! text-[11px]!">
+    <span>© {new Date().getFullYear()}</span><Sep />
+    <span>Crafted by <TextLink href={AUTHOR_URL} external>Vlad Anisov</TextLink></span><Sep />
     <TextLink href={LICENSE_URL}>MIT licensed</TextLink>
   </TitleCell>
-  {links.map((l) => <TitleCell as="a" href={l.href} class="label hover:text-acc-soft">{l.text}</TitleCell>)}
+  {links.map((l) => <TitleCell as="a" href={l.href} class="label min-h-11! px-4! py-3! text-[11px]! hover:text-acc-soft">{l.text}</TitleCell>)}
 </Row>

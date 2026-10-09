@@ -4,10 +4,7 @@ import type { Tool } from '../../tools/registry';
 
 const HOLD_MS = 350;
 
-/**
- * Photoshop's ways to open a grouped tool's options: press and hold, right-click, or the arrow keys.
- * `opened()` says whether the last press opened the flyout, so that press doesn't also run the tool.
- */
+/** `opened()` says whether the last press opened the flyout, so that press doesn't also run the tool. */
 export function useFlyoutTrigger(tool: Tool) {
   const timer = useRef(0);
   const openedByPress = useRef(false);

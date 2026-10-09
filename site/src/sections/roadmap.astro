@@ -1,12 +1,34 @@
 ---
 import Row from '../components/layout/row.astro';
 import Caption from '../components/ui/caption.astro';
+import Sep from '../components/ui/sep.astro';
 
-const planned = ['Flex & grid overlays', 'Live CSS editor', 'Tailwind export', 'Design-token export', 'Accessibility audits', 'SEO audits'];
+const releases = [
+  { version: 'v1.0', date: 'Oct 2', shipped: true, items: ['Measure & distances', 'Spread', 'Rulers', 'Inspector', 'Copy for AI', 'Color picker'] },
+  { version: 'v1.1', date: 'Oct 8', shipped: true, items: ['Flex & grid overlays', 'Column grid', 'Breakpoints', 'X-ray', 'Find by selector'] },
+  { version: 'v2.0', date: null, shipped: false, items: ['Live CSS editor', 'Tailwind export', 'Design-token export', 'Accessibility audits', 'SEO audits'] },
+];
 ---
-<Row class="flex flex-col gap-5 px-6 py-12">
-  <Caption title="Rev 2.0 → planned, also free" heading><span class="note">status: in progress</span></Caption>
-  <ul class="grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-px bg-line shadow-[0_0_0_1px_var(--color-line)]">
-    {planned.map((item, i) => <li class="fade bg-page p-5.5 text-xl font-bold font-stretch-112%" style={`--i:${i + 1}`}>{item}</li>)}
-  </ul>
+<Row class="flex flex-col gap-8 px-6 py-12">
+  <Caption title="Roadmap → every release free" heading><span class="note">now: v1.1 <Sep /> next: v2.0</span></Caption>
+  <ol class="flex flex-col">
+    {releases.map((r, i) => {
+      const next = releases[i + 1];
+      return (
+        <li class="fade relative grid grid-cols-[16px_120px_1fr] items-start gap-x-6 pb-9 last:pb-0 max-sm:grid-cols-[16px_1fr]" style={`--i:${i + 1}`}>
+          {next && <span aria-hidden="true" class:list={['absolute top-[22px] -bottom-1.5 left-[7px] w-0.5', next.shipped ? 'bg-muted' : '[background:repeating-linear-gradient(var(--color-acc)_0_6px,transparent_6px_12px)]']}></span>}
+          <span aria-hidden="true" class:list={['mt-1.5 size-4 rounded-full', r.shipped ? 'bg-muted' : 'border-2 border-acc bg-page']}></span>
+          <h3 class="flex flex-col gap-1.5">
+            <span class:list={['text-2xl leading-none font-extrabold font-stretch-125%', { 'text-acc': !r.shipped }]}>{r.version}</span>
+            <span class="label">{r.shipped ? `Shipped ${r.date}` : 'Planned'}</span>
+          </h3>
+          <ul class="flex flex-wrap gap-2 max-sm:col-start-2 max-sm:mt-3">
+            {r.items.map((item) => (
+              <li class:list={['rounded-md px-3 py-2 font-mono text-[13px] font-semibold', r.shipped ? 'bg-key text-muted shadow-[inset_0_0_0_1px_var(--color-line)]' : 'bg-acc text-on-acc']}>{item}</li>
+            ))}
+          </ul>
+        </li>
+      );
+    })}
+  </ol>
 </Row>

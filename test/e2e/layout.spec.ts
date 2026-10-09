@@ -56,7 +56,7 @@ test('pinning a grid lists its layout in the panel', async ({ page, activate }) 
   const panel = page.locator('lidar-root .panel');
   await expect(panel.locator('[data-row="Columns"] .val')).toHaveText(/^[\d.]+px [\d.]+px [\d.]+px$/);
   await expect(panel.locator('[data-row="Gap"] .val')).toHaveText('16px');
-  await page.mouse.move(5, 300); // hover elsewhere: the pinned grid stays drawn
+  await page.mouse.move(5, 300);
   await expect.poll(async () => (await scene(page)).hatches).toBe(2);
 });
 
@@ -69,7 +69,7 @@ test('the top ruler marks the page breakpoints and names them on hover', async (
   await expect(page.locator('lidar-root [data-ov="bp-range"]')).toBeVisible(); // 1100 → 1280 is the current range
   await page.mouse.move(769, 9);
   await expect(page.locator('lidar-root [data-ov="bp-tip"]')).toHaveText('@media (min-width: 768px)');
-  await page.keyboard.press('r'); // rulers off hides breakpoints too
+  await page.keyboard.press('r');
   await expect(tick.first()).toBeHidden();
   await expect(tick.last()).toBeHidden();
 });
@@ -84,7 +84,7 @@ test('/ finds elements by selector; arrows step and Enter pins', async ({ page, 
   await page.keyboard.press('ArrowDown');
   await expect(bar.locator('.n')).toHaveText('2 of 3');
   await page.keyboard.press('ArrowUp');
-  await page.keyboard.press('ArrowUp'); // wraps to the last
+  await page.keyboard.press('ArrowUp');
   await expect(bar.locator('.n')).toHaveText('3 of 3');
   await page.keyboard.press('Enter');
   await expect(bar).toHaveCount(0);
@@ -143,7 +143,7 @@ test('line numbers are not drawn for a pinned grid that is off-screen', async ({
   await page.locator('#grid').scrollIntoViewIfNeeded();
   await activate();
   const b = (await page.locator('#grid').boundingBox())!;
-  await page.mouse.click(b.x + 4, b.y + 4); // pin the container
+  await page.mouse.click(b.x + 4, b.y + 4);
   await expect(page.locator('lidar-root .lnum:visible').first()).toBeVisible();
   await page.evaluate(() => scrollTo(0, 0));
   await expect(page.locator('lidar-root .lnum:visible')).toHaveCount(0);

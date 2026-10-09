@@ -41,7 +41,7 @@ test('Lidar reappears after a screenshot', async ({ page, activate }) => {
   await activate();
   await pinCta(page);
   await page.locator('lidar-root .panel').getByRole('button', { name: 'Screenshot' }).click();
-  await expect(page.locator('lidar-root')).toBeVisible(); // restored after capture
+  await expect(page.locator('lidar-root')).toBeVisible();
 });
 
 test("Chrome's capture rate limit shows a plain retry message", async ({ page, sw, activate }) => {

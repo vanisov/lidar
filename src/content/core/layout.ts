@@ -21,7 +21,6 @@ export function parseTracks(value: string): number[] | null {
   return tokens.map(parseFloat);
 }
 
-/** Where each track sits along one axis, after justify-/align-content shifts the whole set. */
 export function trackSpans(origin: number, available: number, sizes: number[], gap: number, align: string, rtl = false): Span[] {
   const free = Math.max(0, available - sizes.reduce((a, b) => a + b, 0) - gap * (sizes.length - 1));
   // ponytail: space-between/around/evenly are drawn as start; distribute the free space if grids use them.
@@ -95,7 +94,6 @@ export function flexDrawing(box: Rect, items: Rect[], row: boolean): { hatches: 
   return { hatches, dashes };
 }
 
-/** The column grid: `count` columns across the viewport minus side margins, capped at `maxWidth` and centered. */
 export function columnRects(vw: number, vh: number, c: Columns): Rect[] {
   const width = Math.min(vw - 2 * c.margin, c.maxWidth || Infinity);
   const w = (width - c.gutter * (c.count - 1)) / c.count;
@@ -111,7 +109,7 @@ export interface LayoutDrawing {
   marks: Mark[];
 }
 
-/** The flex or grid drawing for `el`, or null if it isn't a container. Reads layout: call it in the read phase. */
+/** Null if `el` isn't a flex or grid container. Reads layout: call it in the read phase. */
 export function readLayout(el: Element, cs: CSSStyleDeclaration): LayoutDrawing | null {
   const grid = /grid/.test(cs.display);
   if (!grid && !/flex/.test(cs.display)) return null;

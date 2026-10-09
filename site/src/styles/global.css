@@ -1,7 +1,6 @@
 @import "tailwindcss";
 
 @theme {
-  /* light-dark(light, dark): the page follows the system theme, or the one data-theme pins. */
   --color-page: light-dark(#f5f3ef, #121110);
   --color-ink: light-dark(#141210, #f2efe9);
   --color-body: light-dark(#3a3631, #d9d4cc);
@@ -21,6 +20,7 @@
 @utility note { font: 500 12px/1.3 var(--font-mono); color: var(--color-acc-soft); letter-spacing: .02em; }
 @utility label { font: 500 12px/1 var(--font-mono); text-transform: uppercase; letter-spacing: .06em; color: var(--color-muted); }
 @utility big { font-weight: 800; font-stretch: 125%; text-transform: uppercase; line-height: .88; letter-spacing: -.02em; }
+.sep { color: color-mix(in srgb, currentColor 22%, transparent); letter-spacing: 0; }
 @utility hatch { background: repeating-linear-gradient(45deg, #ff5a3638 0 4px, #ff5a3614 4px 8px); }
 
 @layer base {
@@ -31,7 +31,6 @@
   :focus-visible { outline: 2px solid var(--color-acc); outline-offset: 3px; }
 }
 
-/* ---- blueprint frame: a 1160px column between hatched gutters ---- */
 .row { display: grid; grid-template-columns: minmax(16px, 1fr) minmax(0, 1160px) minmax(16px, 1fr); border-bottom: 1px solid var(--color-line); }
 .row::before, .row::after { content: ""; grid-row: 1; background: repeating-linear-gradient(135deg, color-mix(in srgb, var(--color-ink) 6%, transparent) 0 1px, transparent 1px 8px); }
 .row::after { grid-column: 3; }
@@ -40,18 +39,21 @@
 .row.band::before, .row.band::after { background: repeating-linear-gradient(135deg, color-mix(in srgb, var(--color-on-acc) 12%, transparent) 0 1px, transparent 1px 8px); }
 .row.band > .col { border-color: color-mix(in srgb, var(--color-on-acc) 25%, transparent); }
 
-/* ---- theme toggle: show the icon for the theme you'd switch to; it needs JS, so hide it without ---- */
 html[data-theme="light"] .when-dark, html[data-theme="dark"] .when-light, html:not(.js) .theme-toggle { display: none; }
 
-/* ---- Lidar's own overlay: hover measurement and the hero crosshair ---- */
 .m-box { position: fixed; left: 0; top: 0; pointer-events: none; z-index: 50; opacity: 0; outline: 1.5px solid var(--color-acc); background: #ff5a3612; transition: opacity .15s, outline-color .15s, background-color .15s; }
 .m-box.on { opacity: 1; }
 .cross { position: fixed; left: 0; top: 0; pointer-events: none; z-index: 40; opacity: 0; transition: opacity .2s; }
 .crossing .cross { opacity: 1; }
 
+html { scroll-padding-top: 64px; }
+header.row { position: sticky; top: 0; z-index: 30; background: color-mix(in srgb, var(--color-page) 85%, transparent); backdrop-filter: blur(12px); }
+header.row > .col > * { transition: min-height .45s var(--ease-snap), padding .45s var(--ease-snap), font-size .45s var(--ease-snap), background-color .15s, color .15s; }
+header.row.compact > .col > * { min-height: 40px; padding-block: 8px; }
+header.row.compact .brand { font-size: 18px; }
+.m-box.below > span { top: 100%; bottom: auto; margin: 8px 0 0; }
 .m-box.pill-only { outline-color: transparent; background-color: transparent; }
 
-/* ---- buttons: keycaps that press down; Lidar's size label appears on hover (components/ui/button.astro) ---- */
 .btn { position: relative; display: inline-flex; align-items: center; justify-content: space-between; gap: 14px; height: 56px; padding: 0 10px 0 24px; border-radius: 12px; text-decoration: none; font: 700 17px/1 var(--font-sans); font-stretch: 108%; box-shadow: 0 5px 0 var(--edge), inset 0 0 0 1px var(--ring, transparent); transition: translate .1s, box-shadow .1s; }
 .btn:hover { translate: 0 2px; box-shadow: 0 3px 0 var(--edge), inset 0 0 0 1px var(--ring, transparent); }
 .btn:active { translate: 0 5px; box-shadow: 0 0 0 var(--edge), inset 0 0 0 1px var(--ring, transparent); }
@@ -65,7 +67,6 @@ html[data-theme="light"] .when-dark, html[data-theme="dark"] .when-light, html:n
 
 @media (max-width: 767px) { .btn { width: 100%; } }
 
-/* ---- small keycaps (Fig. 2 tabs, the demo's pause button); tab panels share one grid cell and crossfade ---- */
 .keycap { display: inline-flex; align-items: center; gap: 10px; height: 44px; padding: 0 8px 0 16px; border-radius: 10px; cursor: pointer; font: 700 15px/1 var(--font-sans); color: var(--color-ink); background: var(--color-key); box-shadow: 0 4px 0 var(--color-key-edge), inset 0 0 0 1px var(--color-line); transition: translate .1s, box-shadow .1s, background-color .15s, color .15s; }
 .keycap:not(:has(kbd)) { padding-right: 16px; }
 .keycap kbd { font: 600 12px/1 var(--font-mono); padding: 6px 7px; border-radius: 6px; background: var(--color-page); color: var(--color-muted); box-shadow: inset 0 -2px 0 var(--color-line); }
@@ -77,20 +78,16 @@ html[data-theme="light"] .when-dark, html[data-theme="dark"] .when-light, html:n
 .tool-panel { opacity: 0; visibility: hidden; transition: opacity .3s, visibility .3s; }
 .tool-panel.on { opacity: 1; visibility: visible; }
 
-/* ---- reveal on load and scroll; hidden states only apply once JS is running ---- */
-.fade, .rise > span, .grow, .strike::after { transition: opacity .7s var(--ease-snap), transform .7s var(--ease-snap); transition-delay: calc(var(--i, 0) * 90ms); }
+/* Hidden states wait for .js so the page still shows without JS. */
+.fade, .rise > span, .grow { transition: opacity .7s var(--ease-snap), transform .7s var(--ease-snap); transition-delay: calc(var(--i, 0) * 90ms); }
 .rise { display: block; overflow: hidden; padding-top: .06em; margin-top: -.06em; }
 .rise > span { display: block; transition-duration: .9s; transition-delay: calc(var(--i, 0) * 90ms + 100ms); }
 .grow { transition-delay: .45s; }
-.strike { position: relative; }
-.strike::after { content: ""; position: absolute; inset-inline: 8px; top: 50%; height: 2px; background: currentColor; transform-origin: left; transition-delay: calc(var(--i, 0) * 120ms + 500ms); }
 .js [data-reveal]:not(.in) .fade { opacity: 0; transform: translateY(16px); }
 .js [data-reveal]:not(.in) .rise > span { transform: translateY(105%); }
 .js [data-reveal]:not(.in) .grow.x { transform: scaleX(0); }
 .js [data-reveal]:not(.in) .grow.y { transform: scaleY(0); }
-.js [data-reveal]:not(.in) .strike::after { transform: scaleX(0); }
 
-/* ---- markdown pages (changelog, privacy) ---- */
 .prose { color: var(--color-body); font-size: 17px; line-height: 1.6; max-width: 72ch; }
 .prose h1 { display: none; }
 .prose h2:has(+ h2) { display: none; } /* skip an empty section, like a blank [Unreleased] */

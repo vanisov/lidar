@@ -5,16 +5,19 @@ import TitleCell from './title-cell.astro';
 import ThemeToggle from './theme-toggle.astro';
 import { STORE_URL } from '../../config/links';
 
-// The drawing's title block.
 ---
 <Row as="header" class="flex flex-wrap">
-  <TitleCell as="a" href="/" class="fade gap-3 font-sans text-[22px] leading-none font-extrabold font-stretch-125% hover:text-acc-soft" translate="no">
-    <Logo class="h-6 w-auto" />LIDAR
+  <TitleCell as="a" href="/" class="brand fade gap-3 font-sans text-[22px] leading-none font-extrabold font-stretch-125% hover:text-acc-soft" translate="no">
+    <Logo class="h-[1.1em] w-auto" />LIDAR
   </TitleCell>
-  <TitleCell class="label fade ml-auto border-l max-sm:hidden" style="--i:1">Rev 1.0</TitleCell>
-  <TitleCell class="label fade max-sm:ml-auto max-sm:border-l" style="--i:2">Price&nbsp;<span class="text-acc">$0.00</span></TitleCell>
+  <TitleCell class="label fade ml-auto border-l" style="--i:2">Price&nbsp;<span class="text-acc">$0.00</span></TitleCell>
   <ThemeToggle class="fade flex min-h-13 w-13 items-center border-r border-line" style="--i:3" />
   <TitleCell as="a" href={STORE_URL} class="label fade gap-2.5 bg-acc font-semibold text-on-acc transition-colors hover:bg-ink hover:text-page max-sm:w-full max-sm:justify-center" style="--i:4" data-measure>
     Add to Chrome <span aria-hidden="true">→</span>
   </TitleCell>
 </Row>
+
+<script>
+  import { compactOnScroll } from '../../scripts/sticky-header';
+  compactOnScroll(document.querySelector<HTMLElement>('header.row')!);
+</script>

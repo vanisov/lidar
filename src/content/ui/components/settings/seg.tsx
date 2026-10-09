@@ -1,4 +1,3 @@
-/** A segmented control: a radio group drawn as joined buttons. */
 export function Seg<T extends string>(props: { name: string; value: T; options: [T, string][]; onChange(v: T): void }) {
   return (
     <div class="seg" role="radiogroup" aria-label={props.name}>

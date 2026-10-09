@@ -1,5 +1,5 @@
-// A visible, smoothly moving mouse for recordings. Headless Chrome paints no cursor, so one is drawn in Lidar's
-// shadow root (open in the test build): the only place that stays above Lidar in the top layer.
+// Headless Chrome paints no cursor, so one is drawn in Lidar's shadow root (open in the test build): the only place
+// that stays above Lidar in the top layer.
 
 function drawCursor() {
   const c = document.createElement('div');
@@ -11,7 +11,7 @@ function drawCursor() {
   document.querySelector('lidar-root').shadowRoot.append(c);
   const ring = c.firstElementChild;
   addEventListener('mousemove', e => { c.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`; }, true);
-  addEventListener('mousedown', () => { // a ripple on every click
+  addEventListener('mousedown', () => {
     ring.style.transition = 'none';
     ring.style.transform = 'scale(.4)';
     ring.style.opacity = '1';
@@ -25,7 +25,6 @@ function drawCursor() {
 
 const easeInOut = k => (k < 0.5 ? 4 * k ** 3 : 1 - (-2 * k + 2) ** 3 / 2);
 
-/** Draws the cursor on the page and returns a pointer that glides between points and clicks with a ripple. */
 export async function createPointer(page, start = { x: 700, y: 470 }) {
   await page.evaluate(drawCursor);
   let at = start;

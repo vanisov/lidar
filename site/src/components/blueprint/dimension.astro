@@ -1,7 +1,6 @@
 ---
 import Note from './note.astro';
 
-// A drafting dimension line that reads its target's live width (x) or height (y).
 interface Props { target: string; axis?: 'x' | 'y'; class?: string }
 const { target, axis = 'x', class: cls } = Astro.props;
 const x = axis === 'x';
