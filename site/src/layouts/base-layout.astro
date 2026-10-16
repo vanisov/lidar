@@ -9,10 +9,29 @@ import Footer from '../components/layout/footer.astro';
 import MeasureOverlay from '../components/overlay/measure-overlay.astro';
 import shot from '../../../store/out/1-inspect.png';
 import favicon from '../../../brand/icon.svg?url';
+import { version } from '../../../package.json';
+import { STORE_URL, REPO_URL, AUTHOR_URL, LICENSE_URL } from '../config/links';
 
 interface Props { title: string; description: string }
 const { title, description } = Astro.props;
 const url = new URL(Astro.url.pathname, Astro.site);
+const markdown = `${Astro.url.pathname.replace(/\/$/, '') || '/index'}.md`;
+const app = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: 'Lidar',
+  description: 'A free, open-source Chrome extension that measures sizes, spacing, distances and colors on any page and reads you the computed CSS.',
+  url: Astro.site,
+  applicationCategory: 'DeveloperApplication',
+  operatingSystem: 'Chrome',
+  softwareVersion: version,
+  downloadUrl: STORE_URL,
+  license: LICENSE_URL,
+  image: new URL(shot.src, Astro.site),
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+  author: { '@type': 'Person', name: 'Vlad Anisov', url: AUTHOR_URL },
+  sameAs: [REPO_URL, STORE_URL],
+};
 ---
 <!doctype html>
 <html lang="en" class="bg-page">
@@ -26,11 +45,14 @@ const url = new URL(Astro.url.pathname, Astro.site);
   <link rel="canonical" href={url}>
   <link rel="icon" href={favicon} type="image/svg+xml">
   <link rel="sitemap" href="/sitemap-index.xml">
+  <link rel="alternate" type="text/markdown" href={markdown}>
+  <meta property="og:type" content="website">
   <meta property="og:title" content={title}>
   <meta property="og:description" content={description}>
   <meta property="og:image" content={new URL(shot.src, Astro.site)}>
   <meta property="og:url" content={url}>
   <meta name="twitter:card" content="summary_large_image">
+  <script type="application/ld+json" set:html={JSON.stringify(app)} />
   <script is:inline>
     // Runs before first paint so there's no flash: a saved theme wins, else the system's.
     const root = document.documentElement;
