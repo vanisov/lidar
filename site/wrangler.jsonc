@@ -1,11 +1,15 @@
-// Static assets only. Without this file, `wrangler deploy` sets the project up itself and converts it to server rendering.
+// Without this file, `wrangler deploy` sets the project up itself and converts it to server rendering.
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "lidar",
   "account_id": "1148754027b663d3dde616e59d274aa8",
   "compatibility_date": "2026-10-06",
+  // Serves pages as markdown to agents that send `Accept: text/markdown`. Everything else is a plain static asset.
+  "main": "worker.js",
   "assets": {
-    "directory": "./dist"
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "run_worker_first": ["/", "/changelog", "/changelog/", "/privacy", "/privacy/"]
   },
   // Non-production branches deploy with `wrangler preview`, which needs this block even when it's empty.
   "previews": {}
